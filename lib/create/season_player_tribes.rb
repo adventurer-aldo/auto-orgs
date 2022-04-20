@@ -35,7 +35,7 @@ class Sunny
     BOT.command :tribes do |event, *args|
         if HOSTS.include? event.user.id
             tribes = event.message.role_mentions
-            players = Player.where(season: Setting.last.season, status: 'In')
+            players = Player.where(season: Setting.last.season, status: ALIVE+['Exiled'])
             if tribes.size > 1
                 if players.size % tribes.size == 0
 
@@ -63,6 +63,7 @@ class Sunny
                     (players.size/tribes.size).times do 
                         @buffs += Array(0..((players.size/tribes.size)-1))
                     end
+                    @buffs.shuffle!
                     event.respond "It's time to swap between " + tribes.map(&:mention).join(" ") + "!"
                     event.channel.start_typing
                     sleep(2)

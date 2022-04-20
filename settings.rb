@@ -1,4 +1,7 @@
 class Sunny
+    # PLAYER STATUS
+    ALIVE = ['In','Immune','Idoled']
+    DEAD = ['Out','Jury']
 
     # USERGROUPS IDs
     HOSTS = [822539645417422968,867100839654719498]

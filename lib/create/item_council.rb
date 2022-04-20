@@ -7,7 +7,7 @@ class Sunny
     end
 
     BOT.command :council do |event|
-            if HOSTS.include? event.user.id
+        if HOSTS.include? event.user.id
             tribes = event.message.role_mentions
             event.respond("Input at least one tribe!") if tribes.size < 1
             break if tribes.size < 1
@@ -16,13 +16,17 @@ class Sunny
             @tribe = []
             @confirm = []
             @perms = [TRUE_SPECTATE, DENY_EVERY]
-            @cast_left = Player.where(status: ["In","Exiled"], season: Setting.last.season).size
+            @cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
             tribes.each do |tribe|
                 unless Tribe.where(role_id: tribe.id).exists?
                     @confirm << false
                 else
-                    @tribe += [Tribe.find_by(role_id: tribe.id).id]
-                    @perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
+                    if Setting.last.tribes.include? Tribe.find_by(role_id: tribe.id).id
+                        @tribe += [Tribe.find_by(role_id: tribe.id).id]
+                        @perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
+                    else
+                        @confirm << false
+                    end
                 end
             end
 
@@ -31,7 +35,7 @@ class Sunny
                     return
             else
                 sets = Setting.last
-                players = Player.where(tribe: @tribe, status: "In", season: sets.season)
+                players = Player.where(tribe: @tribe, status: ALIVE, season: sets.season)
                 channel = event.server.create_channel("f#{@cast_left}-#{tribes.map(&:name).join('-')}",
                 parent: COUNCILS,
                 topic: "F#{@cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
