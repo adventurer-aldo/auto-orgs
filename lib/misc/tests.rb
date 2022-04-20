@@ -4,4 +4,7 @@ class Sunny
         ActiveRecord::Base.connected?.to_s
     end
 
+    BOT.command :test do |event|
+        return event.user.id.player?
+    end
 end
