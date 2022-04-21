@@ -6,7 +6,7 @@ class Sunny
 
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         council = Council.find_by(channel_id: event.channel.id)
-        if [2,3].include? council.stage
+        if [1,3].include? council.stage
             event.channel.start_typing
             sleep(2)
             rank = Player.where(season: Setting.last.season, status: ALIVE).size
@@ -127,7 +127,7 @@ class Sunny
                             sleep(3)
                             case council.stage
                             when 2
-                                Setting.last.update(game_stage: 1)
+                                Setting.last.update(game_stage: 3)
                                 event.respond("Everyone but the tied up seedlings will enter in a revote, each with only one available vote.")
                                 event.channel.start_typing
                                 sleep(3)
