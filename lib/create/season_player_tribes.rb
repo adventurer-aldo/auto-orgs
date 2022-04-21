@@ -34,6 +34,7 @@ class Sunny
 
     BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
         if HOSTS.include? event.user.id
+            event.message.delete
             tribes = event.message.role_mentions
             players = Player.where(season: Setting.last.season, status: ALIVE+['Exiled'])
             if tribes.size > 1
@@ -150,7 +151,7 @@ class Sunny
                         event.respond sprintf(@cheers.sample, BOT.user(player.user_id).mention)
                         sleep(3)
                     end
-                    
+
                     event.respond "Congratulations, and welcome to the beginning of the **Endgame**."
                 end
 

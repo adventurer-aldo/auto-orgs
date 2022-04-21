@@ -6,6 +6,7 @@ class Sunny
 
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         council = Council.find_by(channel_id: event.channel.id)
+        event.message.delete
         if [1,3].include? council.stage
             event.channel.start_typing
             sleep(2)
