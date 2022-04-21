@@ -8,7 +8,7 @@ class Sunny
     BOT.command :season, description: "Creates a new season." do |event, *args|
         if HOSTS.include? event.user.id
             newseason = Season.create(name: args.join(' '))
-            Setting.update(season: newseason.id)
+            Setting.update(season: newseason.id, game_stage: 0)
         end
         return "New season created!"
     end
@@ -142,7 +142,7 @@ class Sunny
                         channel_id: chan.id,
                         season: Setting.last.season).id
                     end
-                    Setting.last.update(tribes: @set_tribes)
+                    Setting.last.update(tribes: @set_tribes, game_stage: 1)
 
                     players.each do |player|
                         player.update(tribe: Tribe.find_by(role_id: tribes[0].id).id)
@@ -150,8 +150,7 @@ class Sunny
                         event.respond sprintf(@cheers.sample, BOT.user(player.user_id).mention)
                         sleep(3)
                     end
-
-                    Setting.update(game_stage: 1)
+                    
                     event.respond "Congratulations, and welcome to the beginning of the **Endgame**."
                 end
 
