@@ -1,22 +1,6 @@
 class Sunny
 
-    BOT.command :vote do |event, *args|
-        # Need a vote command. Players can only be in one tribal council at a time.
-        # ===========================================================================================
-        # Vote should only be available if there's a vote with the player's id,
-        # while checking for a council that is in stage 0 [Before 12h, can swap immunity or SA] or
-        # stage 1 [After 12h, can't swap immunity or use safety advantage]
-        # ===========================================================================================
-        # If there's a council that meets those two conditions, plus the player has a vote ID that
-        # matches, you can vote.
-        # ===========================================================================================
-        # First check if the player has enough votes. If you have 0, just...deny it.
-        # If you have more than one vote, you HAVE to use either 1 or 2 as the first arg.
-        # ===========================================================================================
-        # Further optional condition: 
-        # Use player name for identification for vote. If there's more than one player that matches a 
-        # name, you'll have to use the ID.
-        # If you fail even at that, well, just don't vote.
+    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, *args|
         # ===========================================================================================
         # Once votes are TOTAL_ALLOWED_VOTES == SUBMITTED VOTES, then enter Lock phase.
         # Once you lock, the Bot will make tribal council by itself.
@@ -58,23 +42,22 @@ class Sunny
                     if text_attempt.size == 1
                         @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
                         voted[number] = @target.id
-                        event.respond("YOURE IN THE AWAIT BABY")
                     elsif id_attempt.size == 1
-                        voted[number] = id_attempt[0]
                         @target = Player.find_by(id: id_attempt[0])
-                        event.respond("YOURE IN THE AWAIT BABY")
+                        voted[number] = id_attempt[0]
                     else
-                        event.respond("There's no seedling that matches that.")
+                        await.respond("There's no single seedling that matches that.")
                     end
-                    
+
+                    true
                 end
                 
 
                 if voted == vote.votes
-                    "No vote was submitted..."
-                else
                     updater.update(votes: voted)
                     event.respond("You're now voting **#{@target.name}**.")
+                else
+                    "No vote was submitted..."
                 end
             end
         end

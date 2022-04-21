@@ -5,7 +5,7 @@ class Sunny
     # > Tribes
     # ========================================================
     
-    BOT.command :season do |event, *args|
+    BOT.command :season, description: "Creates a new season." do |event, *args|
         if HOSTS.include? event.user.id
             newseason = Season.create(name: args.join(' '))
             Setting.update(season: newseason.id)
@@ -13,7 +13,7 @@ class Sunny
         return "New season created!"
     end
     
-    BOT.command :player do |event, *args|
+    BOT.command :player, description: "Registers the user as a new player in the current season." do |event, *args|
        player =  Player.create(user_id: event.user.id, name: event.user.name, season: Setting.last.season,
        confessional: event.server.create_channel(
         event.user.name + '-confessional',
@@ -29,10 +29,10 @@ class Sunny
 
         event.user.on(event.server).add_role(964564440685101076)
         BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{event.user.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
-        BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade and receive items.\n\nTo start things off, check your inventory with `!inventory`!")
+        BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
     end
 
-    BOT.command :tribes do |event, *args|
+    BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
         if HOSTS.include? event.user.id
             tribes = event.message.role_mentions
             players = Player.where(season: Setting.last.season, status: ALIVE+['Exiled'])

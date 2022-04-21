@@ -2,11 +2,11 @@ class Sunny
     # > Item
     # > Council
 
-    BOT.command :item do |event, *args|
+    BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
         return "Not implemented yet."
     end
 
-    BOT.command :council do |event|
+    BOT.command :council, description: "Creates a new Tribal Council channel and sets up everything related to." do |event|
         if HOSTS.include? event.user.id
             tribes = event.message.role_mentions
             event.respond("Input at least one tribe!") if tribes.size < 1

@@ -1,6 +1,6 @@
 class Sunny
     
-    BOT.command :clean do |event|
+    BOT.command :clean, description: "Delete all Data except Settings." do |event|
         if HOSTS.include? event.user.id
             Vote.destroy_all
             Council.destroy_all

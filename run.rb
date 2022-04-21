@@ -12,6 +12,7 @@ class Sunny
     def self.run
         BOT.run
     end
+
 end
 
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])

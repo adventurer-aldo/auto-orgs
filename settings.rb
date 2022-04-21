@@ -17,10 +17,15 @@ class Sunny
     SERVER_ID = 963136641969569852
 
     # PARENT CATEGORIES IDs
+    ALLIANCES = 966772850348404816
     COUNCILS = 965726451309641829
     CHALLENGES = 965726505017671700
     TRIBES = 965620874453590056
     CONFESSIONALS = 965539764369518622
     ARCHIVE = 965563736372940880
     
+    # TRIBAL
+    COUNTING = %W(First Second Third Fourth Fifth Sixth Seventh Eigthth Ninth Tenth 
+    Eleventh Twelfth Thirteenth Fourteenth Fifteenth Sixteenth Seventeeth Eighteenth Nineteenth Twentieth 
+    Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
 end
