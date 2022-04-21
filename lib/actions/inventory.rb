@@ -3,7 +3,7 @@ class Sunny
     BOT.command :inventory, description: "Shows your items and current votes." do |event|
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
         vote = Vote.where(player: player.id)
-        council = Council.where(id: vote.map(&:council), stage: [0,1])
+        council = Council.where(id: vote.map(&:council), stage: [0,1,2])
         if vote.exists? && council.exists?
             council = council.first
             vote = Vote.where(council: council.id).and(vote).first.votes
