@@ -3,7 +3,7 @@ class Sunny
     BOT.command :alliance, description: "Make an alliance with other players on your tribe." do |event, *args|
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
         tribe = Tribe.find_by(id: player.tribe)
-        if event.user.id.player? && event.server.role(tribe.role_id).members.size > 2
+        if event.user.id.player? && event.server.role(tribe.role_id).members.size > 3
             enemies = Player.where(tribe: tribe.id, season: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
             options = enemies.map(&:id)
             options_text = enemies.map(&:name)
@@ -30,17 +30,23 @@ class Sunny
 
             end
 
-            event.respond("There were no matches.") if choices.size == 0
-            break if choices.size == 0
 
             choices.map do |option|
                 if option.size > 1
-                    options[options_text.index(options_text.filter { |n| n.include? option }.first)]
+                    query = options_text.filter { |n| n.include? option }.first
+                    unless query == nil
+                        options[options_text.index(query)]
+                    end
                 else
                     options.filter { |n| n == option.to_i }.first
                 end
             end
             choices.uniq!
+            choices.delete(nil)
+
+            event.respond("There were no matches.") if choices.size == 0
+            break if choices.size == 0
+
             choices.map! do |choice|
                 Player.find_by(id: choice)
             end
@@ -58,7 +64,7 @@ class Sunny
                             topic: "Created at F#{rank} by #{player.name}. | #{choices.map(&:name).join('-')}"
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
-                    rescue PG::UniqueConstraint
+                    rescue PG::UniqueViolation
                         event.respond("**This alliance already exists!**")
                     end
                 when 'no','nah','nop','nay','noo','nope','nuh uh','nuh','nuh-uh'
@@ -68,7 +74,7 @@ class Sunny
                 end
                 true
             end
-
+            
         end
     end
 
