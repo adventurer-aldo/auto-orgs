@@ -192,7 +192,7 @@ class Sunny
                                         alliances = Alliance.where("#{loser.id} = ANY (players)")
                                         alliances.each do |alliance|
                                             alliance.update(players: alliance.players - [loser.id])
-                                            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members
+                                            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                                                 channel = BOT.channel(alliance.channel_id)
                                                 channel.parent = ARCHIVE
                                                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
@@ -238,7 +238,7 @@ class Sunny
                         alliances = Alliance.where("#{loser.id} = ANY (players)")
                         alliances.each do |alliance|
                             alliance.update(players: alliance.players - [loser.id])
-                            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members
+                            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                                 channel = BOT.channel(alliance.channel_id)
                                 channel.parent = ARCHIVE
                                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
