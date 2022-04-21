@@ -5,6 +5,7 @@ class Sunny
     end
 
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
+        break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
         event.message.delete
         if [1,3].include? council.stage

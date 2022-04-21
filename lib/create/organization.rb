@@ -1,6 +1,7 @@
 class Sunny
 
     BOT.command :archive, description: "Sends the current channel to archive and removes talking permissions, while allowing it to be viewed. Add 'all' to archive all channels within the current category." do |event, *args|
+        break unless HOSTS.include? event.user.id
         unless args.join(' ') == "all"
             event.channel.parent = ARCHIVE
             event.respond ":ballot_box_with_check: **This channel has been archived!**"
@@ -36,6 +37,7 @@ class Sunny
     end
 
     BOT.command :dehive, description: "Delete all channels on the Archives category." do |event|
+        break unless HOSTS.include? event.user.id
         if event.channel.parent == ARCHIVE
             return "You cannot do this action while inside the archives."
         else
