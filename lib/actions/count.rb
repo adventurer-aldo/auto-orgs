@@ -13,11 +13,19 @@ class Sunny
             sleep(2)
             rank = Player.where(season: Setting.last.season, status: ALIVE).size
             total = Player.where(season: Setting.last.season).size
-            event.respond("**It is time for the F#{rank} read-off!**")
-            council.update(stage: 2)
-            event.channel.start_typing
-            sleep(2)
-            event.respond("Your votes can no longer be changed.")
+            if council.stage > 2
+                event.respond("**It's time to read the votes, once again!**")
+                council.update(stage: 2)
+                event.channel.start_typing
+                sleep(2)
+                event.respond("Your votes can no longer be changed.")
+            else
+                event.respond("**It is time for the F#{rank} read-off!**")
+                council.update(stage: 2)
+                event.channel.start_typing
+                sleep(2)
+                event.respond("Your votes can no longer be changed.")
+            end
             event.channel.start_typing
             sleep(1)
             event.respond("...")
@@ -129,7 +137,7 @@ class Sunny
                             sleep(3)
                             case council.stage
                             when 2
-                                Setting.last.update(game_stage: 3)
+                                council.update(stage: 3)
                                 event.respond("Everyone but the tied up seedlings will enter in a revote, each with only one available vote.")
                                 event.channel.start_typing
                                 sleep(3)
