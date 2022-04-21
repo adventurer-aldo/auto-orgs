@@ -4,9 +4,88 @@ class Sunny
         Council.where(stage: 0).update(stage: 1)
     end
 
+    BOT.command :rocks, description: "Quick and simple goes to rocks." do |event|
+        break unless HOSTS.include? event.user.id
+        council = Council.find_by(channel_id: event.channel.id)
+        break if council.id == nil
+        event.message.delete
+        event.channel.start_typing
+        sleep(3)
+        event.respond("We'll be drawing **ROCKS**")
+        event.channel.start_typing
+        sleep(3)
+        event.respond("The Seedling that draws the purple rock will be out of the game immediately.")
+        event.channel.start_typing
+        sleep(3)
+        seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'Idoled') }
+        event.respond("This will be between #{seeds.map(&:name).join(', ')}")
+        event.channel.start_typing
+        sleep(3)
+        event.respond("Let's get to it!")
+        seeds.delete(nil)
+        rocks = seeds.map { |n| 0 }
+        rocks[0] = 1
+        rocks.shuffle!
+        seeds.each do |seed|
+            event.channel.start_typing
+            sleep(3)
+            event.respond("#{seed.name} draws a rock...")
+            event.channel.start_typing
+            sleep(3)
+            event.respond("...")
+            event.channel.start_typing
+            sleep(3)
+            if rocks[seeds.index(seed)] == 0
+                event.respond("It's a white rock! #{seed.name} is safe.")
+            else
+                event.respond("...")
+                event.channel.start_typing
+                sleep(3)
+                event.respond("It's a **purple rock**.")
+                event.channel.start_typing
+                sleep(3)
+                event.respond("Unfortunately, **#{seed.name}** is now out of the game.")
+                tribe = Tribe.find_by(id: seed.tribe)
+                if Setting.last.game_stage == 1
+                    seed.update(status: 'Jury')
+                    user = BOT.user(seed.user_id).on(event.server)
+                    
+                    user.remove_role(tribe.role_id)
+                    user.remove_role(964564440685101076)
+                    user.add_role(965717073454043268)
+                else
+                    seed.update(status: 'Out')
+                    user = BOT.user(seed.user_id).on(event.server)
+                    
+                    user.remove_role(tribe.role_id)
+                    user.remove_role(964564440685101076)
+                    user.add_role(965717099202904064)
+                end
+                council.update(stage: 4)
+                alliances = Alliance.where("#{seed.id} = ANY (players)")
+                alliances.each do |alliance|
+                    alliance.update(players: alliance.players - [seed.id])
+                    if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: seed.tribe).role_id).members.size
+                        channel = BOT.channel(alliance.channel_id)
+                        channel.parent = ARCHIVE
+                        BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
+                        channel.permission_overwrites.each do |role, perms|
+                            channel.define_overwrite(event.server.member(seed.user_id), 0, 3072)
+                        end
+                    end
+                end
+                rank = Player.where(season: Setting.last.season, status: ALIVE).size
+                BOT.channel(seed.confessional).name = "#{rank}th-" + BOT.channel(seed.confessional).name
+                BOT.channel(seed.submissions).name = "#{rank}th-" + BOT.channel(seed.submissions).name
+                Player.where(status: ALIVE).update(status: 'In')
+            end
+        end
+    end
+
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
+        break if council.id == nil
         if [1,3].include? council.stage
             event.message.delete
             event.channel.start_typing
@@ -150,7 +229,11 @@ class Sunny
                                 end
                                 
                                 vote_count.each do |k,v|
-                                    Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) if v == vote_count.values.max
+                                    if v == vote_count.values.max
+                                        Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) 
+                                    else
+                                        Vote.find_by(player: k, council: council.id).update(allowed: 1, votes: [0]) 
+                                    end
                                 end
                             when 3
                                 event.channel.start_typing
@@ -161,6 +244,7 @@ class Sunny
                                 event.respond("The Seedling that draws the purple rock will be out of the game immediately.")
                                 event.channel.start_typing
                                 sleep(3)
+                                Player.find_by(status: 'In').update(status: 'Immune')
                                 event.respond("This will be between")
                                 event.channel.start_typing
                                 sleep(3)
@@ -205,18 +289,21 @@ class Sunny
                                             user.add_role(965717099202904064)
                                         end
                                         council.update(stage: 4)
-                                        alliances = Alliance.where("#{loser.id} = ANY (players)")
+                                        alliances = Alliance.where("#{seed.id} = ANY (players)")
                                         alliances.each do |alliance|
-                                            alliance.update(players: alliance.players - [loser.id])
-                                            if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+                                            alliance.update(players: alliance.players - [seed.id])
+                                            if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: seed.tribe).role_id).members.size
                                                 channel = BOT.channel(alliance.channel_id)
                                                 channel.parent = ARCHIVE
                                                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                                                 channel.permission_overwrites.each do |role, perms|
-                                                    channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
+                                                    channel.define_overwrite(event.server.member(seed.user_id), 0, 3072)
                                                 end
                                             end
                                         end
+                                        BOT.channel(seed.confessional).name = "#{rank}th-" + BOT.channel(seed.confessional).name
+                                        BOT.channel(seed.submissions).name = "#{rank}th-" + BOT.channel(seed.submissions).name
+                                        Player.where(status: ALIVE).update(status: 'In')
                                     end
                                     break if DEAD.include? seed.status
                                 end
@@ -263,6 +350,7 @@ class Sunny
                                 end
                             end
                         end
+                        Player.where(status: ALIVE).update(status: 'In')
                     end
 
 

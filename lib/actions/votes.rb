@@ -20,7 +20,8 @@ class Sunny
                 event.respond("You do not have any votes!")    
             else
                 voted = vote.votes
-                enemies = Player.where(season: Setting.last.season, tribe: player.tribe, status: 'In').excluding(player).order(id: :asc)
+                enemies = Vote.where(council: council.id).excluding(Vote.find_by(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+                enemies.delete(nil)
                 options = enemies.map(&:id)
 
                 text = enemies.map do |en|
