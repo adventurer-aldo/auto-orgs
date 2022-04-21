@@ -23,7 +23,7 @@ class Sunny
             event.respond("...")
             event.channel.start_typing
             sleep(2)
-            if council.stage < 2
+            if council.stage == 2
                 event.respond("Now, if anyone would like to play a **Hidden Immunity Idol**...")
                 event.channel.start_typing
                 sleep(2)
@@ -134,9 +134,14 @@ class Sunny
                                 event.channel.start_typing
                                 sleep(3)
                                 event.respond("You will only be able to vote the seedlings tied.")
+
                                 Player.where(season: Setting.last.season, status: 'Idoled').update(status: 'Immune')
                                 immunes = Player.where(status: 'Immune').map(&:id)
-                                Vote.where(council: council.id).excluding(Vote.where(player: immunes)).update(status: 'Idoled')
+                                
+                                Vote.where(council: council.id).excluding(Vote.where(player: immunes)).each do |revote|
+                                    Player.find_by(id: revote.player).update(status: 'Idoled')
+                                end
+                                
                                 vote_count.each do |k,v|
                                     Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) if v == vote_count.values.max
                                 end
