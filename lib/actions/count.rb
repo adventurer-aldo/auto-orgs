@@ -7,8 +7,8 @@ class Sunny
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
-        event.message.delete
         if [1,3].include? council.stage
+            event.message.delete
             event.channel.start_typing
             sleep(2)
             rank = Player.where(season: Setting.last.season, status: ALIVE).size
@@ -137,7 +137,7 @@ class Sunny
 
                                 Player.where(season: Setting.last.season, status: 'Idoled').update(status: 'Immune')
                                 immunes = Player.where(status: 'Immune').map(&:id)
-                                
+
                                 Vote.where(council: council.id).excluding(Vote.where(player: immunes)).each do |revote|
                                     Player.find_by(id: revote.player).update(status: 'Idoled')
                                 end
