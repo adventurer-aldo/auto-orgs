@@ -32,7 +32,7 @@ class Sunny
 
             if @confirm.include? false
                 event.respond "One or more of those tribes do not exist in the database."
-                    return
+                return
             else
                 sets = Setting.last
                 players = Player.where(tribe: @tribe, status: ALIVE, season: sets.season)
@@ -43,20 +43,27 @@ class Sunny
 
                 council = Council.create(tribe: @tribe, channel_id: channel.id)
                 channel.start_typing
-                sleep(2)
+                sleep(6)
                 BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
                 if sets.game_stage == 1
                     jury = Player.where(status: "Jury", season: sets.season)
                     if jury.size > 0
-                        BOT.send_message(channel.id, "And welcome to the members of our" + event.server.role(965717073454043268).mention + ":")
-                        BOT.send_message(channel.id, jury.map(&:name).join("\n"))
+                        channel.start_typing
+                        sleep(4)
+                        BOT.send_message(channel.id, "**And welcome to the members of our" + event.server.role(965717073454043268).mention + ":**")
+                        channel.start_typing
+                        sleep(2)
+                        BOT.send_message(channel.id, "**" + jury.map(&:name).join("\n") + "**")
+                        channel.start_typing
+                        sleep(2)
+                        BOT.send_message(channel.id, "...")
                     end
                 end
                 channel.start_typing
-                sleep(2)
+                sleep(6)
                 BOT.send_message(channel.id, "Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear..." )
                 channel.start_typing
-                sleep(2)
+                sleep(7)
                 BOT.send_message(channel.id, "But you can decide, as a group, which seedling should disappear. For that, you can use the `!vote` command in your submissions channel.")
                 channel.send_embed do |embed|
                     embed.title = "Seedlings attending Tribal Council:"

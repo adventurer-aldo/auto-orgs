@@ -64,6 +64,7 @@ class Sunny
                             topic: "Created at F#{rank} by #{player.name}. | #{choices.map(&:name).join('-')}"
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
+                        event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
                     rescue PG::UniqueViolation
                         event.respond("**This alliance already exists!**")
                     end
@@ -74,7 +75,7 @@ class Sunny
                 end
                 true
             end
-            
+            return
         end
     end
 
