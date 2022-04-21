@@ -6,12 +6,13 @@ class Sunny
 
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         council = Council.find_by(channel_id: event.channel.id)
-        if [1,2].include? council.stage
+        if [2,3].include? council.stage
             event.channel.start_typing
             sleep(2)
             rank = Player.where(season: Setting.last.season, status: ALIVE).size
             total = Player.where(season: Setting.last.season).size
             event.respond("**It is time for the F#{rank} read-off!**")
+            council.update(stage: 2)
             event.channel.start_typing
             sleep(2)
             event.respond("Your votes can no longer be changed.")
@@ -124,8 +125,8 @@ class Sunny
                         else
                             event.channel.start_typing
                             sleep(3)
-                            case Setting.last.game_stage
-                            when 0
+                            case council.stage
+                            when 2
                                 Setting.last.update(game_stage: 1)
                                 event.respond("Everyone but the tied up seedlings will enter in a revote, each with only one available vote.")
                                 event.channel.start_typing
@@ -137,7 +138,7 @@ class Sunny
                                 vote_count.each do |k,v|
                                     Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) if v == vote_count.values.max
                                 end
-                            when 1
+                            when 3
                                 event.channel.start_typing
                                 sleep(3)
                                 event.respond("We'll be drawing **ROCKS**")
@@ -189,6 +190,7 @@ class Sunny
                                             user.remove_role(964564440685101076)
                                             user.add_role(965717099202904064)
                                         end
+                                        council.update(stage: 4)
                                         alliances = Alliance.where("#{loser.id} = ANY (players)")
                                         alliances.each do |alliance|
                                             alliance.update(players: alliance.players - [loser.id])
@@ -208,7 +210,6 @@ class Sunny
                         end
 
                     else
-                        event.respond(vote_count.to_s)
                         loser = Player.find_by(id: vote_count.keys[vote_count.values.index(vote_count.values.max)])
                         event.respond("**#{loser.name}**")
                         event.channel.start_typing
@@ -235,6 +236,7 @@ class Sunny
                             user.remove_role(964564440685101076)
                             user.add_role(965717099202904064)
                         end
+                        council.update(stage: 4)
                         alliances = Alliance.where("#{loser.id} = ANY (players)")
                         alliances.each do |alliance|
                             alliance.update(players: alliance.players - [loser.id])
