@@ -15,7 +15,6 @@ class Sunny
             total = Player.where(season: Setting.last.season).size
             if council.stage > 2
                 event.respond("**It's time to read the votes, once again!**")
-                council.update(stage: 2)
                 event.channel.start_typing
                 sleep(2)
                 event.respond("Your votes can no longer be changed.")
