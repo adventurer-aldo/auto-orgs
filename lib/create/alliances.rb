@@ -61,10 +61,10 @@ class Sunny
                     begin
                         choices << player
                         choices.sort_by(&:id)
-                        
+
                         perms = [TRUE_SPECTATE, DENY_EVERY]
                         choices.each do |n| 
-                            perms << Discordrb::Overwrite.new(n.id, type: 'member', allow: 3072) 
+                            perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) 
                         end
 
                         alliance = Alliance.create(players: choices.map(&:id), channel_id: event.server.create_channel(
