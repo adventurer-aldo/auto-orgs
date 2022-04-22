@@ -1,7 +1,13 @@
 class Sunny
 
     BOT.command :inventory, description: "Shows your items and current votes." do |event|
-        player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+        break unless event.user.id.player?
+        player = nil
+        if [0,1].include? Setting.last.game_stage
+            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+        else
+            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
+        end
         vote = Vote.where(player: player.id)
         council = Council.where(id: vote.map(&:council), stage: [0,1,2,3])
         if vote.exists? && council.exists?
