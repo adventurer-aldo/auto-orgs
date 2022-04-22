@@ -311,7 +311,7 @@ class Sunny
             end
             break if vote_count.values.max == majority || all_votes.size == 0
         end
-        break if !(vote_count.values.count(vote_count.values.max) > 1) 
+        break if vote_count.values.count(vote_count.values.max) > 1
 
         loser ||= seed
         tribe = Tribe.find_by(id: loser.tribe)
