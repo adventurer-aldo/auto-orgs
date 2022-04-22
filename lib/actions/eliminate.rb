@@ -4,6 +4,7 @@ class Sunny
         break unless HOSTS.include? event.user.id
         content = args.join(' ')
         enemies = Player.where(season: Setting.last.season)
+        rank = Player.where(season: Setting.last.season, status: ALIVE).size
 
         text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
         id_attempt =  enemies.map(&:id).filter { |id| id == content.to_i }
@@ -52,7 +53,6 @@ class Sunny
                     end
                 end
             end
-            rank = Player.where(season: Setting.last.season, status: ALIVE).size
             event.respond("#{loser.name} has been eliminated.")
             BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
             BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
@@ -65,6 +65,7 @@ class Sunny
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
+        rank = Player.where(season: Setting.last.season, status: ALIVE).size
         event.message.delete
         event.channel.start_typing
         sleep(3)
@@ -136,7 +137,6 @@ class Sunny
                         end
                     end
                 end
-                rank = Player.where(season: Setting.last.season, status: ALIVE).size
                 BOT.channel(seed.confessional).name = "#{rank}th-" + BOT.channel(seed.confessional).name
                 BOT.channel(seed.submissions).name = "#{rank}th-" + BOT.channel(seed.submissions).name
                 Player.where(status: ALIVE).update(status: 'In')
