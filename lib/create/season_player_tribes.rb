@@ -71,11 +71,13 @@ class Sunny
                 event.channel.start_typing
                 sleep(2)
                 event.respond "First up, #{players[0].name}. Come here!"
+                puts @buffs.to_s
                 players.each do |player|
                     event.channel.start_typing
                     sleep(2)
                     event.respond "**#{player.name} takes a buff...**"
                     rand = @buffs.sample
+                    puts rand.to_s
                     event.channel.start_typing
                     sleep(3)
                     event.respond "...the buff taken out was from..."
