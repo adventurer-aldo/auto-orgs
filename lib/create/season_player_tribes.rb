@@ -61,7 +61,7 @@ class Sunny
 
                 @buffs = []
                 (players.size/tribes.size).times do 
-                    @buffs += Array(0..((players.size/tribes.size)-1))
+                    @buffs += Array(0..(tribes.size - 1))
                 end
                 @buffs.shuffle!
                 event.respond "It's time to swap between " + tribes.map(&:mention).join(" ") + "!"
