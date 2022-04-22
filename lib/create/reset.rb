@@ -18,6 +18,13 @@ class Sunny
         break unless HOSTS.include? event.user.id
         event.respond("You have to mention at least one role!") if event.message.role_mentions.size < 1
         break if event.message.role_mentions.size < 1
+
+        event.message.role_mentions.each do |role|
+            role.members.each do |member|
+                member.remove_role(role.id)
+            end
+        end
+        return
     end
 
 
