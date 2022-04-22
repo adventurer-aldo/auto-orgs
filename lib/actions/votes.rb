@@ -1,6 +1,6 @@
 class Sunny
 
-    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, num, *args|
+    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, *args|
         # ===========================================================================================
         # Once votes are TOTAL_ALLOWED_VOTES == SUBMITTED VOTES, then enter Lock phase.
         # Once you lock, the Bot will make tribal council by itself.
@@ -25,20 +25,27 @@ class Sunny
                 options = enemies.map(&:id)
 
 
-                number = 0
-                if num
-                    number = num[0].to_i - 1
-                    number = 0 if number > allowed_votes - 1 || number < 0
+                
+                content = ""
+                if allowed_votes > 1 && args[0]
+                    
+                    if args[0]
+                        number = args[0].to_i - 1
+                        number = 0 if number > allowed_votes - 1 || number < 0
+                    else
+                        number = 0
+                    end
+
+                    if args[1]
+                        content = args[1..args.size-1].join(' ')
+                    end
+                    
+                elsif allowed_votes < 2 && args[0]
+                    number = 0
+                    content = args.map(&:downcase).join(' ')
                 end
 
-                content = ""
-                if allowed_votes < 2 && (args[0] || num[0])
-                    content = num.to_s + ' ' + args.join(' ').to_s
-                elsif args[0] && allowed_votes > 1
-                    content = args.map(&:downcase).join(' ')
-                elsif args[0] == nil && num[0]
-                    content = num.to_s
-                else
+                if content == ""
                     text = enemies.map do |en|
                         "**#{en.id}** — #{en.name}"
                     end
