@@ -24,16 +24,6 @@ class Sunny
                 enemies.delete(nil)
                 options = enemies.map(&:id)
 
-                text = enemies.map do |en|
-                    "**#{en.id}** — #{en.name}"
-                end
-
-                event.channel.send_embed do |embed|
-                    embed.title = "Who would you like to vote?"
-                    embed.description = text.join("\n")
-                    embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
-                end
-
                 number = 0
                 if num
                     number = num[0].to_i - 1
@@ -44,6 +34,16 @@ class Sunny
                 if args
                     content = args.map(&:downcase)
                 else
+                    text = enemies.map do |en|
+                        "**#{en.id}** — #{en.name}"
+                    end
+
+                    event.channel.send_embed do |embed|
+                        embed.title = "Who would you like to vote?"
+                        embed.description = text.join("\n")
+                        embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+                    end
+
                     event.user.await!(timeout: 40) do |await|
                         content = await.message.content.downcase
                         true
