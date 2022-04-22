@@ -299,44 +299,44 @@ class Sunny
         break if !(vote_count.values.count(vote_count.values.max) > 1) 
 
         loser ||= seed
-        tribe = Tribe.find_by(id: seed.tribe)
+        tribe = Tribe.find_by(id: loser.tribe)
         if Setting.last.game_stage == 1
-            seed.update(status: 'Jury')
-            user = BOT.user(seed.user_id).on(event.server)
+            loser.update(status: 'Jury')
+            user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
             user.remove_role(964564440685101076)
             user.add_role(965717073454043268)
         else
-            seed.update(status: 'Out')
-            user = BOT.user(seed.user_id).on(event.server)
+            loser.update(status: 'Out')
+            user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
             user.remove_role(964564440685101076)
             user.add_role(965717099202904064)
         end
         council.update(stage: 5)
-        alliances = Alliance.where("#{seed.id} = ANY (players)")
+        alliances = Alliance.where("#{loser.id} = ANY (players)")
         alliances.each do |alliance|
-            alliance.update(players: alliance.players - [seed.id])
-            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: seed.tribe).role_id).members.size
+            alliance.update(players: alliance.players - [loser.id])
+            if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                 channel = BOT.channel(alliance.channel_id)
                 channel.parent = ARCHIVE
                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                 channel.permission_overwrites.each do |role, perms|
-                    unless role.id == seed.user_id
+                    unless role.id == loser.user_id
                         channel.define_overwrite(event.server.member(role), 3072, 0)
                     else
-                        channel.define_overwrite(event.server.member(seed.user_id), 0, 3072)
+                        channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
                     end
                 end
             end
         end
-        BOT.channel(seed.confessional).name = "#{rank}th-" + BOT.channel(seed.confessional).name
-        BOT.channel(seed.submissions).name = "#{rank}th-" + BOT.channel(seed.submissions).name
+        BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
+        BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
         Player.where(status: ALIVE).update(status: 'In')
 
-        break if DEAD.include? seed.status
+        break if DEAD.include? loser.status
     end
 
 end
