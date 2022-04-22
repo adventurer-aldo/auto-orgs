@@ -235,7 +235,7 @@ class Sunny
                                     Player.find_by(id: revote.player).update(status: 'Idoled')
                                 end
                                 
-                            when 3
+                            when 4
                                 event.channel.start_typing
                                 sleep(3)
                                 event.respond("We'll be drawing **ROCKS**")
@@ -288,7 +288,7 @@ class Sunny
                                             user.remove_role(964564440685101076)
                                             user.add_role(965717099202904064)
                                         end
-                                        council.update(stage: 4)
+                                        council.update(stage: 5)
                                         alliances = Alliance.where("#{seed.id} = ANY (players)")
                                         alliances.each do |alliance|
                                             alliance.update(players: alliance.players - [seed.id])
@@ -337,11 +337,11 @@ class Sunny
                             user.remove_role(964564440685101076)
                             user.add_role(965717099202904064)
                         end
-                        council.update(stage: 4)
+                        council.update(stage: 5)
                         alliances = Alliance.where("#{loser.id} = ANY (players)")
                         alliances.each do |alliance|
                             alliance.update(players: alliance.players - [loser.id])
-                            if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+                            if (Setting.last.game_stage == 0 && alliance.players.size < 4) || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                                 channel = BOT.channel(alliance.channel_id)
                                 channel.parent = ARCHIVE
                                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
