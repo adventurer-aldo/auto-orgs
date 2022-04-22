@@ -1,6 +1,6 @@
 class Sunny
 
-    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, *args|
+    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, num, *args|
         # ===========================================================================================
         # Once votes are TOTAL_ALLOWED_VOTES == SUBMITTED VOTES, then enter Lock phase.
         # Once you lock, the Bot will make tribal council by itself.
@@ -20,7 +20,7 @@ class Sunny
                 event.respond("You do not have any votes!")    
             else
                 voted = vote.votes
-                enemies = Vote.where(council: council.id).excluding(Vote.find_by(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+                enemies = Vote.where(council: council.id).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
                 enemies.delete(nil)
                 options = enemies.map(&:id)
 
@@ -34,24 +34,31 @@ class Sunny
                     embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                 end
 
-                number = args[0].to_i - 1
+                number = num[0].to_i - 1
                 number = 0 if number > allowed_votes - 1 || number < 0
 
-                event.user.await!(timeout: 40) do |await|
-                    text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? await.message.content.downcase }
-                    id_attempt = options.filter { |id| id == await.message.content.to_i }
-                    if text_attempt.size == 1
-                        @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
-                        voted[number] = @target.id
-                    elsif id_attempt.size == 1
-                        @target = Player.find_by(id: id_attempt[0])
-                        voted[number] = id_attempt[0]
-                    else
-                        await.respond("There's no single seedling that matches that.")
+                content = ""
+                if args
+                    content = args.map(&:downcase)
+                else
+                    event.user.await!(timeout: 40) do |await|
+                        content = await.message.content.downcase
+                        true
                     end
-
-                    true
                 end
+
+                text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
+                id_attempt = options.filter { |id| id == content.to_i }
+                if text_attempt.size == 1
+                    @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+                    voted[number] = @target.id
+                elsif id_attempt.size == 1
+                    @target = Player.find_by(id: id_attempt[0])
+                    voted[number] = id_attempt[0]
+                else
+                    event.respond("There's no single seedling that matches that.")
+                end
+
                 
 
                 if voted == vote.votes
