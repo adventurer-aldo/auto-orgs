@@ -12,8 +12,9 @@ class Sunny
         return "New season created!"
     end
     
-    BOT.command :player, description: "Registers the user as a new player in the current season." do |event, *args|
+    BOT.command :players, description: "Registers the user as a new player in the current season." do |event|
         break unless HOSTS.include? event.user.id
+        event.respond("You didn't mention enough players!") unless event.message.mentions.size > 0
         break unless event.message.mentions.size > 0
         event.message.mentions.each do |person|
             player =  Player.create(user_id: person.id, name: person.name, season: Setting.last.season,
@@ -33,6 +34,7 @@ class Sunny
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
             BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
         end
+        return
     end
 
     BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
