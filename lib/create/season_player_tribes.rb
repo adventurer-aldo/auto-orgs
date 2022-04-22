@@ -13,22 +13,26 @@ class Sunny
     end
     
     BOT.command :player, description: "Registers the user as a new player in the current season." do |event, *args|
-       player =  Player.create(user_id: event.user.id, name: event.user.name, season: Setting.last.season,
-       confessional: event.server.create_channel(
-        event.user.name + '-confessional',
-        parent: CONFESSIONALS,
-        topic: event.user.name + "'s Confessional. Talk to the spectators about your game here!",
-        permission_overwrites: [Discordrb::Overwrite.new(event.user.id, type: 'member', allow: 3072),
-        TRUE_SPECTATE, DENY_EVERY]).id,
-       submissions: event.server.create_channel(event.user.name + '-submissions',
-        parent: CONFESSIONALS,
-        topic: "Your Submissions channel. Submit challenge scores, check your inventory and play your items!",
-        permission_overwrites: [Discordrb::Overwrite.new(event.user.id, type: 'member', allow: 3072),
-        DENY_EVERY]).id)
+        break unless HOSTS.include? event.user.id
+        break unless event.message.mentions.size > 0
+        event.message.mentions.each do |person|
+            player =  Player.create(user_id: person.id, name: person.name, season: Setting.last.season,
+            confessional: event.server.create_channel(
+                person.name + '-confessional',
+                parent: CONFESSIONALS,
+                topic: person.name + "'s Confessional. Talk to the spectators about your game here!",
+                permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
+                TRUE_SPECTATE, DENY_EVERY]).id,
+            submissions: event.server.create_channel(person.name + '-submissions',
+                parent: CONFESSIONALS,
+                topic: "Your Submissions channel. Submit challenge scores, check your inventory and play your items!",
+                permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
+                DENY_EVERY]).id)
 
-        event.user.on(event.server).add_role(964564440685101076)
-        BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{event.user.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
-        BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
+                person.on(event.server).add_role(964564440685101076)
+            BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
+            BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
+        end
     end
 
     BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
