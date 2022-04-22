@@ -50,6 +50,9 @@ class Sunny
             event.respond("There were no matches.") if choices.size == 0
             break if choices.size == 0
 
+            event.respond("Not enough members for an alliance!") if choices.size < 3
+            break if choices.size < 3
+
             choices.map! do |choice|
                 Player.find_by(id: choice)
             end
