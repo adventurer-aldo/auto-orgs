@@ -56,6 +56,7 @@ class Sunny
             BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
             BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
             Player.where(status: ALIVE).update(status: 'In')
+            Council.all.update(status: 5)
         end
         return
     end

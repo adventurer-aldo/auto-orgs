@@ -73,7 +73,7 @@ class Sunny
                         alliance = Alliance.create(players: choices.map(&:id), channel_id: event.server.create_channel(
                             choices.map(&:name).join('-'),
                             parent: ALLIANCES,
-                            topic: "Created at F#{rank} by *#{player.name}**. | #{choices.map(&:name).join('-')}",
+                            topic: "Created at F#{rank} by **#{player.name}**. | #{choices.map(&:name).join('-')}",
                             permission_overwrites: perms
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
