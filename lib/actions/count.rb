@@ -6,6 +6,8 @@ class Sunny
         else
             Council.where(stage: 0).update(stage: 2)
         end
+        event.respond("The tribal stage has changed.")
+        return
     end
 
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
@@ -191,11 +193,11 @@ class Sunny
                             event.channel.start_typing
                             sleep(3)
                             Player.find_by(status: 'In').update(status: 'Immune')
-                            event.respond("This will be between")
+                            seeds = Player.where(status: 'Idoled')
+                            event.respond("This will be between #{seeds.map(&:name).join(', ')}")
                             event.channel.start_typing
                             sleep(3)
                             event.respond("Let's get to it!")
-                            seeds = Player.where(status: 'Idoled')
                             rocks = seeds.map { |n| 0 }
                             rocks[0] = 1
                             rocks.shuffle!
@@ -283,6 +285,7 @@ class Sunny
         Player.where(status: ALIVE).update(status: 'In')
 
         break if DEAD.include? loser.status
+        return
     end
 
 end

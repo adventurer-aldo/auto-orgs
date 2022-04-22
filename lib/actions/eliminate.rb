@@ -58,9 +58,10 @@ class Sunny
             BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
             Player.where(status: ALIVE).update(status: 'In')
         end
+        return
     end
 
-    BOT.command :rocks, description: "Quick and simple goes to rocks." do |event|
+    BOT.command :rocks, description: "Quick and simple goes to rocks." do |event, *args|
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
@@ -73,7 +74,12 @@ class Sunny
         event.respond("The Seedling that draws the purple rock will be out of the game immediately.")
         event.channel.start_typing
         sleep(3)
-        seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+        seeds = nil
+        if args.join(' ').downcase == 'in'
+            seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+        else
+            seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'Idoled') }
+        end
         event.respond("This will be between #{seeds.map(&:name).join(', ')}")
         event.channel.start_typing
         sleep(3)
@@ -136,6 +142,7 @@ class Sunny
                 Player.where(status: ALIVE).update(status: 'In')
             end
         end
+        return
     end
-
+    
 end
