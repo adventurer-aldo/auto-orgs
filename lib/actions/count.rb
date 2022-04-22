@@ -113,6 +113,10 @@ class Sunny
         event.respond("...")
         event.channel.start_typing
         sleep(2)
+        event.respond("I'll go tally the votes.")
+        sleep(10)
+        event.channel.start_typing
+        sleep(3)
         if council.stage == 2 && rank > 4
             event.respond("Now, if anyone would like to play a **Hidden Immunity Idol**...")
             event.channel.start_typing
@@ -125,6 +129,12 @@ class Sunny
             end
         end
         event.respond("Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.")
+        event.channel.start_typing
+        sleep(2)
+        event.respond("...")
+        event.channel.start_typing
+        sleep(2)
+        event.respond("...")
         all_votes = []
         counted_votes = []
         vote_count = {}
@@ -133,6 +143,7 @@ class Sunny
         voters.each do |vote|
             sub = vote.votes.map do |mapping|
                 if mapping == 0
+                    event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
                     vote.player
                 else
                     mapping

@@ -59,7 +59,7 @@ class Sunny
             event.respond("**You're about to make an alliance with #{choices.map(&:name).join(', ')}. Are you sure?**")
             event.user.await!(timeout: 70) do |await|
                 case await.message.content.downcase
-                when 'yes', 'yeah', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess'
+                when 'yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess'
                     rank = Player.where(season: Setting.last.season, status: ALIVE).size
                     begin
                         choices << player
@@ -73,7 +73,7 @@ class Sunny
                         alliance = Alliance.create(players: choices.map(&:id), channel_id: event.server.create_channel(
                             choices.map(&:name).join('-'),
                             parent: ALLIANCES,
-                            topic: "Created at F#{rank} by #{player.name}. | #{choices.map(&:name).join('-')}",
+                            topic: "Created at F#{rank} by *#{player.name}**. | #{choices.map(&:name).join('-')}",
                             permission_overwrites: perms
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
