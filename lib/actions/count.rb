@@ -25,6 +25,7 @@ class Sunny
         if council.stage > 2
             event.respond("**It's time to read the votes, once again!**")
             event.channel.start_typing
+            council.update(stage: 4)
             sleep(2)
             event.respond("Your votes can no longer be changed.")
         else
