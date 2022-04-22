@@ -60,7 +60,7 @@ class Sunny
                     rank = Player.where(season: Setting.last.season, status: ALIVE).size
                     begin
                         choices << player
-                        choices.sort_by(&:id)
+                        choices.sort_by!(&:id)
                         raise ActiveRecord::RecordNotUnique if Alliance.where(players: choices.map(&:id)).exists?
                         perms = [TRUE_SPECTATE, DENY_EVERY]
                         choices.each do |n| 
