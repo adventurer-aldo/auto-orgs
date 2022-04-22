@@ -139,8 +139,7 @@ class Sunny
             vote_count[vote.player] = 0
         end
         all_votes.shuffle!
-        majority = (Float(all_votes.size)/2.0).round
-        majority += 1 if majority % 2 == 0
+        majority = (Float(all_votes.size + 1)/2.0).round
 
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
