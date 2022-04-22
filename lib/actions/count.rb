@@ -1,7 +1,11 @@
 class Sunny
 
     BOT.command :tribal_stage, description: "Changes the Tribal Council stage to 1 (after 12h) to all those who have 0." do |event|
-        Council.where(stage: 0).update(stage: 1)
+        if [0,1].include? Setting.last.game_stage
+            Council.where(stage: 0).update(stage: 1)
+        else
+            Council.where(stage: 0).update(stage: 2)
+        end
     end
 
     BOT.command :rocks, description: "Quick and simple goes to rocks." do |event|
