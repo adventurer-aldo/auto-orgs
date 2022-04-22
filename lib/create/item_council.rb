@@ -97,8 +97,6 @@ class Sunny
 
     BOT.command :ftc, description: "Begins the Final Tribal Council." do |event|
         break unless HOSTS.include? event.user.id
-        event.respond("Mention the tribe's name!") if event.message.role_mentions.size < 1
-        break if event.message.role_mentions.size < 1
 
         finalists = Player.where(status: ALIVE, season: Setting.last.season)
         jury_all = Player.where(status: 'Jury', season: Setting.last.season)
