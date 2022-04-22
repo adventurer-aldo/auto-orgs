@@ -24,6 +24,7 @@ class Sunny
                 enemies.delete(nil)
                 options = enemies.map(&:id)
 
+
                 number = 0
                 if num
                     number = num[0].to_i - 1
@@ -31,8 +32,12 @@ class Sunny
                 end
 
                 content = ""
-                if args[0]
+                if allowed_votes < 2 && (args[0] || num[0])
+                    content = num.to_s + ' ' + args.join(' ').to_s
+                elsif args[0] && allowed_votes > 1
                     content = args.map(&:downcase).join(' ')
+                elsif args[0] == nil && num[0]
+                    content = num.to_s
                 else
                     text = enemies.map do |en|
                         "**#{en.id}** — #{en.name}"
