@@ -64,7 +64,8 @@ class Sunny
                         alliance = Alliance.create(players: choices.map(&:id), channel_id: event.server.create_channel(
                             choices.map(&:name).join('-'),
                             parent: ALLIANCES,
-                            topic: "Created at F#{rank} by #{player.name}. | #{choices.map(&:name).join('-')}"
+                            topic: "Created at F#{rank} by #{player.name}. | #{choices.map(&:name).join('-')}",
+                            permission_overwrites: [TRUE_SPECTATE, DENY_EVERY] + choices.map { |n| Discordrb::Overwrite.new(n.id, type: 'member', allow: 3072) }
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
                         event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
