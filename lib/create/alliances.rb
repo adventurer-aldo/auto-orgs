@@ -32,9 +32,12 @@ class Sunny
 
 
             choices.map do |option|
-                if option.size > 1
-                    query = options_text.filter { |n| n.include? option }.first
-                    unless query == nil
+                if option.to_i == 0
+                    query = options_text.filter { |n| n.include? option }
+                    query = query.first
+                    if query == nil
+                        nil
+                    else
                         options[options_text.index(query)]
                     end
                 else
