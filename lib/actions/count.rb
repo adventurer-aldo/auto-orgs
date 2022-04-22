@@ -86,7 +86,7 @@ class Sunny
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
-        if [1,3].include? council.stage && vote_count[all_votes[0]] + 1 != majority
+        if [1,3].include? council.stage
             event.message.delete
             event.channel.start_typing
             sleep(2)
@@ -142,7 +142,7 @@ class Sunny
             majority = (Float(voters.size)/2.0).round
 
             loop do
-                if all_votes.size > 1
+                if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
                     event.channel.start_typing
                     sleep(2)
                     event.respond(COUNTING[counted_votes.size] + ' vote...')
