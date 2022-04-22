@@ -202,17 +202,17 @@ class Sunny
                             rocks = seeds.map { |n| 0 }
                             rocks[0] = 1
                             rocks.shuffle!
-                            seeds.each do |seed|
+                            seeds.each do |seedy|
                                 event.channel.start_typing
                                 sleep(3)
-                                event.respond("#{seed.name} draws a rock...")
+                                event.respond("#{seedy.name} draws a rock...")
                                 event.channel.start_typing
                                 sleep(3)
                                 event.respond("...")
                                 event.channel.start_typing
                                 sleep(3)
-                                if rocks[seeds.index(seed)] == 0
-                                    event.respond("It's a white rock! #{seed.name} is safe.")
+                                if rocks[seeds.index(seedy)] == 0
+                                    event.respond("It's a white rock! #{seedy.name} is safe.")
                                 else
                                     event.respond("...")
                                     event.channel.start_typing
@@ -220,8 +220,10 @@ class Sunny
                                     event.respond("It's a **purple rock**.")
                                     event.channel.start_typing
                                     sleep(3)
-                                    event.respond("Unfortunately, **#{seed.name}** is now out of the game.")
+                                    event.respond("Unfortunately, **#{seedy.name}** is now out of the game.")
+                                    seed = seedy
                                 end
+                                break unless rocks[seeds.index(seedy)] == 0
                             end
                         end
                     end
@@ -241,11 +243,10 @@ class Sunny
 
 
             else
-                break
             end
             break if vote_count.values.max == majority || all_votes.size == 0
         end
-        break if vote_count.values.count(vote_count.values.max) > 1
+        break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
         loser ||= seed
         tribe = Tribe.find_by(id: loser.tribe)
