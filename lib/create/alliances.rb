@@ -61,7 +61,7 @@ class Sunny
                     begin
                         choices << player
                         choices.sort_by(&:id)
-
+                        raise ActiveRecord::RecordNotUnique if Alliance.where(players: choices.map(&:id)).exists?
                         perms = [TRUE_SPECTATE, DENY_EVERY]
                         choices.each do |n| 
                             perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) 
@@ -75,7 +75,7 @@ class Sunny
                         ).id)
                         BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
                         event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
-                    rescue PG::UniqueViolation
+                    rescue ActiveRecord::RecordNotUnique
                         event.respond("**This alliance already exists!**")
                     end
                 when 'no','nah','nop','nay','noo','nope','nuh uh','nuh','nuh-uh'
