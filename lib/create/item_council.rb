@@ -32,6 +32,10 @@ class Sunny
             end
         end
 
+        if Setting.last.game_stage == 1
+            @perms += [Discordrb::Overwrite.new(965717073454043268, allow: 1024, deny: 2048)]
+        end
+
         if @confirm.include? false
             event.respond "One or more of those tribes do not exist in the database."
             return
