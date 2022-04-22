@@ -78,7 +78,7 @@ class Sunny
 
                 
 
-                if voted == vote.votes
+                if voted == vote.votes && content != ""
                     updater.update(votes: voted)
                     event.respond("You're now voting **#{@target.name}**.")
                 else
