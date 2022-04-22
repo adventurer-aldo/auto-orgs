@@ -123,7 +123,7 @@ class Sunny
             parent: FTC,
             permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(jury.user_id, allow: 3072)] +
             finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, allow: 3072) } )
-            Vote.create(player: finalist.id, council: council.id, allowed: 1, votes: [])
+            Vote.create(player: jury.id, council: council.id, allowed: 1, votes: [])
         end
 
     end
