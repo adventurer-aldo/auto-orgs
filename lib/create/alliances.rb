@@ -31,25 +31,19 @@ class Sunny
             end
 
 
-            choices.map do |option|
+            choices.map! do |option|
                 if option.to_i == 0
                     query = options_text.filter { |n| n.include? option }
-                    puts query.to_s
-                    puts "You'ev been a naughty girl"
                     query = query.first
-                    puts query.to_s + " is very naughty."
                     if query == nil
                         nil
                     else
-                        puts "The right call is " + options[options_text.index(query)].to_s
                         options[options_text.index(query)]
                     end
                 else
                     options.filter { |n| n == option.to_i }.first
                 end
             end
-            puts "Well, all choices are..."
-            puts choices.to_s
             choices.uniq!
             choices.delete(nil)
 
