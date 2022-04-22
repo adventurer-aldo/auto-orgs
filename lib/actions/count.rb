@@ -86,7 +86,7 @@ class Sunny
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
-        if [1,3].include? council.stage
+        if [1,3].include? council.stage && vote_count[all_votes[0]] + 1 != majority
             event.message.delete
             event.channel.start_typing
             sleep(2)
@@ -223,10 +223,6 @@ class Sunny
 
                                 Player.where(season: Setting.last.season, status: 'Idoled').update(status: 'Immune')
                                 immunes = Player.where(status: 'Immune').map(&:id)
-
-                                Vote.where(council: council.id).excluding(Vote.where(player: immunes)).each do |revote|
-                                    Player.find_by(id: revote.player).update(status: 'Idoled')
-                                end
                                 
                                 vote_count.each do |k,v|
                                     if v == vote_count.values.max
@@ -235,6 +231,10 @@ class Sunny
                                         Vote.find_by(player: k, council: council.id).update(allowed: 1, votes: [0]) 
                                     end
                                 end
+                                Vote.where(council: council.id, allowed: 1).excluding(Vote.where(player: immunes)).each do |revote|
+                                    Player.find_by(id: revote.player).update(status: 'Idoled')
+                                end
+                                
                             when 3
                                 event.channel.start_typing
                                 sleep(3)

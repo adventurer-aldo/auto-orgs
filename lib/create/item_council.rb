@@ -63,10 +63,19 @@ class Sunny
             end
             channel.start_typing
             sleep(6)
-            BOT.send_message(channel.id, "Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear..." )
-            channel.start_typing
-            sleep(7)
-            BOT.send_message(channel.id, "But you can decide, as a group, which seedling should disappear. For that, you can use the `!vote` command in your submissions channel.")
+            unless Setting.last.game_stage == 0
+                BOT.send_message(channel.id, "Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear..." )
+                channel.start_typing
+                sleep(7)
+                BOT.send_message(channel.id, "But you can decide, as a group, which seedling should disappear. For that, you can use the `!vote` command in your submissions channel.")
+            else
+                BOT.send_message(channel.id, "Tonight, you'll decide who you'll want to stay on this tribe with you." )
+                channel.start_typing
+                sleep(7)
+                BOT.send_message(channel.id, "It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you can use the `!vote` command in your submissions channel.")
+
+            end
+
             channel.send_embed do |embed|
                 embed.title = "Seedlings attending Tribal Council:"
                 embed.description = players.map(&:name).join("\n")

@@ -2,7 +2,7 @@ require 'discordrb'
 
 BOT = Discordrb::Commands::CommandBot.new token: 'OTY2NDE0ODgzNzE5NjIyNzM2.YmBZ_w.sPgYSdCK2ARoIxem7iiFD9jH-BU', prefix: "s!"
 
-BOT.command :say do |event, *args|
+BOT.command :s do |event, *args|
     event.respond(args.join(' '))
 end
 
