@@ -27,13 +27,12 @@ class Sunny
 
                 
                 content = ""
+                number = 0
                 if allowed_votes > 1 && args[0]
                     
                     if args[0]
                         number = args[0].to_i - 1
                         number = 0 if number > allowed_votes - 1 || number < 0
-                    else
-                        number = 0
                     end
 
                     if args[1]
@@ -41,7 +40,6 @@ class Sunny
                     end
                     
                 elsif allowed_votes < 2 && args[0]
-                    number = 0
                     content = args.map(&:downcase).join(' ')
                 end
 
