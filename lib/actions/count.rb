@@ -91,6 +91,8 @@ class Sunny
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
         break unless [1,3].include? council.stage
+        loser = nil
+        seed = nil
         event.message.delete
         event.channel.start_typing
         sleep(2)
@@ -128,6 +130,8 @@ class Sunny
         voters.each do |vote|
             sub = vote.votes.map do |mapping|
                 if mapping == 0
+                    event.channel.start_typing
+                    sleep(2)
                     event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
                     vote.player
                 else
