@@ -33,7 +33,7 @@ class Sunny
 
             choices.map! do |option|
                 if option.to_i == 0
-                    query = options_text.filter { |n| n.include? option }
+                    query = options_text.filter { |n| n.downcase.include? option.downcase }
                     query = query.first
                     if query == nil
                         nil
