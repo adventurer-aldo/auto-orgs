@@ -272,6 +272,7 @@ class Sunny
                                     event.channel.start_typing
                                     sleep(3)
                                     event.respond("Unfortunately, **#{seed.name}** is now out of the game.")
+                                end
                             end
                         end
                     end
@@ -336,7 +337,6 @@ class Sunny
         Player.where(status: ALIVE).update(status: 'In')
 
         break if DEAD.include? seed.status
-        end
     end
 
 end
