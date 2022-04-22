@@ -117,21 +117,6 @@ class Sunny
         sleep(10)
         event.channel.start_typing
         sleep(3)
-        if council.stage == 2 && rank > 4
-            event.respond("Now, if anyone would like to play a **Hidden Immunity Idol**...")
-            event.channel.start_typing
-            sleep(2)
-            event.respond("This is the time to do it.")
-            10.times do
-                event.channel.start_typing
-                sleep(1)
-                event.respond("...")
-            end
-        end
-        event.respond("Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.")
-        event.channel.start_typing
-        sleep(2)
-        event.respond("...")
         event.channel.start_typing
         sleep(2)
         event.respond("...")
@@ -155,6 +140,26 @@ class Sunny
         end
         all_votes.shuffle!
         majority = (Float(all_votes.size + 1)/2.0).round
+        
+        if council.stage == 2 && rank > 4
+            event.channel.start_typing
+            sleep(4)
+            event.respond("Now, if anyone would like to play a **Hidden Immunity Idol**...")
+            event.channel.start_typing
+            sleep(2)
+            event.respond("This is the time to do it.")
+            10.times do
+                event.channel.start_typing
+                sleep(1)
+                event.respond("...")
+            end
+        end
+        event.channel.start_typing
+        sleep(4)
+        event.respond("Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.")
+        event.channel.start_typing
+        sleep(2)
+        event.respond("...")
 
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
