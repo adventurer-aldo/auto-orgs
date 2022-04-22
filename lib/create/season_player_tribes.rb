@@ -113,9 +113,13 @@ class Sunny
             end
                 
             if @confirm == true && @merge == true
-                File.open('./lib/setup/merge_cheers.txt', 'r') do |file|
-                    @cheers = file.readlines
-                    file.close
+                begin
+                    File.open('./lib/setup/merge_cheers.txt', 'r') do |file|
+                        @cheers = file.readlines
+                        file.close
+                    end
+                rescue Errno::ENOENT
+                    @cheers = ["%s takes a buff..."]
                 end
                 event.respond "**Merge has begun!**"
                 event.respond "Seeds that are voted off from now on will make part of the #{tribes[0].mention}"
