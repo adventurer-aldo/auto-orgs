@@ -34,8 +34,11 @@ class Sunny
                     embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                 end
 
-                number = num[0].to_i - 1
-                number = 0 if number > allowed_votes - 1 || number < 0
+                number = 0
+                if num
+                    number = num[0].to_i - 1
+                    number = 0 if number > allowed_votes - 1 || number < 0
+                end
 
                 content = ""
                 if args
