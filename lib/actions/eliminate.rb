@@ -52,6 +52,7 @@ class Sunny
                     end
                 end
             end
+            event.respond("#{loser.name} has been eliminated.")
             BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
             BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
             Player.where(status: ALIVE).update(status: 'In')
