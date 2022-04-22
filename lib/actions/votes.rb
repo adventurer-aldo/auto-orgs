@@ -31,8 +31,8 @@ class Sunny
                 end
 
                 content = ""
-                if args
-                    content = args.map(&:downcase)
+                if args[0]
+                    content = args.map(&:downcase).join(' ')
                 else
                     text = enemies.map do |en|
                         "**#{en.id}** — #{en.name}"
