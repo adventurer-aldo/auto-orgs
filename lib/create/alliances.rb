@@ -48,6 +48,8 @@ class Sunny
                     options.filter { |n| n == option.to_i }.first
                 end
             end
+            puts "Well, all choices are..."
+            puts choices.to_s
             choices.uniq!
             choices.delete(nil)
 
