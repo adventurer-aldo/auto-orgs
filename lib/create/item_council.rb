@@ -33,7 +33,7 @@ class Sunny
         end
 
         if Setting.last.game_stage == 1
-            @perms += [Discordrb::Overwrite.new(965717073454043268, allow: 1024, deny: 2048)]
+            @perms += [JURY_SPECTATE]
         end
 
         if @confirm.include? false
@@ -93,6 +93,41 @@ class Sunny
             sleep(1)
             BOT.send_message(channel.id, "Good luck!")
         end
+    end
+
+    BOT.command :ftc, description: "Begins the Final Tribal Council." do |event|
+        break unless HOSTS.include? event.user.id
+        event.respond("Mention the tribe's name!") if event.message.role_mentions.size < 1
+        break if event.message.role_mentions.size < 1
+
+        finalists = Player.where(status: ALIVE, season: Setting.last.season)
+        jury_all = Player.where(status: 'Jury', season: Setting.last.season)
+
+        Setting.last.game_stage = 2
+        council = Council.create(tribe: finalists.first.tribe, channel_id: event.server.create_channel(
+            "final-tribal-council",
+            topic: "The last time we'll read the votes during this season of Maskvivor.",
+            parent: FTC,
+            permission_overwrites: [DENY_EVERY, TRUE_SPECTATE]
+        ).id)
+
+        finalists.each do |finalist|
+            event.server.create_channel(finalist.name + '-speech',
+            topic: "This is where #{finalist.name} will present a case to win the game.",
+            parent: FTC,
+            permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(finalist.user_id, allow: 3072)])
+            Vote.create(player: finalist.id, council: council.id, allowed: 0, votes: [])
+        end
+        
+        jury_all.each do |jury|
+            event.server.create_channel(jury.name + '-questions',
+            topic: "#{jury.name} will be asking questions here, where the finalists will be able to clarify them.",
+            parent: FTC,
+            permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(jury.user_id, allow: 3072)] +
+            finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, allow: 3072) } )
+            Vote.create(player: finalist.id, council: council.id, allowed: 1, votes: [])
+        end
+
     end
 
 end

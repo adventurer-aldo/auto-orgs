@@ -21,14 +21,14 @@ class Sunny
             loser = @target
             tribe = Tribe.find_by(id: loser.tribe)
             if Setting.last.game_stage == 1
-                loser.update(status: 'Jury')
+                loser.update(status: 'Jury', inventory: [])
                 user = BOT.user(loser.user_id).on(event.server)
                 
                 user.remove_role(tribe.role_id)
                 user.remove_role(964564440685101076)
                 user.add_role(965717073454043268)
             else
-                loser.update(status: 'Out')
+                loser.update(status: 'Out', inventory: [])
                 user = BOT.user(loser.user_id).on(event.server)
                 
                 user.remove_role(tribe.role_id)
@@ -39,7 +39,7 @@ class Sunny
             alliances = Alliance.where("#{loser.id} = ANY (players)")
             alliances.each do |alliance|
                 alliance.update(players: alliance.players - [loser.id])
-                if alliance.players.size < 3 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+                if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                     channel = BOT.channel(alliance.channel_id)
                     channel.parent = ARCHIVE
                     BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
@@ -52,6 +52,7 @@ class Sunny
                     end
                 end
             end
+            rank = Player.where(season: Setting.last.season, status: ALIVE).size
             event.respond("#{loser.name} has been eliminated.")
             BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
             BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
