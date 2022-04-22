@@ -24,7 +24,7 @@ class Sunny
                     embed.color = event.server.role(tribe.role_id).color
                 end
                 event.user.await!(timeout: 100) do |await|
-                    choices = await.message.content.split
+                    choices = await.message.content.split(' ')
                     true
                 end
 
@@ -34,6 +34,8 @@ class Sunny
             choices.map do |option|
                 if option.to_i == 0
                     query = options_text.filter { |n| n.include? option }
+                    puts query.to_s
+                    puts "You'ev been a naughty girl"
                     query = query.first
                     if query == nil
                         nil
