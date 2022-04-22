@@ -119,7 +119,7 @@ class Sunny
         end
         
         jury_all.each do |jury|
-            perms = finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, allow: 3072) }
+            perms = finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072) }
             perms += [EVERY_SPECTATE, Discordrb::Overwrite.new(jury.user_id, type: 'member', allow: 3072)]
             channel = event.server.create_channel(jury.name + '-questions',
             topic: "#{jury.name} will be asking questions here, where the finalists will be able to clarify them.",
