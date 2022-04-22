@@ -109,7 +109,7 @@ class Sunny
         event.respond("...")
         event.channel.start_typing
         sleep(2)
-        if council.stage == 2
+        if council.stage == 2 && rank > 4
             event.respond("Now, if anyone would like to play a **Hidden Immunity Idol**...")
             event.channel.start_typing
             sleep(2)
@@ -139,7 +139,8 @@ class Sunny
             vote_count[vote.player] = 0
         end
         all_votes.shuffle!
-        majority = (Float(voters.size)/2.0).round
+        majority = (Float(all_votes.size)/2.0).round
+        majority += 1 if majority % 2 == 0
 
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
@@ -186,7 +187,7 @@ class Sunny
                 if Setting.last.game_stage == 0
                     event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Maskvivor is...**")
                 elsif Setting.last.game_stage == 1
-                    event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size]} member of the Jury is...**")
+                    event.respond("**#{COUNTING[total - rank]} seedling eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
                 else
                     event.respond("**THE #{event.server.role(966730313537581076).mention} OF MASKVIVOR S1 VEGGIE SQUADS IS...**")
                 end
