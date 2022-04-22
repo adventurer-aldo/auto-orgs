@@ -110,20 +110,22 @@ class Sunny
         ).id)
 
         finalists.each do |finalist|
-            event.server.create_channel(finalist.name + '-speech',
+            channel = event.server.create_channel(finalist.name + '-speech',
             topic: "This is where #{finalist.name} will present a case to win the game.",
             parent: FTC,
             permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(finalist.user_id, allow: 3072)])
             Vote.create(player: finalist.id, council: council.id, allowed: 0, votes: [])
+            channel.send_message("#{BOT.user(finalist.user_id).mention}")
         end
         
         jury_all.each do |jury|
-            event.server.create_channel(jury.name + '-questions',
+            channel = event.server.create_channel(jury.name + '-questions',
             topic: "#{jury.name} will be asking questions here, where the finalists will be able to clarify them.",
             parent: FTC,
             permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(jury.user_id, allow: 3072)] +
             finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, allow: 3072) } )
             Vote.create(player: jury.id, council: council.id, allowed: 1, votes: [])
+            channel.send_message("#{BOT.user(jury.user_id).mention}")
         end
 
     end
