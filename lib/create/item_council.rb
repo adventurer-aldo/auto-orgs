@@ -67,7 +67,7 @@ class Sunny
             end
             channel.start_typing
             sleep(6)
-            unless Setting.last.game_stage == 0
+            if Setting.last.game_stage == 0
                 BOT.send_message(channel.id, "Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear..." )
                 channel.start_typing
                 sleep(7)
