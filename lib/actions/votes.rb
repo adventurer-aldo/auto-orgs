@@ -73,12 +73,12 @@ class Sunny
                     puts @target.name + " is target"
                     voted[number] = id_attempt[0]
                 else
-                    event.respond("There's no single seedling that matches that.")
+                    event.respond("There's no single seedling that matches that.") unless content == ''
                 end
 
                 
 
-                if voted == vote.votes && content != ""
+                if voted == vote.votes && content != ''
                     updater.update(votes: voted)
                     event.respond("You're now voting **#{@target.name}**.")
                 else
