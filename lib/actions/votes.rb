@@ -8,12 +8,16 @@ class Sunny
         # you need to rethink of something.
         player = nil
 
+        break unless event.user.id.player?
+
         if [0,1].include? Setting.last.game_stage
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+            puts "So you're a Player"
         else
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
+            puts "So you're a Jury"
         end
-        
+
         vote = Vote.where(player: player.id)
         council = Council.where(id: vote.map(&:council), stage: [0,1])
         if vote.exists? && council.exists?
