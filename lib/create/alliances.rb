@@ -37,9 +37,11 @@ class Sunny
                     puts query.to_s
                     puts "You'ev been a naughty girl"
                     query = query.first
+                    puts query.to_s + " is very naughty."
                     if query == nil
                         nil
                     else
+                        puts "The right call is " + options[options_text.index(query)].to_s
                         options[options_text.index(query)]
                     end
                 else
