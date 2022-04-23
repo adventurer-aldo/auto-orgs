@@ -128,7 +128,7 @@ class Sunny
             Vote.create(player: jury.id, council: council.id, allowed: 1, votes: [])
             channel.send_message("#{BOT.user(jury.user_id).mention}")
         end
-
+        return
     end
 
 end

@@ -23,6 +23,7 @@ class Sunny
             role.members.each do |member|
                 member.remove_role(role.id)
             end
+            event.respond("The #{role.mention} role has been removed from all its members.")
         end
         return
     end
