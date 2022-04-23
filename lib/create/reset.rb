@@ -14,6 +14,11 @@ class Sunny
         return "All Data has been destroyed successfuly!"
     end
 
-
+    BOT.command :prune, description: "Cleans up a channel." do |event|
+        event.channel.messages.each do |message|
+            message.delete
+        end
+        return "#{event.channel.messages.size} messages deleted."
+    end
 
 end

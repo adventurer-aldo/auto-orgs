@@ -36,7 +36,7 @@ class Sunny
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
             BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
         end
-        return
+        return "The cast has been selected!"
     end
 
     BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
@@ -83,7 +83,7 @@ class Sunny
                 puts @buffs.to_s
                 players.each do |player|
                     event.channel.start_typing
-                    sleep(2)
+                    sleep(3)
                     event.respond "**#{player.name} takes a buff...**"
                     rand = @buffs.sample
                     puts rand.to_s
@@ -97,10 +97,7 @@ class Sunny
                     @buffs.delete_at(@buffs.index(rand))
                     event.channel.start_typing
                     sleep(2)
-                    event.respond "..."
-                    event.channel.start_typing
-                    sleep(2)
-                    event.respond "..."
+                    event.respond "."
                 end
 
                 players.each do |player|
@@ -147,6 +144,7 @@ class Sunny
                 tribes.each do |tribe|
                     # Voice
                     #event.server.create_channel(tribe.name,2,
+                    #parent: TRIBES,
                     #permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
                     #Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
                     chan = event.server.create_channel(tribe.name + '-camp',
