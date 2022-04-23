@@ -31,6 +31,8 @@ class Sunny
                 DENY_EVERY]).id)
 
                 person.on(event.server).add_role(964564440685101076)
+                person.on(event.server).remove_role(963454772189470720)
+                person.on(event.server).remove_role(963454509269532752)
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
             BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
         end

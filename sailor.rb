@@ -1,3 +1,5 @@
+require 'discordrb'
+
 class Sailor
     BOT = Discordrb::Commands::CommandBot.new token: 'OTY2NDE0ODgzNzE5NjIyNzM2.YmBZ_w.sPgYSdCK2ARoIxem7iiFD9jH-BU', prefix: "s!"
 

@@ -1,3 +1,5 @@
+require 'discordrb'
+
 class Petra
     BOT = Discordrb::Commands::CommandBot.new token: 'OTY2NDEzMzM3NzM2OTI5Mjgx.YmBYjg.9nRivsLnlLHG9xE7vNxOZsjoH3E', prefix: "p!"
 
