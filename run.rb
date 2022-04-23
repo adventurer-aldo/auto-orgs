@@ -24,5 +24,9 @@ require_relative 'sailor'
 require_relative 'augur'
 require_all 'lib'
 
+Augur.run
+Donovan.run
+Petra.run
+Sailor.run
 Sunny.run
 

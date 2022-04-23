@@ -15,5 +15,3 @@ class Sailor
         BOT.run(true)
     end
 end
-
-Sailor.run

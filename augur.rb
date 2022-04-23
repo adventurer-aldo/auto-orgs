@@ -16,4 +16,3 @@ class Augur
     end
 end
 
-Augur.run

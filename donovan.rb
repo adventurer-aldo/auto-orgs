@@ -15,5 +15,3 @@ class Donovan
         BOT.run(true)
     end
 end
-
-Donovan.run

@@ -15,5 +15,3 @@ class Petra
         BOT.run(true)
     end
 end
-
-Petra.run
