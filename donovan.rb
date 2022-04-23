@@ -15,3 +15,5 @@ class Donovan
         BOT.run :async
     end
 end
+
+Donovan.run

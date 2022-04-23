@@ -15,3 +15,4 @@ class Sailor
         BOT.run :async
     end
 end
+Sailor.run

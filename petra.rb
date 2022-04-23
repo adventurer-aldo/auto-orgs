@@ -15,3 +15,4 @@ class Petra
         BOT.run :async
     end
 end
+Petra.run
