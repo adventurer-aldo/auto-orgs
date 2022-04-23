@@ -252,7 +252,7 @@ class Sunny
         break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
         loser ||= seed
-        event.channel.define_overwrite(loser.user_id, 3072, 0)
+        event.channel.define_overwrite(event.server.member(loser.user_id), 3072, 0)
         eliminate(loser, event)
         council.update(stage: 5)
 
