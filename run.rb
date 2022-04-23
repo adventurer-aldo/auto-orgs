@@ -20,9 +20,5 @@ ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
 require_relative 'settings'
 require_all 'lib'
 
-Augur.run
-Donovan.run
-Petra.run
-Sailor.run
 Sunny.run
 
