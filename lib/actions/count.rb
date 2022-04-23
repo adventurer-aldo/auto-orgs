@@ -249,8 +249,8 @@ class Sunny
         break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
         loser ||= seed
-        council.update(stage: 5)
         eliminate(loser, event)
+        council.update(stage: 5)
 
         break if DEAD.include? loser.status
         return

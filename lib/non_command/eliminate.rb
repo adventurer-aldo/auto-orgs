@@ -1,6 +1,6 @@
 class Sunny
 
-    def eliminate(loser,event)
+    def self.eliminate(loser,event)
         tribe = Tribe.find_by(id: loser.tribe)
         if Setting.last.game_stage == 1
             loser.update(status: 'Jury', inventory: [])
