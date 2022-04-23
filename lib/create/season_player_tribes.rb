@@ -16,7 +16,15 @@ class Sunny
         break unless HOSTS.include? event.user.id
         event.respond("You didn't mention enough players!") unless event.message.mentions.size > 0
         break unless event.message.mentions.size > 0
-        event.message.mentions.each do |person|
+
+        cast = nil
+        if event.message.role_mentions.size > 0
+            cast = event.message.role_mentions.first.members
+        else
+            cast = event.message.mentions
+        end
+        
+        cast.each do |person|
             player =  Player.create(user_id: person.id, name: person.name, season: Setting.last.season,
             confessional: event.server.create_channel(
                 person.name + '-confessional',
