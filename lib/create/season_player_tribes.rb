@@ -95,7 +95,12 @@ class Sunny
                     event.respond "**Tribe #{tribes[rand].mention}!**"
                     player.update(tribe: Tribe.find_by(role_id: tribes[rand].id).id)
                     @buffs.delete_at(@buffs.index(rand))
+                    event.channel.start_typing
                     sleep(2)
+                    event.respond "..."
+                    event.channel.start_typing
+                    sleep(2)
+                    event.respond "..."
                 end
 
                 players.each do |player|

@@ -14,19 +14,6 @@ class Sunny
         return "All Data has been destroyed successfuly!"
     end
 
-    BOT.command :remove, description: "Removes a role from all its members." do |event|
-        break unless HOSTS.include? event.user.id
-        event.respond("You have to mention at least one role!") if event.message.role_mentions.size < 1
-        break if event.message.role_mentions.size < 1
-
-        event.message.role_mentions.each do |role|
-            role.members.each do |member|
-                member.remove_role(role.id)
-            end
-            event.respond("The #{role.mention} role has been removed from all its members.")
-        end
-        return
-    end
 
 
 end
