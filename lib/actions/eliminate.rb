@@ -32,6 +32,7 @@ class Sunny
         council = Council.find_by(channel_id: event.channel.id)
         break if council.id == nil
         rank = Player.where(season: Setting.last.season, status: ALIVE).size
+
         event.message.delete
         event.channel.start_typing
         sleep(3)
@@ -41,12 +42,17 @@ class Sunny
         event.respond("The Seedling that draws the purple rock will be out of the game immediately.")
         event.channel.start_typing
         sleep(3)
+
         seeds = nil
+        stat = nil
         if args.join(' ').downcase == 'in'
-            seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+            stat = 'In'
         else
-            seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'Idoled') }
+            stat = 'Idoled'
         end
+
+        seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat) }
+        
         event.respond("This will be between #{seeds.map(&:name).join(', ')}")
         event.channel.start_typing
         sleep(3)
@@ -73,39 +79,7 @@ class Sunny
                 event.respond("It's a **purple rock**.")
                 event.channel.start_typing
                 sleep(3)
-                event.respond("Unfortunately, **#{seed.name}** is now out of the game.")
-                tribe = Tribe.find_by(id: seed.tribe)
-                if Setting.last.game_stage == 1
-                    seed.update(status: 'Jury')
-                    user = BOT.user(seed.user_id).on(event.server)
-                    
-                    user.remove_role(tribe.role_id)
-                    user.remove_role(964564440685101076)
-                    user.add_role(965717073454043268)
-                else
-                    seed.update(status: 'Out')
-                    user = BOT.user(seed.user_id).on(event.server)
-                    
-                    user.remove_role(tribe.role_id)
-                    user.remove_role(964564440685101076)
-                    user.add_role(965717099202904064)
-                end
-                council.update(stage: 5)
-                alliances = Alliance.where("#{seed.id} = ANY (players)")
-                alliances.each do |alliance|
-                    alliance.update(players: alliance.players - [seed.id])
-                    if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: seed.tribe).role_id).members.size
-                        channel = BOT.channel(alliance.channel_id)
-                        channel.parent = ARCHIVE
-                        BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
-                        channel.permission_overwrites.each do |role, perms|
-                            channel.define_overwrite(event.server.member(seed.user_id), 0, 3072)
-                        end
-                    end
-                end
-                BOT.channel(seed.confessional).name = "#{rank}th-" + BOT.channel(seed.confessional).name
-                BOT.channel(seed.submissions).name = "#{rank}th-" + BOT.channel(seed.submissions).name
-                Player.where(status: ALIVE).update(status: 'In')
+                eliminate(seed,event)
             end
         end
         return
