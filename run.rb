@@ -18,10 +18,6 @@ end
 
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
 require_relative 'settings'
-require_relative 'petra'
-require_relative 'donovan'
-require_relative 'sailor'
-require_relative 'augur'
 require_all 'lib'
 
 Augur.run
