@@ -18,6 +18,9 @@ class Sunny
         loser = nil
         seed = nil
         event.message.delete
+        roles = council.tribe.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
+        roles << event.server.role(965589333690179618)
+        event.respond("#{roles.map(&:mention).join(' ')}")
         event.channel.start_typing
         sleep(2)
         rank = Player.where(season: Setting.last.season, status: ALIVE).size
