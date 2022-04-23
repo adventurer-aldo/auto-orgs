@@ -23,7 +23,7 @@ class Sunny
         else
             cast = event.message.mentions
         end
-        
+
         cast.each do |person|
             player =  Player.create(user_id: person.id, name: person.name, season: Setting.last.season,
             confessional: event.server.create_channel(
@@ -142,8 +142,13 @@ class Sunny
                 rescue Errno::ENOENT
                     @cheers = ["%s takes a buff..."]
                 end
+                event.channel.start_typing
+                sleep(3)
                 event.respond "**Merge has begun!**"
+                event.channel.start_typing
+                sleep(6)
                 event.respond "Seeds that are voted off from now on will make part of the #{tribes[0].mention}"
+                event.channel.start_typing
                 sleep(5)
                 event.respond "Welcome your last partners and/or foes in the last stage of the game!"
 
@@ -173,6 +178,8 @@ class Sunny
                 players.each do |player|
                     player.update(tribe: Tribe.find_by(role_id: tribes[0].id).id)
                     BOT.user(player.user_id).on(event.server).add_role(Tribe.find_by(id: player.tribe).role_id)
+                    event.channel.start_typing
+                    sleep(3)
                     event.respond sprintf(@cheers.sample, BOT.user(player.user_id).mention)
                     sleep(3)
                 end
