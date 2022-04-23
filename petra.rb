@@ -11,6 +11,7 @@ class Petra
     end
 
     def self.run
+        puts "Running Petra"
         BOT.run(true)
     end
 end

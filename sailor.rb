@@ -11,6 +11,7 @@ class Sailor
     end
 
     def self.run
+        puts "Running Sailor"
         BOT.run(true)
     end
 end

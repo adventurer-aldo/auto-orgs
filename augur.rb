@@ -11,6 +11,7 @@ class Augur
     end
 
     def self.run
+        puts "Running Augur"
         BOT.run(true)
     end
 end

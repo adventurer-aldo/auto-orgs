@@ -11,6 +11,7 @@ class Donovan
     end
 
     def self.run
+        puts "Running Donovan"
         BOT.run(true)
     end
 end

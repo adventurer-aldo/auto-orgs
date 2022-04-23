@@ -11,6 +11,7 @@ class Sunny
 
     def self.run
         BOT.run
+        puts "Sunny Go!"
     end
 
 end
