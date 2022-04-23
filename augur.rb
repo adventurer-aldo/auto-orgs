@@ -12,7 +12,7 @@ class Augur
 
     def self.run
         puts "Running Augur"
-        BOT.run(true)
+        BOT.run :async
     end
 end
 
