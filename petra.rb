@@ -14,7 +14,7 @@ class Petra
 
     def self.run
         puts "Running Petra"
-        BOT.run :async
+        BOT.run
     end
 end
 Petra.run

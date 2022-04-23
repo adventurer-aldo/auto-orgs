@@ -78,7 +78,7 @@ class Sunny
                 event.respond "Come and take your buffs, veggies!"
                 event.channel.start_typing
                 sleep(2)
-                players.shuffle!
+                players = players.shuffle
                 event.respond "First up, #{players[0].name}. Come here!"
                 puts @buffs.to_s
                 players.each do |player|

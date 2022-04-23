@@ -14,7 +14,7 @@ class Donovan
 
     def self.run
         puts "Running Donovan"
-        BOT.run :async
+        BOT.run
     end
 end
 

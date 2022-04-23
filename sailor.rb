@@ -14,7 +14,7 @@ class Sailor
 
     def self.run
         puts "Running Sailor"
-        BOT.run :async
+        BOT.run
     end
 end
 Sailor.run
