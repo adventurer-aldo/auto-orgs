@@ -23,7 +23,7 @@ class Sunny
             unless Tribe.where(role_id: tribe.id).exists?
                 @confirm << false
             else
-                if Setting.last.tribes.include? Tribe.find_by(role_id: tribe.id).id
+                if Setting.last.tribes.include? Tribe.find_by(role_id: tribe.id, season: Setting.last.season).id
                     @tribe += [Tribe.find_by(role_id: tribe.id).id]
                     @perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
                 else
