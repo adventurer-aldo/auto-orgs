@@ -15,10 +15,8 @@ class Sunny
     end
 
     BOT.command :prune, description: "Cleans up a channel." do |event|
-        event.channel.messages.each do |message|
-            message.delete
-        end
-        return "#{event.channel.messages.size} messages deleted."
+        event.channel.prune(100)
+        return
     end
 
 end
