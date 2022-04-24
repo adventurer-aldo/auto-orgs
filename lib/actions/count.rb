@@ -19,7 +19,7 @@ class Sunny
         seed = nil
         event.message.delete
         roles = council.tribe.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
-        roles << event.server.role(965589333690179618)
+        roles << event.server.role(TRIBAL_PING)
         event.respond("#{roles.map(&:mention).join(' ')}")
         event.channel.start_typing
         sleep(2)

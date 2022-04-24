@@ -7,15 +7,15 @@ class Sunny
             user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
-            user.remove_role(964564440685101076)
-            user.add_role(965717073454043268)
+            user.remove_role(CASTAWAY)
+            user.add_role(JURY)
         else
             loser.update(status: 'Out', inventory: [])
             user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
-            user.remove_role(964564440685101076)
-            user.add_role(965717099202904064)
+            user.remove_role(CASTAWAY)
+            user.add_role(PREJURY)
         end
 
         alliances = Alliance.where("#{loser.id} = ANY (players)")

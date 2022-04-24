@@ -4,7 +4,19 @@ class Sunny
 
     BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
         break unless HOSTS.include? event.user.id
-        return "Not implemented yet."
+        event.respond "What is the type?"
+        type = event.user.await!(timeout: 40).message.content.downcase
+
+        event.respond("That's not immediate or queue...") unless %Q(i q).include? type
+        break unless %Q(i q).include? type
+
+        case type
+        when 'i'
+            type = 'Immediate'
+        when 'q'
+            type = 'Queue'
+        end
+        
     end
 
     BOT.command :council, description: "Creates a new Tribal Council channel and sets up everything related to." do |event|
@@ -17,7 +29,7 @@ class Sunny
 
         @tribe = []
         @confirm = []
-        @perms = [TRUE_SPECTATE, DENY_EVERY]
+        @perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
         @cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
         tribes.each do |tribe|
             unless Tribe.where(role_id: tribe.id).exists?
@@ -56,7 +68,7 @@ class Sunny
                 if jury.size > 0
                     channel.start_typing
                     sleep(4)
-                    BOT.send_message(channel.id, "**And welcome to the members of our" + event.server.role(965717073454043268).mention + ":**")
+                    BOT.send_message(channel.id, "**And welcome to the members of our" + event.server.role(JURY).mention + ":**")
                     channel.start_typing
                     sleep(2)
                     BOT.send_message(channel.id, "**" + jury.map(&:name).join("\n") + "**")
@@ -106,7 +118,7 @@ class Sunny
             "final-tribal-council",
             topic: "The last time we'll read the votes during this season of Maskvivor.",
             parent: FTC,
-            permission_overwrites: [DENY_EVERY, TRUE_SPECTATE]
+            permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
         ).id)
 
         finalists.each do |finalist|

@@ -31,16 +31,16 @@ class Sunny
                 parent: CONFESSIONALS,
                 topic: person.name + "'s Confessional. Talk to the spectators about your game here!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
-                TRUE_SPECTATE, DENY_EVERY]).id,
+                TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
             submissions: event.server.create_channel(person.name + '-submissions',
                 parent: CONFESSIONALS,
                 topic: "Your Submissions channel. Submit challenge scores, check your inventory and play your items!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
-                DENY_EVERY]).id)
+                DENY_EVERY_SPECTATE]).id)
 
-                person.on(event.server).add_role(964564440685101076)
-                person.on(event.server).remove_role(963454772189470720)
-                person.on(event.server).remove_role(963454509269532752)
+                person.on(event.server).add_role(CASTAWAY)
+                person.on(event.server).remove_role(SPECTATOR)
+                person.on(event.server).remove_role(TRUSTED_SPECTATOR)
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
             BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
         end
@@ -64,7 +64,7 @@ class Sunny
                     chan = event.server.create_channel(tribe.name + '-camp',
                     parent: TRIBES,
                     topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
-                    permission_overwrites: [TRUE_SPECTATE, DENY_EVERY,
+                    permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
                     Discordrb::Overwrite.new(tribe.id, allow: 3072)])
                     chan.send_message("Welcome to your new camp, #{tribe.mention}!\nHope you have fun!")
 
@@ -147,7 +147,7 @@ class Sunny
                 event.respond "**Merge has begun!**"
                 event.channel.start_typing
                 sleep(6)
-                event.respond "Seeds that are voted off from now on will make part of the #{tribes[0].mention}"
+                event.respond "Seeds that are voted off from now on will make part of the #{event.server.role(JURY).mention}"
                 event.channel.start_typing
                 sleep(5)
                 event.respond "Welcome your last partners and/or foes in the last stage of the game!"
@@ -163,7 +163,7 @@ class Sunny
                     chan = event.server.create_channel(tribe.name + '-camp',
                     parent: TRIBES,
                     topic: tribe.name + "'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
-                    permission_overwrites: [TRUE_SPECTATE, DENY_EVERY,
+                    permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
                     Discordrb::Overwrite.new(tribe.id, allow: 3072)])
 
                     chan.send_message("Welcome to your new camp, #{tribe.mention}!\nHope you have fun!")

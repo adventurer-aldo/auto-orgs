@@ -65,7 +65,7 @@ class Sunny
                         choices << player
                         choices.sort_by!(&:id)
                         raise ActiveRecord::RecordNotUnique if Alliance.where(players: choices.map(&:id)).exists?
-                        perms = [TRUE_SPECTATE, DENY_EVERY]
+                        perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE]
                         choices.each do |n| 
                             perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) 
                         end
