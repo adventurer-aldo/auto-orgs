@@ -35,7 +35,7 @@ class Sunny
         
         event.respond("**What's the name?**")
         name = event.user.await!(timeout: 70).message.content
-
+        
         event.respond("**What's the description?**")
         description = event.user.await!(timeout: 80).message.content
 
