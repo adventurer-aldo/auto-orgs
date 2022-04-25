@@ -92,7 +92,6 @@ class Sunny
                     items.each do |item|
                         owner = Player.find_by(id: item.owner, status: ALIVE)
                         targets = item.targets.map { |n| Player.find_by(id: n), status: ALIVE }
-                        next if owner == nil || targets.include? nil 
 
                         item.update(owner: 0, targets: [])
                         event.channel.start_typing
