@@ -73,7 +73,7 @@ class Sunny
                 id_attempt = options.filter { |id| id == content.to_i }
                 if text_attempt.size == 1
                     target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
-                    voted[number] = @target.id
+                    voted[number] = target.id
                 elsif id_attempt.size == 1
                     target = Player.find_by(id: id_attempt[0])
                     voted[number] = id_attempt[0]
