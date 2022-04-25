@@ -26,10 +26,30 @@ class Sunny
 
         @items.each do |item|
             BOT.command item.code.to_sym do |event|
+                break unless event.user.id.player?
+                player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+                break unless ['In','Immune','Idoled','Exiled'].include? player.status
                 if item.owner == nil
+                    event.channel.start_typing
+                    sleep(2)
                     event.respond("**You found an item!**")
+                    event.channel.start_typing
+                    sleep(4)
+                    BOT.channel(player.submissions).send_embed do |embed|
+                        embed.title = item.name
+                        embed.description = "**Description:** #{item.description}\n"
+                        embed.description << "\n**Code:** `#{item.code}`"
+                        embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: "You can play it with `!play #{item.code}` or give it to someone else with `!give #{item.code}`")
+                        embed.color = event.server.role(TRIBAL_PING).color
+                    end
+                    item.update(owner: player.id)
                 else
-                    event.respond("But it was already found by someone else before...")
+                    event.channel.start_typing
+                    sleep(2)
+                    event.respond("**You found an item!**")
+                    event.channel.start_typing
+                    sleep(2)
+                    event.respond("But it was already found by someone else already...")
                 end
             end
         end

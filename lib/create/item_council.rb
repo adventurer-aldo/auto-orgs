@@ -42,6 +42,10 @@ class Sunny
         event.respond("**And lastly, what will be the code?**")
         code = event.user.await!(timeout: 50).message.content.gsub(' ','_')
 
+        condition = Item.where(code: code, season: Setting.last.season).exists?
+
+        event.respond("An item with this code already exists!") if condition == true
+        break if condition == true
 
         item = Item.create(code: code, name: name, description: description, timing: type, functions: functions, season: Setting.last.season)
         make_item_commands
