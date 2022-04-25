@@ -76,9 +76,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
             council = Council.where(season: Setting.last.season, stage: [0,1]).last
             enemies = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
-            enemies = enemies.filter {|n| n.status == 'In' }
-
-            enemies << player
+            enemies << player unless player.status == 'Immune'
+            enemies.delete(nil)
 
             text = enemies.map do |en|
                 "**#{en.id}** — #{en.name}"
