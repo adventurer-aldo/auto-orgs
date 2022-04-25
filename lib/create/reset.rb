@@ -19,6 +19,22 @@ class Sunny
         event.channel.prune(100)
         return
     end
+    
+
+    def self.make_item_commands
+        @items = Item.where(season: Setting.last.season)
+
+        @items.each do |item|
+            BOT.command item.code.to_sym do |event|
+                if item.owner == nil
+                    event.respond("**You found an item!**")
+                else
+                    event.respond("But it was already found by someone else before...")
+                end
+            end
+        end
+    
+    end
 
     BOT.command :update, description: "Updates the item list so that new codes can be found." do |event|
         break unless HOSTS.include? event.user.id

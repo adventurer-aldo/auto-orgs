@@ -64,19 +64,4 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
     end
 
-    def self.make_item_commands
-        @items = Item.where(season: Setting.last.season)
-
-        @items.each do |item|
-            BOT.command item.code.to_sym do |event|
-                if item.owner == nil
-                    event.respond("**You found an item!**")
-                else
-                    event.respond("But it was already found by someone else before...")
-                end
-            end
-        end
-    
-    end
-
 end
