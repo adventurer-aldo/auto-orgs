@@ -113,7 +113,7 @@ class Sunny
                 all_votes.delete_at(0)
                 event.channel.start_typing
                 sleep(2)
-                if vote_count.values.count(vote_count.values.max) > 1
+                if vote_count.values.count(vote_count.values.max) > 1 || counted_votes.size % 4 == 0
                     revel = []
                     vote_count.each do |k,v|
                         if v == 1
