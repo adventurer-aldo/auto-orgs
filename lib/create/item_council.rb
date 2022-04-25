@@ -143,6 +143,19 @@ class Sunny
             end
             channel.start_typing
             sleep(1)
+            voters = Vote.where(council: council.id).map { |vote| Player.find_by(id: vote.player) }
+            immunes = []
+            voters.each do |player|
+                if player.status == 'Immune'
+                    immunes << player
+                end
+
+            end
+
+            unless immunes == []
+                event.respond("Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
+            end
+            
             BOT.send_message(channel.id, "Good luck!")
         end
     end

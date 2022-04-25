@@ -80,10 +80,28 @@ class Sunny
             event.channel.start_typing
             sleep(3)
             event.respond("This is the time to do it.")
-            10.times do
+            3.times do
                 event.channel.start_typing
-                sleep(1)
+                sleep(5)
                 event.respond("...")
+            end
+
+            7.times do
+                items = Item.where(season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
+                if items.exists?
+                    items.each do |item|
+                        owner = Player.find_by(id: item.owner, status: ALIVE)
+                        targets = item.targets.map { |n| Player.find_by(id: n), status: ALIVE }
+                        next if owner == nil || targets.include? nil 
+
+                        event.channel.start_typing
+                        sleep(2)
+                        event.respond("**#{owner.name} stands!**")
+                        event.channel.start_typing
+                        sleep(2)
+                        event.respond("*I'd like to play this on **#{targets.map(&:name).join('**, **')}**")
+                    end
+                end
             end
         end
         event.channel.start_typing
@@ -184,6 +202,7 @@ class Sunny
                             Vote.where(council: council.id, allowed: 1).excluding(Vote.where(player: immunes)).each do |revote|
                                 Player.find_by(id: revote.player).update(status: 'Idoled')
                             end
+                            event.respond("**Vote between **#{Vote.where(council: council.id, allowed: 0).map { |n| Player.find_by(id: n.player).name}.join('** or **')}**.\nLet's get to it!**")
                             
                         when 4
                             event.channel.start_typing

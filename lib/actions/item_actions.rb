@@ -14,6 +14,9 @@ class Sunny
 
         item = item.first
 
+        event.respond("You've cancelled playing **#{item.name}**.") unless item.targets == []
+        break unless item.targets == []
+            
         playItem(event,(args - [args[0]]), item)
 
     end
