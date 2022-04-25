@@ -54,6 +54,7 @@ class Sunny
         subm.name = "#{rank}th-" + subm.name
         subm.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-2])
         Player.where(status: ALIVE).update(status: 'In')
+        event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }
     end
 
 end

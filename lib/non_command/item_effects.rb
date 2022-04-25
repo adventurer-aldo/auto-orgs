@@ -70,6 +70,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
             @targets = []
             item.functions.each do |function|
                 case function
+                when 'idol'
+                when 'idol_nullifier'
                 when 'swap_idol'
                 end
             end

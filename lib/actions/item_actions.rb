@@ -15,11 +15,14 @@ class Sunny
         break unless item.exists?
         
         item = item.first
-        
+
         council = nil
-        if item.timing == 'Now'
+        case item.timing 
+        when 'Now'
             council = Council.where(stage: [0,1]).exists?
-        else
+        when 'Tallied'
+            council = Council.where(stage: [0,1,2]).exists?
+        when 'Idoled'
             council = Council.where(stage: [0,1,2]).exists?
         end
 

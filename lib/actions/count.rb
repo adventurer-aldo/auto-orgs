@@ -87,7 +87,7 @@ class Sunny
             end
 
             7.times do
-                items = Item.where(season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
+                items = Item.where(timing: 'Tallied', season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
                 if items.exists?
                     items.map.each do |item|
                         owner = Player.find_by(id: item.owner, status: ALIVE)
