@@ -19,7 +19,7 @@ class Sunny
         vote = Vote.where(player: player.id)
         council = Council.where(id: vote.map(&:council), stage: [0,1,3])
         if vote.exists? && council.exists?
-            council = council.first
+            council = council.last
             updater = Vote.where(council: council.id).and(vote)
             vote = updater.first
             

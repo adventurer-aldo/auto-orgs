@@ -71,52 +71,53 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
             item.functions.each do |function|
                 case function
                 when 'idol'
+                    council = Council.where(season: Setting.last.season, stage: [0,1,2]).last
+                    enemies = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+                    enemies.delete(nil)
+        
+                    text = enemies.map do |en|
+                        "**#{en.id}** — #{en.name}"
+                    end
+        
+                    allowed_targets.times do 
+                        event.channel.send_embed do |embed|
+                            embed.title = "Who would you like to play it on?"
+                            embed.description = text.join("\n")
+                            embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+                        end
+        
+                        await = event.user.await!(timeout: 80)
+        
+                        event.respond("You didn't pick a target...") if await == nil
+                        break if await == nil
+        
+        
+                        content = await.message.content.gsub('myself', player.id.to_s)
+        
+                        text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
+                        id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
+                        if text_attempt.size == 1
+                            @targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+                        elsif id_attempt.size == 1
+                            @targets << Player.find_by(id: id_attempt[0])
+                        else
+                            event.respond("There's no single seedling that matches that.") unless content == ''
+                        end
+                    end
+        
+        
+                    unless @targets == []
+                        event.respond("You're now using **#{item.name}** on **#{@targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
+                        item.update(targets: @targets.map(&:id))
+                    else
+        
+                    end
+                    
                 when 'idol_nullifier'
                 when 'swap_idol'
                 end
             end
 
-            council = Council.where(season: Setting.last.season, stage: [0,1,2]).last
-            enemies = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
-            enemies.delete(nil)
-
-            text = enemies.map do |en|
-                "**#{en.id}** — #{en.name}"
-            end
-
-            allowed_targets.times do 
-                event.channel.send_embed do |embed|
-                    embed.title = "Who would you like to play it on?"
-                    embed.description = text.join("\n")
-                    embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
-                end
-
-                await = event.user.await!(timeout: 80)
-
-                event.respond("You didn't pick a target...") if await == nil
-                break if await == nil
-
-
-                content = await.message.content.gsub('myself', player.id.to_s)
-
-                text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
-                id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
-                if text_attempt.size == 1
-                    @targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
-                elsif id_attempt.size == 1
-                    @targets << Player.find_by(id: id_attempt[0])
-                else
-                    event.respond("There's no single seedling that matches that.") unless content == ''
-                end
-            end
-
-
-            unless @targets == []
-                event.respond("You're now using **#{item.name}** on **#{@targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
-                item.update(targets: @targets.map(&:id))
-            else
-
-            end
 
         end
 
