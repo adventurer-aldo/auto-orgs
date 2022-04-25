@@ -46,7 +46,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         embed.description = "They will now be able to cast one additional vote during this tribal council."
                         embed.color = event.server.role(TRIBAL_PING).color
                     end
-                    vote.update(allowed: vote.allowed + 1)
+                    vote.update(allowed: vote.allowed + 1, votes: votes + [0])
                     item.update(targets: [player.id], owner: 0)
 
                 when 'steal_vote'
