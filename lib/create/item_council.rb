@@ -32,7 +32,7 @@ class Sunny
 
         event.respond "One or more of the submitted functions does not exist!" if checked == false
         break if checked == false
-
+        
         event.respond("**What's the name?**")
         name = event.user.await!(timeout: 70).message.content
 
@@ -40,7 +40,7 @@ class Sunny
         description = event.user.await!(timeout: 80).message.content
 
         event.respond("**And lastly, what will be the code?**")
-        code = event.user.await!(timeout: 50).message.content.gsub(' ','-')
+        code = event.user.await!(timeout: 50).message.content.gsub(' ','_')
 
 
         item = Item.create(code: code, name: name, description: description, timing: type, functions: functions, season: Setting.last.season)
