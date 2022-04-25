@@ -6,8 +6,16 @@ class Sunny
         event.respond("You didn't write a code!") if args[0].nil?
         break if args[0].nil?
 
+        
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
         item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
+        
+        council = nil
+        if item.timing == 'Now'
+            council = Council.where(stage: [0,1])
+        else
+            council = Council.where(stage: [0,1,2])
+        end
 
         event.respond("You don't have any item with that code.") unless item.exists?
         break unless item.exists?

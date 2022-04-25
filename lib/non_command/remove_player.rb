@@ -3,14 +3,14 @@ class Sunny
     def self.eliminate(loser,event)
         tribe = Tribe.find_by(id: loser.tribe)
         if Setting.last.game_stage == 1
-            loser.update(status: 'Jury', inventory: [])
+            loser.update(status: 'Jury', inventory: [], rank: rank)
             user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
             user.remove_role(CASTAWAY)
             user.add_role(JURY)
         else
-            loser.update(status: 'Out', inventory: [])
+            loser.update(status: 'Out', inventory: [], rank: rank)
             user = BOT.user(loser.user_id).on(event.server)
             
             user.remove_role(tribe.role_id)
