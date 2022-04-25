@@ -21,15 +21,15 @@ class Sunny
         if event.message.role_mentions.size > 0
             cast = event.message.role_mentions.first.members
         else
-            cast = event.message.mentions
+            cast = event.message.mentions.map { |user| user.on(event.server) }
         end
 
         cast.each do |person|
-            player =  Player.create(user_id: person.id, name: person.name, season: Setting.last.season,
+            player =  Player.create(user_id: person.id, name: person.display_name, season: Setting.last.season,
             confessional: event.server.create_channel(
-                person.name + '-confessional',
+                person.display_name + '-confessional',
                 parent: CONFESSIONALS,
-                topic: person.name + "'s Confessional. Talk to the spectators about your game here!",
+                topic: person.display_name + "'s Confessional. Talk to the spectators about your game here!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
                 TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
             submissions: event.server.create_channel(person.name + '-submissions',
