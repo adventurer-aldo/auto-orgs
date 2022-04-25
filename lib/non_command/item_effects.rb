@@ -67,7 +67,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
         else
             player = Player.find_by(id: item.owner, season: Setting.last.season)
             allowed_targets = 1
-            @targets = []
+            targets = []
             item.functions.each do |function|
                 case function
                 when 'idol'
@@ -97,18 +97,18 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                         id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
                         if text_attempt.size == 1
-                            @targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+                            targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
                         elsif id_attempt.size == 1
-                            @targets << Player.find_by(id: id_attempt[0])
+                            targets << Player.find_by(id: id_attempt[0])
                         else
                             event.respond("There's no single seedling that matches that.") unless content == ''
                         end
                     end
         
         
-                    unless @targets == []
-                        event.respond("You're now using **#{item.name}** on **#{@targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
-                        item.update(targets: @targets.map(&:id))
+                    unless targets == []
+                        event.respond("You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
+                        item.update(targets: targets.map(&:id))
                     else
         
                     end
