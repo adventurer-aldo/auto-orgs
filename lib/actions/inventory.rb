@@ -13,7 +13,7 @@ class Sunny
 
         text = ""
 
-        items.map! do |item|
+        items = items.map do |item|
             "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
         end
 
