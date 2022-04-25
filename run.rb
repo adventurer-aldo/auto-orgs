@@ -18,6 +18,7 @@ end
 
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
 require_relative 'settings'
+require_all 'models'
 require_all 'lib'
 
 Sunny.run
