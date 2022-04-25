@@ -31,9 +31,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
 =end
     def playItem(event,targets,item)
-        event.respond("Internal error!") unless item.class == Class
-        break unless item.class == Class
-
+        
         case item.timing
         when 'Now'
             item.functions.each do |function|
