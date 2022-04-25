@@ -14,16 +14,17 @@ class Sunny
     
     BOT.command :players, description: "Registers the user as a new player in the current season." do |event|
         break unless HOSTS.include? event.user.id
-        event.respond("You didn't mention enough players!") unless event.message.mentions.size > 0
-        break unless event.message.mentions.size > 0
-
+        
         cast = nil
         if event.message.role_mentions.size > 0
             cast = event.message.role_mentions.first.members
         else
             cast = event.message.mentions.map { |user| user.on(event.server) }
         end
-
+        
+        event.respond("You didn't mention enough players!") unless event.message.mentions.size > 0
+        break unless event.message.mentions.size > 0
+        
         cast.each do |person|
             player =  Player.create(user_id: person.id, name: person.display_name, season: Setting.last.season,
             confessional: event.server.create_channel(
