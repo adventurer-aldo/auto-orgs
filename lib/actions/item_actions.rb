@@ -14,7 +14,7 @@ class Sunny
 
         item = item.first
 
-        playItem(event,(args - args[0]), item)
+        playItem(event,(args - [args[0]]), item)
 
     end
 
