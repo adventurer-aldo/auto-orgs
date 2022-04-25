@@ -74,9 +74,9 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 end
             end
 
-            council = Council.find_by(season: Setting.last.season, stage: [0,1])
-            enemies = Vote.where(council: council.id).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
-            enemies.delete(nil)
+            council = Council.where(season: Setting.last.season, stage: [0,1]).last
+            enemies = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+            enemies = enemies.filter {|n| n.status == 'In' }
 
             enemies << player
 
