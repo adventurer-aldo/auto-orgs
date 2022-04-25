@@ -33,9 +33,10 @@ class Sunny
                     event.channel.start_typing
                     sleep(2)
                     event.respond("**You found an item!**")
-                    event.channel.start_typing
+                    subm = BOT.channel(player.submissions)
+                    subm.start_typing
                     sleep(4)
-                    BOT.channel(player.submissions).send_embed do |embed|
+                    subm.send_embed do |embed|
                         embed.title = item.name
                         embed.description = "**Description:** #{item.description}\n"
                         embed.description << "\n**Code:** `#{item.code}`"
