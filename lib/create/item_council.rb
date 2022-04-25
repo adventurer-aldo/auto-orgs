@@ -21,7 +21,7 @@ class Sunny
             type = 'Super'
         end
 
-        event.respond "What is/are the function codes?"
+        event.respond "What is/are the function codes?\n**Now | Tallied | Idoled | Super**"
         functions = event.user.await!(timeout: 40).message.content.downcase.split(' ')
 
         checked = true
