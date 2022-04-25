@@ -4,7 +4,7 @@ class Sunny
 
     BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
         break unless HOSTS.include? event.user.id
-        event.respond "What is the type?"
+        event.respond "What is the type?\n**Now | Tallied | Idoled | Super**"
         type = event.user.await!(timeout: 40).message.content.downcase
 
         event.respond("That's not immediate or queue...") unless %W(n i t s).include? type
@@ -21,7 +21,7 @@ class Sunny
             type = 'Super'
         end
 
-        event.respond "What is/are the function codes?\n**Now | Tallied | Idoled | Super**"
+        event.respond "What is/are the function codes?"
         functions = event.user.await!(timeout: 40).message.content.downcase.split(' ')
 
         checked = true
@@ -67,39 +67,39 @@ class Sunny
         break if tribes.size < 1
 
 
-        @tribe = []
-        @confirm = []
-        @perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
-        @cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
+        tribe = []
+        confirm = []
+        perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
+        cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
         tribes.each do |tribe|
             unless Tribe.where(role_id: tribe.id).exists?
-                @confirm << false
+                confirm << false
             else
                 if Setting.last.tribes.include? Tribe.find_by(role_id: tribe.id, season: Setting.last.season).id
-                    @tribe += [Tribe.find_by(role_id: tribe.id).id]
-                    @perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
+                    tribe += [Tribe.find_by(role_id: tribe.id).id]
+                    perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
                 else
-                    @confirm << false
+                    confirm << false
                 end
             end
         end
 
         if Setting.last.game_stage == 1
-            @perms += [JURY_SPECTATE]
+            perms += [JURY_SPECTATE]
         end
 
-        if @confirm.include? false
+        if confirm.include? false
             event.respond "One or more of those tribes do not exist in the database."
             return
         else
             sets = Setting.last
-            players = Player.where(tribe: @tribe, status: ALIVE, season: sets.season)
-            channel = event.server.create_channel("f#{@cast_left}-#{tribes.map(&:name).join('-')}",
+            players = Player.where(tribe: tribe, status: ALIVE, season: sets.season)
+            channel = event.server.create_channel("f#{cast_left}-#{tribes.map(&:name).join('-')}",
             parent: COUNCILS,
-            topic: "F#{@cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
-            permission_overwrites: @perms)
+            topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
+            permission_overwrites: perms)
 
-            council = Council.create(tribe: @tribe, channel_id: channel.id, season: sets.season)
+            council = Council.create(tribe: tribe, channel_id: channel.id, season: sets.season)
             channel.start_typing
             sleep(6)
             BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
@@ -152,7 +152,7 @@ class Sunny
 
             end
 
-            unless immunes == []
+            unless immunes.size < 1
                 event.respond("Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
             end
             
