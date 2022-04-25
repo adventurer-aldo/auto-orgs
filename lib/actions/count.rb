@@ -94,12 +94,36 @@ class Sunny
                         targets = item.targets.map { |n| Player.find_by(id: n), status: ALIVE }
                         next if owner == nil || targets.include? nil 
 
+                        item.update(owner: 0, targets: [])
                         event.channel.start_typing
-                        sleep(2)
+                        sleep(1)
                         event.respond("**#{owner.name} stands!**")
                         event.channel.start_typing
-                        sleep(2)
+                        sleep(4)
                         event.respond("*I'd like to play this on **#{targets.map(&:name).join('**, **')}**")
+                        event.channel.send_embed do |embed|
+                            embed.title = item.name
+                            embed.description = item.description
+                            embed.color = event.server.role(TRIBAL_PING)
+                        end
+
+
+                        item.functions.each do |function|
+                            case function
+                            when 'idol'
+                                event.channel.start_typing
+                                sleep(2)
+                                event.respond("This is a valid item!")
+                                
+                                event.channel.start_typing
+                                sleep(3)
+                                event.respond("**Any votes casted for #{targets.map(&:name).join(' or ')} will NOT count!**")
+                                targets.each do |player|
+                                    player.update(status: 'Idoled')
+                                end
+                            end
+                        end
+
                     end
                 end
             end
@@ -123,7 +147,7 @@ class Sunny
                 if votee.status == 'Idoled'
                     event.channel.start_typing
                     sleep(2)
-                    event.respond("Does not count!")
+                    event.respond("**Does not count!**")
                 else
                     counted_votes += [all_votes[0]]
                     vote_count[all_votes[0]] += 1

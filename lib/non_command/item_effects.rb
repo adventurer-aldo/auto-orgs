@@ -56,6 +56,57 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 end
             end
         else
+            player = Player.find_by(id: item.owner, season: Setting.last.season)
+            allowed_targets = 1
+            @targets = []
+            item.functions.each do |function|
+                case function
+                when 'swap_idol'
+                end
+            end
+
+            enemies = Vote.where(council: council.id).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+            enemies.delete(nil)
+
+            enemies << player
+
+            text = enemies.map do |en|
+                "**#{en.id}** — #{en.name}"
+            end
+
+            allowed_targets.times do 
+                event.channel.send_embed do |embed|
+                    embed.title = "Who would you like to play it on?"
+                    embed.description = text.join("\n")
+                    embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+                end
+
+                await = event.user.await!(timeout: 80)
+
+                event.respond("You didn't pick a target...") if await == nil
+                break if await == nil
+
+
+                content = await.message.content.gsub('myself', player.id)
+
+                text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
+                id_attempt = options.filter { |id| id == content.to_i }
+                if text_attempt.size == 1
+                    @targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+                elsif id_attempt.size == 1
+                    @targets << Player.find_by(id: id_attempt[0])
+                else
+                    event.respond("There's no single seedling that matches that.") unless content == ''
+                end
+            end
+
+
+            unless @targets = []
+
+            else
+                event.respond("You're now using **#{item.name}** on #{@targets.map(&:name).join('**, **')}**\nPlay it again if you want to cancel it.")
+                item.update(targets: @targets.map(&:id))
+            end
 
         end
 
