@@ -30,7 +30,7 @@ Also, about clues...
 ah yes, the find command. although, a find command kinda...doesn't jive right now.
 
 =end
-    def playItem(event,targets,item)
+    def self.playItem(event,targets,item)
 
         case item.timing
         when 'Now'
