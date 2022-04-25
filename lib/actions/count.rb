@@ -89,7 +89,7 @@ class Sunny
             7.times do
                 items = Item.where(season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
                 if items.exists?
-                    items.each do |item|
+                    items.map.each do |item|
                         owner = Player.find_by(id: item.owner, status: ALIVE)
                         targets = item.targets.map { |n| Player.find_by(id: n, status: ALIVE) }
 
@@ -122,8 +122,17 @@ class Sunny
                                 end
                             end
                         end
-
+                        event.channel.start_typing
+                        sleep(3)
+                        event.respond("...")
+                        event.channel.start_typing
+                        sleep(3)
+                        event.respond("Anyone else?")
                     end
+                else
+                    event.channel.start_typing
+                    sleep(5)
+                    event.respond("...")
                 end
             end
         end
