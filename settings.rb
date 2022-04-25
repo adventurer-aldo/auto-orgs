@@ -51,4 +51,7 @@ class Sunny
         extra_vote
         swap_idol
         )
+
+    # MISC
+    CONFIRMATIONS = ['yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
 end

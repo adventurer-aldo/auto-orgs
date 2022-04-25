@@ -38,6 +38,15 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 council = Council.find_by(stage: [0,1], season: Setting.last.season)
                 case function
                 when 'extra_vote'
+                    event.respond("Are you sure?")
+                    confirmation = event.user.await!(timeout: 50)
+
+                    event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
+                    break if confirmation.nil?
+
+                    event.respond("Okay!") unless CONFIRMATIONS.include? confirmation.message.content.downcase
+                    break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+
                     player = Player.find_by(id: item.owner, season: Setting.last.season)
                     vote = Vote.find_by(council: council.id, player: player.id)
 
