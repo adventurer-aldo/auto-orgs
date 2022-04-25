@@ -21,8 +21,9 @@ class Sunny
     end
 
     BOT.command :update, description: "Updates the item list so that new codes can be found." do |event|
-        @items = Item.where(season: Setting.last.season)
+        break unless HOSTS.include? event.user.id
         make_item_commands
+        event.respond("The items list has been updated!")
     end
 
     make_item_commands

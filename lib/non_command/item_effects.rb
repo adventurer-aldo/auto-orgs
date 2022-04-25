@@ -65,7 +65,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
     end
 
     def make_item_commands
-        
+        @items = Item.where(season: Setting.last.season)
+
         @items.each do |item|
             BOT.command item.code.to_sym do |event|
                 if item.owner == nil

@@ -41,7 +41,6 @@ class Sunny
     Eleventh Twelfth Thirteenth Fourteenth Fifteenth Sixteenth Seventeeth Eighteenth Nineteenth Twentieth 
     Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
     
-    @items = Item.where(season: Setting.last.season)
     
     DEFINED_FUNCTIONS = %W(
         idol 
