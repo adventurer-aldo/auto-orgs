@@ -20,7 +20,7 @@ class Sunny
         end
 
         alliances = Alliance.where("#{loser.id} = ANY (players)")
-        if alliances.exist?
+        if alliances.exists?
             alliances.each do |alliance|
                 alliance.update(players: alliance.players - [loser.id])
                 channel = BOT.channel(alliance.channel_id)
