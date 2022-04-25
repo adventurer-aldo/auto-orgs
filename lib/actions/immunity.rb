@@ -19,7 +19,7 @@ class Sunny
         end
 
         players.each do |player|
-            next if player == nil
+            next player if player == nil
             player.update(status: 'Immune')
             BOT.user(player.user_id).on(event.server).add_role(IMMUNITY)
         end
