@@ -8,6 +8,17 @@ class Sunny
         else
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
         end
+
+        items = Item.where(owner: player.id)
+
+        text = ""
+
+        items.map! do |item|
+            "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
+        end
+
+        text << items.join("\n\n")
+
         vote = Vote.where(player: player.id)
         council = Council.where(id: vote.map(&:council), stage: [0,1,2,3])
         if vote.exists? && council.exists?
@@ -29,8 +40,15 @@ class Sunny
                 end
             end
 
-            event.respond("**You're currently voting:**\n" + vote.join("\n"))
+            text << "\n\n**For the Tribal Council, currently voting:**\n" + vote.join("\n")
         end
+
+        event.channel.send_embed do |embed|
+            embed.title = "#{player.name}'s Inventory"
+            embed.description = text
+            embed.color = event.server.role(Tribe.find_by(player.tribe).role_id).color
+        end
+
 
     end
 

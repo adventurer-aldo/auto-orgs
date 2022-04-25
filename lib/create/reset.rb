@@ -51,6 +51,7 @@ class Sunny
                     sleep(2)
                     event.respond("But it was already found by someone else already...")
                 end
+                return
             end
         end
     

@@ -31,7 +31,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
 =end
     def playItem(event,targets,item)
-        
+
         case item.timing
         when 'Now'
             item.functions.each do |function|
@@ -40,7 +40,6 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 when 'extra_vote'
                     player = Player.find_by(id: item.owner, season: Setting.last.season)
                     vote = Vote.find_by(council: council.id, player: player.id)
-                    item.update(targets: [player.id], owner: 0)
 
                     BOT.channel(council.channel_id).send_embed do |embed|
                         embed.title = "**#{player.name} used #{item.name}!**"
@@ -48,6 +47,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         embed.color = event.server.role(TRIBAL_PING).color
                     end
                     vote.update(allowed: vote.allowed + 1)
+                    item.update(targets: [player.id], owner: 0)
 
                 when 'steal_vote'
 
