@@ -10,6 +10,12 @@ class Sunny
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
         item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
         
+        
+        event.respond("You don't have any item with that code.") unless item.exists?
+        break unless item.exists?
+        
+        item = item.first
+        
         council = nil
         if item.timing == 'Now'
             council = Council.where(stage: [0,1]).exists?
@@ -19,11 +25,6 @@ class Sunny
 
         event.respond("You're not able to play this item now!") unless council == true
         break unless council == true
-
-        event.respond("You don't have any item with that code.") unless item.exists?
-        break unless item.exists?
-
-        item = item.first
         
         targets = item.targets
         unless targets == []
