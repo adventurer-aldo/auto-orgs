@@ -7,15 +7,42 @@ class Sunny
         event.respond "What is the type?"
         type = event.user.await!(timeout: 40).message.content.downcase
 
-        event.respond("That's not immediate or queue...") unless %Q(i q).include? type
-        break unless %Q(i q).include? type
+        event.respond("That's not immediate or queue...") unless %W(n i t s).include? type
+        break unless %W(n i t s).include? type
 
         case type
+        when 'n'
+            type = 'Now'
+        when 't'
+            type = 'Tallied'
         when 'i'
-            type = 'Immediate'
-        when 'q'
-            type = 'Queue'
+            type = 'Idoled'
+        when 's'
+            type = 'Super'
         end
+
+        event.respond "What is/are the function codes?"
+        functions = event.user.await!(timeout: 40).message.content.downcase.split(' ')
+
+        checked = true
+        functions.each do |function|
+            break if DEFINED_FUNCTIONS.include?(function) == false
+            checked = false if DEFINED_FUNCTIONS.include?(function) == false
+        end
+
+        event.respond "One or more of the submitted functions does not exist!" if checked == false
+        break if checked == false
+
+        event.respond("**What's the name?**")
+        name = event.user.await!(timeout: 70).message.content
+
+        event.respond("**What's the description?**")
+        description = event.user.await!(timeout: 80).message.content
+
+        event.respond("**And lastly, what will be the code?**")
+        code = event.user.await!(timeout: 50).message.content.gsub(' ','-')
+
+        item = Item.create(code: code, name: name, description: dsecription, timing: type, functions: functions, season: Setting.last.season)
         
     end
 

@@ -20,4 +20,10 @@ class Sunny
         return
     end
 
+    BOT.command :update, description: "Updates the item list so that new codes can be found." do |event|
+        @items = Item.where(season: Setting.last.season)
+        make_item_commands
+    end
+
+    make_item_commands
 end

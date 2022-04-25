@@ -40,4 +40,15 @@ class Sunny
     COUNTING = %W(First Second Third Fourth Fifth Sixth Seventh Eigthth Ninth Tenth 
     Eleventh Twelfth Thirteenth Fourteenth Fifteenth Sixteenth Seventeeth Eighteenth Nineteenth Twentieth 
     Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
+    
+    @items = Item.where(season: Setting.last.season)
+    
+    DEFINED_FUNCTIONS = %W(
+        idol 
+        idol_nullifier 
+        steal_vote
+        block_vote
+        extra_vote
+        swap_idol
+        )
 end
