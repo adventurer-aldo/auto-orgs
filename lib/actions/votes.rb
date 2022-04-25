@@ -17,7 +17,7 @@ class Sunny
         end
 
         vote = Vote.where(player: player.id)
-        council = Council.where(id: vote.map(&:council), stage: [0,1,3])
+        council = Council.where(id: vote.map(&:council), stage: [0,1,3], season: Setting.last.season)
         if vote.exists? && council.exists?
             council = council.last
             updater = Vote.where(council: council.id).and(vote)
