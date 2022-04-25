@@ -46,8 +46,12 @@ class Sunny
             end
 
         end
-        BOT.channel(loser.confessional).name = "#{rank}th-" + BOT.channel(loser.confessional).name
-        BOT.channel(loser.submissions).name = "#{rank}th-" + BOT.channel(loser.submissions).name
+        conf = BOT.channel(loser.confessional)
+        conf.name = "#{rank}th-" + conf.name
+        conf.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-3])
+        subm = BOT.channel(loser.submissions)
+        subm.name = "#{rank}th-" + subm.name
+        subm.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-2])
         Player.where(status: ALIVE).update(status: 'In')
     end
 
