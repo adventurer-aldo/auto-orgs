@@ -91,7 +91,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 content = await.message.content.gsub('myself', player.id.to_s)
 
                 text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
-                id_attempt = options.filter { |id| id == content.to_i }
+                id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
                 if text_attempt.size == 1
                     @targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
                 elsif id_attempt.size == 1
