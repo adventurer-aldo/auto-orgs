@@ -8,6 +8,7 @@ class Sunny
         else
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
         end
+        break if player.nil?
 
         items = Item.where(owner: player.id)
 

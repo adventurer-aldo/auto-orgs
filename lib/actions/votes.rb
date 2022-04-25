@@ -12,10 +12,8 @@ class Sunny
 
         if [0,1].include? Setting.last.game_stage
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
-            puts "So you're a Player"
         else
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
-            puts "So you're a Jury"
         end
 
         vote = Vote.where(player: player.id)
@@ -70,17 +68,13 @@ class Sunny
                     end
                 end
 
-                puts number.to_s + " is num"
-                puts content.to_s + " is content"
                 text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                 id_attempt = options.filter { |id| id == content.to_i }
                 if text_attempt.size == 1
                     @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
-                    puts @target.name + " is target"
                     voted[number] = @target.id
                 elsif id_attempt.size == 1
                     @target = Player.find_by(id: id_attempt[0])
-                    puts @target.name + " is target"
                     voted[number] = id_attempt[0]
                 else
                     event.respond("There's no single seedling that matches that.") unless content == ''
