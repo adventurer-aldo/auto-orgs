@@ -102,11 +102,11 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
             end
 
 
-            unless @targets = []
-
-            else
+            unless @targets == []
                 event.respond("You're now using **#{item.name}** on #{@targets.map(&:name).join('**, **')}**\nPlay it again if you want to cancel it.")
                 item.update(targets: @targets.map(&:id))
+            else
+
             end
 
         end
