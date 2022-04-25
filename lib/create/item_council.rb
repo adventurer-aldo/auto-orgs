@@ -42,7 +42,16 @@ class Sunny
         event.respond("**And lastly, what will be the code?**")
         code = event.user.await!(timeout: 50).message.content.gsub(' ','-')
 
+
         item = Item.create(code: code, name: name, description: dsecription, timing: type, functions: functions, season: Setting.last.season)
+        make_item_commands
+        event.respond "**Your item has been created!**"
+
+        event.channel.send_embed do |embed|
+            embed.title = item.name
+            embed.description = "**Code:** `#{item.code}`\n"
+            embed.description << "**Description:** #{item.description}"
+        end
         
     end
 
