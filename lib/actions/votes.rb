@@ -68,13 +68,14 @@ class Sunny
                     end
                 end
 
+                target = nil
                 text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                 id_attempt = options.filter { |id| id == content.to_i }
                 if text_attempt.size == 1
-                    @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+                    target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
                     voted[number] = @target.id
                 elsif id_attempt.size == 1
-                    @target = Player.find_by(id: id_attempt[0])
+                    target = Player.find_by(id: id_attempt[0])
                     voted[number] = id_attempt[0]
                 else
                     event.respond("There's no single seedling that matches that.") unless content == ''
@@ -84,7 +85,7 @@ class Sunny
 
                 if voted == vote.votes && content != ''
                     updater.update(votes: voted)
-                    event.respond("You're now voting **#{@target.name}**.")
+                    event.respond("You're now voting **#{target.name}**.")
                 else
                     "No vote was submitted..."
                 end
