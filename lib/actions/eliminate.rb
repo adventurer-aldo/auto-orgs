@@ -8,18 +8,19 @@ class Sunny
 
         text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
         id_attempt =  enemies.map(&:id).filter { |id| id == content.to_i }
+        target = nil
         if text_attempt.size == 1
-            @target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
-            puts @target.name + " is target"
+            target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+            puts target.name + " is target"
         elsif id_attempt.size == 1
-            @target = Player.find_by(id: id_attempt[0])
-            puts @target.name + " is target"
+            target = Player.find_by(id: id_attempt[0])
+            puts target.name + " is target"
         else
             event.respond("There's no single seedling that matches that.") unless content == ''
         end
         
-        if @target
-            loser = @target
+        if target
+            loser = target
             eliminate(loser,event)
             Council.all.update(status: 5)
             event.respond("#{loser.name} has been eliminated.")
