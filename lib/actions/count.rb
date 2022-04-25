@@ -99,11 +99,11 @@ class Sunny
                         event.respond("**#{owner.name} stands!**")
                         event.channel.start_typing
                         sleep(4)
-                        event.respond("*I'd like to play this on **#{targets.map(&:name).join('**, **')}**")
+                        event.respond("*I'd like to play this on **#{targets.map(&:name).join('**, **').gsub(owner.name,'myself')}***")
                         event.channel.send_embed do |embed|
                             embed.title = item.name
                             embed.description = item.description
-                            embed.color = event.server.role(TRIBAL_PING)
+                            embed.color = event.server.role(TRIBAL_PING).color
                         end
 
 
