@@ -1,6 +1,7 @@
 class Sunny
 
     def self.eliminate(loser,event)
+        rank = Player.where(season: Setting.last.season, status: ALIVE).size
         tribe = Tribe.find_by(id: loser.tribe)
         if Setting.last.game_stage == 1
             loser.update(status: 'Jury', inventory: [], rank: rank)
