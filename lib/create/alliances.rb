@@ -1,4 +1,14 @@
-class Sunny 
+class Sunny
+
+    BOT.command :rename, description: "Renames an alliance" do |event, *args|
+        break unless event.user.id.player?
+
+        if Alliance.where(channel_id: event.channel.id).exists?
+            event.channel.name = args.join(' ')
+            event.respond("The alliance's name has changed to **#{args.join(' ')}**")
+        end
+        
+    end
 
     BOT.command :alliance, description: "Make an alliance with other players on your tribe." do |event, *args|
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
