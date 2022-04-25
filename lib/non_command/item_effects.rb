@@ -88,7 +88,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                 break if await == nil
 
 
-                content = await.message.content.gsub('myself', player.id)
+                content = await.message.content.gsub('myself', player.id.to_s)
 
                 text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                 id_attempt = options.filter { |id| id == content.to_i }
