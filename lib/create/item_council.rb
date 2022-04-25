@@ -43,7 +43,7 @@ class Sunny
         code = event.user.await!(timeout: 50).message.content.gsub(' ','-')
 
 
-        item = Item.create(code: code, name: name, description: dsecription, timing: type, functions: functions, season: Setting.last.season)
+        item = Item.create(code: code, name: name, description: description, timing: type, functions: functions, season: Setting.last.season)
         make_item_commands
         event.respond "**Your item has been created!**"
 
