@@ -5,9 +5,9 @@ class Sunny
 
         if Alliance.where(channel_id: event.channel.id).exists?
             event.channel.name = args.join(' ')
-            event.respond("The alliance's name has changed to **#{args.join(' ')}**")
+            event.respond("The alliance's name has changed to **#{args.join('-').downcase.gsub(' ','-')}**")
         end
-        
+
     end
 
     BOT.command :alliance, description: "Make an alliance with other players on your tribe." do |event, *args|
