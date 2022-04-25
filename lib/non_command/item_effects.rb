@@ -103,7 +103,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
 
             unless @targets == []
-                event.respond("You're now using **#{item.name}** on #{@targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
+                event.respond("You're now using **#{item.name}** on **#{@targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
                 item.update(targets: @targets.map(&:id))
             else
 
@@ -111,7 +111,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
         end
 
-
+        return
     end
 
 end
