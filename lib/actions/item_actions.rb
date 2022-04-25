@@ -12,10 +12,13 @@ class Sunny
         
         council = nil
         if item.timing == 'Now'
-            council = Council.where(stage: [0,1])
+            council = Council.where(stage: [0,1]).exists?
         else
-            council = Council.where(stage: [0,1,2])
+            council = Council.where(stage: [0,1,2]).exists?
         end
+
+        event.respond("You're not able to play this item now!") unless council == true
+        break unless council == true
 
         event.respond("You don't have any item with that code.") unless item.exists?
         break unless item.exists?
