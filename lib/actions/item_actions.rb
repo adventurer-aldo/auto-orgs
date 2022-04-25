@@ -13,12 +13,13 @@ class Sunny
         break unless item.exists?
 
         item = item.first
-
-        unless item.targets == []
+        
+        targets = item.targets
+        unless targets == []
             event.respond("You've cancelled playing **#{item.name}**.")
             item.update(targets: []) 
         end
-        break unless item.targets == []
+        break unless targets == []
             
         playItem(event,(args - [args[0]]), item)
 
