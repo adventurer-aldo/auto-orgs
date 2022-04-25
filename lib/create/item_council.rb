@@ -26,8 +26,8 @@ class Sunny
 
         checked = true
         functions.each do |function|
-            break if DEFINED_FUNCTIONS.include?(function) == false
             checked = false if DEFINED_FUNCTIONS.include?(function) == false
+            break if DEFINED_FUNCTIONS.include?(function) == false
         end
 
         event.respond "One or more of the submitted functions does not exist!" if checked == false
