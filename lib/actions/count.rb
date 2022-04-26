@@ -72,6 +72,7 @@ class Sunny
             vote_count[vote.player] = 0
         end
         all_votes.shuffle!
+        all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(all_votes.max_by {|i| all_votes.count(i)})))
         majority = (Float(all_votes.size + 1)/2.0).round
         
         if council.stage == 2 && rank > 4
