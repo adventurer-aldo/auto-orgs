@@ -22,9 +22,9 @@ class Sunny
             cast = event.message.mentions.map { |user| user.on(event.server) }
         end
         
-        event.respond("You didn't mention enough players!") unless event.message.mentions.size > 0
-        break unless event.message.mentions.size > 0
-        
+        event.respond("You didn't mention enough players!") unless cast.size > 0
+        break unless cast.size > 0
+
         cast.each do |person|
             player =  Player.create(user_id: person.id, name: person.display_name, season: Setting.last.season,
             confessional: event.server.create_channel(
