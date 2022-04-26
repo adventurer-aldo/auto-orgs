@@ -3,6 +3,8 @@ class Sunny
     BOT.command :archive, description: "Sends the current channel to archive and removes talking permissions, while allowing it to be viewed. Add 'all' to archive all channels within the current category." do |event, *args|
         break unless HOSTS.include? event.user.id
         unless args.join(' ') == "all"
+            event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
+            break if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
             event.channel.parent = ARCHIVE
             event.respond ":ballot_box_with_check: **This channel has been archived!**"
             event.channel.permission_overwrites.each do |role, perms|
@@ -19,6 +21,7 @@ class Sunny
         else
             event.channel.parent.children.each do |channel|
                 channel.parent = ARCHIVE
+                next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? channel.id
                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                 channel.permission_overwrites.each do |role, perms|
                     if event.server.role(role)
