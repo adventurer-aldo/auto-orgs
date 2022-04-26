@@ -153,7 +153,7 @@ class Sunny
             end
 
             if immunes.size > 0
-                event.respond("Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
+                BOT.send_message(channel.id,"Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
             end
             
             BOT.send_message(channel.id, "Good luck!")
