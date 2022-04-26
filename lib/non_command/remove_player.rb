@@ -56,7 +56,11 @@ class Sunny
         end
         conf = BOT.channel(loser.confessional)
         conf.name = "#{rank}th-" + conf.name
-        conf.sort_after(BOT.channel(CONFESSIONALS).text_channels[(rank*2)-1])
+        if Setting.last.game_stage == 1
+            conf.sort_after(BOT.channel(JURY_SPLITTER))
+        else
+            conf.sort_after(BOT.channel(PRE_JURY_SPLITTER))
+        end
         subm = BOT.channel(loser.submissions)
         subm.name = "#{rank}th-" + subm.name
         subm.sort_after(conf)
