@@ -21,7 +21,7 @@ class Sunny
         else
             cast = event.message.mentions.map { |user| user.on(event.server) }
         end
-        
+        #
         event.respond("You didn't mention enough players!") unless cast.size > 0
         break unless cast.size > 0
 
