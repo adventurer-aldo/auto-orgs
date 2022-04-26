@@ -7,14 +7,18 @@ class Sunny
             loser.update(status: 'Jury', inventory: [], rank: rank)
             user = BOT.user(loser.user_id).on(event.server)
             
-            user.remove_role(tribe.role_id)
+            if tribe
+                user.remove_role(tribe.role_id)
+            end
             user.remove_role(CASTAWAY)
             user.add_role(JURY)
         else
             loser.update(status: 'Out', inventory: [], rank: rank)
             user = BOT.user(loser.user_id).on(event.server)
             
-            user.remove_role(tribe.role_id)
+            if tribe
+                user.remove_role(tribe.role_id)
+            end
             user.remove_role(CASTAWAY)
             user.add_role(PREJURY)
         end
