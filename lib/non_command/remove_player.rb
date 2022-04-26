@@ -55,10 +55,10 @@ class Sunny
         end
         conf = BOT.channel(loser.confessional)
         conf.name = "#{rank}th-" + conf.name
-        conf.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-3])
+        conf.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-1])
         subm = BOT.channel(loser.submissions)
         subm.name = "#{rank}th-" + subm.name
-        subm.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-2])
+        subm.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-1])
         Player.where(status: ALIVE).update(status: 'In')
         event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }
     end
