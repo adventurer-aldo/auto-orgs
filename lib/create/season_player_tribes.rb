@@ -93,7 +93,7 @@ class Sunny
                 players.each do |player|
                     event.channel.start_typing
                     sleep(3)
-                    event.respond "**#{player.name} takes a buff...**"
+                    event.respond "**#{BOT.user(player.user_id).mention} takes a buff...**"
                     rand = @buffs.sample
                     puts rand.to_s
                     event.channel.start_typing
