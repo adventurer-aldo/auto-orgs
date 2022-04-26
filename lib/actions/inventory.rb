@@ -49,7 +49,7 @@ class Sunny
             embed.description = text
             tribe = Tribe.find_by(id: player.tribe)
             if tribe
-                embed.color = event.server.role(.role_id).color
+                embed.color = event.server.role(tribe.role_id).color
             end
         end
 
