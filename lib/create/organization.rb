@@ -50,6 +50,7 @@ class Sunny
     end
 
     BOT.command :add, description: "Adds all mentioned roles to all mentioned members." do |event|
+        break unless HOSTS.include? event.user.id
         event.respond("You must mention at least a single user!") if event.message.mentions.size < 1
         break if event.message.mentions.size < 1
         event.respond("You must mention at least a single role!") if event.message.role_mentions.size < 1

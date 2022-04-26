@@ -10,6 +10,8 @@ class Sunny
         end
         break if player.nil?
 
+        break unless [player.confessional,player.submissions].include? event.channel.id
+
         items = Item.where(owner: player.id)
 
         text = ""

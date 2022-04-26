@@ -14,6 +14,7 @@ class Sunny
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
         tribe = Tribe.find_by(id: player.tribe)
         if event.user.id.player? && event.server.role(tribe.role_id).members.size > 3
+            break unless [player.confessional,player.submissions].include? event.channel.id
             enemies = Player.where(tribe: tribe.id, season: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
             options = enemies.map(&:id)
             options_text = enemies.map(&:name)
@@ -98,8 +99,8 @@ class Sunny
                 end
                 true
             end
-            return
         end
+        return
     end
 
 end

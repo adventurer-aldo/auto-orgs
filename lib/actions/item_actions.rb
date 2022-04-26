@@ -10,7 +10,8 @@ class Sunny
         player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
         item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
         
-        
+        break unless [player.confessional,player.submissions].include? event.channel.id
+
         event.respond("You don't have any item with that code.") unless item.exists?
         break unless item.exists?
         

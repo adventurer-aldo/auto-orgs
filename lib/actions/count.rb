@@ -1,6 +1,7 @@
 class Sunny
 
     BOT.command :tribal, description: "Changes the Tribal Council stage to 1 (after 12h) to all those who have 0." do |event|
+        break unless HOSTS.include? event.user.id
         if [0,1].include? Setting.last.game_stage
             Council.where(stage: 0).update(stage: 1)
         else
@@ -79,16 +80,21 @@ class Sunny
             event.respond("Now, if anyone has a **Hidden Immunity Idol** and would like to `!play` it...")
             event.channel.start_typing
             sleep(3)
-            event.respond("This is the time to do it.")
+            event.respond("This is the time to do it in your submissions channel.")
             3.times do
                 event.channel.start_typing
                 sleep(5)
                 event.respond("...")
             end
 
-            7.times do
+            i = 0
+            max = 7
+
+            while i < 7
+                i += 1
                 items = Item.where(timing: 'Tallied', season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
                 if items.exists?
+                    max += 3
                     items.map.each do |item|
                         owner = Player.find_by(id: item.owner, status: ALIVE)
                         targets = item.targets.map { |n| Player.find_by(id: n, status: ALIVE) }
@@ -304,8 +310,6 @@ class Sunny
         event.channel.define_overwrite(event.server.member(loser.user_id), 3072, 0)
         eliminate(loser, event)
         council.update(stage: 5)
-
-        break if DEAD.include? loser.status
         return
     end
 
