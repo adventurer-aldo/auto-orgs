@@ -36,6 +36,7 @@ class Sunny
                             channel.define_overwrite(event.server.member(role), 0, 3072)
                         end
                     end
+                    alliance.update(players: [])
                     
                 else
                     BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
