@@ -15,6 +15,7 @@ class Sunny
         else
             player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
         end
+        break unless event.channel.id == player.submissions
 
         vote = Vote.where(player: player.id)
         council = Council.where(id: vote.map(&:council), stage: [0,1,3], season: Setting.last.season)
