@@ -39,9 +39,12 @@ class Sunny
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
                 DENY_EVERY_SPECTATE]).id)
 
-                person.on(event.server).add_role(CASTAWAY)
-                person.on(event.server).remove_role(SPECTATOR)
-                person.on(event.server).remove_role(TRUSTED_SPECTATOR)
+            person.on(event.server).add_role(CASTAWAY)
+            person.on(event.server).remove_role(SPECTATOR)
+            person.on(event.server).remove_role(TRUSTED_SPECTATOR)
+
+            BOT.channel(player.confessional).sort_after(BOT.channel(PLAYING_SPLITTER))
+            BOT.channel(player.submissions).sort_after(BOT.channel(player.confessional))
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
             BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
         end
