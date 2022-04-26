@@ -33,7 +33,7 @@ class Sunny
                 topic: person.display_name + "'s Confessional. Talk to the spectators about your game here!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
                 TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
-            submissions: event.server.create_channel(person.name + '-submissions',
+            submissions: event.server.create_channel(person.display_name + '-submissions',
                 parent: CONFESSIONALS,
                 topic: "Your Submissions channel. Submit challenge scores, check your inventory and play your items!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),

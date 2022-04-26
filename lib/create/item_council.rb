@@ -71,13 +71,13 @@ class Sunny
         confirm = []
         perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
         cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
-        tribes.each do |tribe|
-            unless Tribe.where(role_id: tribe.id).exists?
+        tribes.each do |tribed|
+            unless Tribe.where(role_id: tribed.id).exists?
                 confirm << false
             else
-                if Setting.last.tribes.include? Tribe.find_by(role_id: tribe.id, season: Setting.last.season).id
-                    tribe += [Tribe.find_by(role_id: tribe.id).id]
-                    perms += [Discordrb::Overwrite.new(tribe.id, allow: 3072)]
+                if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season: Setting.last.season).id
+                    tribe += [Tribe.find_by(role_id: tribed.id).id]
+                    perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
                 else
                     confirm << false
                 end
