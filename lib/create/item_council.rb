@@ -169,7 +169,7 @@ class Sunny
         Setting.last.update(game_stage: 2)
         council = Council.create(tribe: [finalists.first.tribe], channel_id: event.server.create_channel(
             "final-tribal-council",
-            topic: "The last time we'll read the votes during this season of Botvivor.",
+            topic: "The last time we'll read the votes during this season of Maskvivor.",
             parent: FTC,
             permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
         ).id)

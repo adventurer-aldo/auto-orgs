@@ -186,9 +186,9 @@ class Sunny
                 event.channel.start_typing
                 sleep(2)
                 if Setting.last.game_stage == 0
-                    event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Botvivor is...**")
+                    event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Maskvivor is...**")
                 elsif Setting.last.game_stage == 1
-                    event.respond("**#{COUNTING[total - rank]} seedling eliminated from Botvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
+                    event.respond("**#{COUNTING[total - rank]} seedling eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
                 end
                 sleep(5)
                 event.respond(BOT.user(Player.find_by(id: all_votes[0]).user_id).mention)
