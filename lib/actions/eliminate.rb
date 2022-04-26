@@ -3,14 +3,13 @@ class Sunny
     BOT.command :eliminate, description: "Removes a castaway from the game." do |event, *args|
         break unless HOSTS.include? event.user.id
         content = args.join(' ')
-        enemies = Player.where(season: Setting.last.season)
-        rank = Player.where(season: Setting.last.season, status: ALIVE).size
+        enemies = Player.where(season: Setting.last.season, status: ALIVE)
 
         text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
         id_attempt =  enemies.map(&:id).filter { |id| id == content.to_i }
         target = nil
         if text_attempt.size == 1
-            target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+            target = Player.find_by(name: text_attempt[0])
         elsif id_attempt.size == 1
             target = Player.find_by(id: id_attempt[0])
         else
