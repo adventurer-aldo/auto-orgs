@@ -20,8 +20,8 @@ class Sunny
             end
         else
             event.channel.parent.children.each do |channel|
-                channel.parent = ARCHIVE
                 next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? channel.id
+                channel.parent = ARCHIVE
                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                 channel.permission_overwrites.each do |role, perms|
                     if event.server.role(role)
