@@ -55,7 +55,7 @@ class Sunny
         end
         conf = BOT.channel(loser.confessional)
         conf.name = "#{rank}th-" + conf.name
-        conf.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)-1])
+        conf.sort_after(BOT.channel(CONFESSIONALS).children[(rank*2)])
         subm = BOT.channel(loser.submissions)
         subm.name = "#{rank}th-" + subm.name
         subm.sort_after(conf)
