@@ -4,7 +4,7 @@ class Sunny
         break unless HOSTS.include? event.user.id
         unless args.join(' ') == "all"
             event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
-            break if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
+            break if [JURY_SPLITTER,PRE_JURY_SPLITTER,PLAYING_SPLITTER].include? event.channel.id
             event.channel.parent = ARCHIVE
             event.respond ":ballot_box_with_check: **This channel has been archived!**"
             event.channel.permission_overwrites.each do |role, perms|
@@ -20,7 +20,7 @@ class Sunny
             end
         else
             event.channel.parent.children.each do |channel|
-                next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? channel.id
+                next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER,PLAYING_SPLITTER].include? channel.id
                 channel.parent = ARCHIVE
                 BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                 channel.permission_overwrites.each do |role, perms|
