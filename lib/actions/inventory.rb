@@ -47,7 +47,10 @@ class Sunny
         event.channel.send_embed do |embed|
             embed.title = "#{player.name}'s Inventory"
             embed.description = text
-            embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+            tribe = Tribe.find_by(id: player.tribe)
+            if tribe
+                embed.color = event.server.role(.role_id).color
+            end
         end
 
 
