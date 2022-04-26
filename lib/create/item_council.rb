@@ -152,7 +152,7 @@ class Sunny
 
             end
 
-            unless immunes.size < 1
+            if immunes.size > 0
                 event.respond("Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
             end
             

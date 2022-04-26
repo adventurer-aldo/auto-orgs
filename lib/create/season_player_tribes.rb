@@ -89,13 +89,11 @@ class Sunny
                 sleep(2)
                 players = players.shuffle
                 event.respond "First up, #{players[0].name}. Come here!"
-                puts @buffs.to_s
                 players.each do |player|
                     event.channel.start_typing
                     sleep(3)
                     event.respond "**#{BOT.user(player.user_id).mention} takes a buff...**"
                     rand = @buffs.sample
-                    puts rand.to_s
                     event.channel.start_typing
                     sleep(3)
                     event.respond "...the buff taken out was from..."
