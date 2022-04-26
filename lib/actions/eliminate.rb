@@ -5,7 +5,7 @@ class Sunny
         content = args.join(' ')
         enemies = Player.where(season: Setting.last.season, status: ALIVE)
 
-        text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
+        text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
         id_attempt =  enemies.map(&:id).filter { |id| id == content.to_i }
         target = nil
         if text_attempt.size == 1
