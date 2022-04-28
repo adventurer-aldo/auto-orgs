@@ -161,11 +161,9 @@ class Sunny
         
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
-                unless precounted_votes == []
-                    event.channel.start_typing
-                    sleep(2)
-                    event.respond(COUNTING[all_counted_votes.size] + ' vote...')
-                end
+                event.channel.start_typing
+                sleep(2)
+                event.respond(COUNTING[all_counted_votes.size] + ' vote...')
                 event.channel.start_typing
                 sleep(2)
                 votee = Player.find_by(id: all_votes[0])
