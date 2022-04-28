@@ -253,7 +253,7 @@ class Sunny
                             immunes = Player.where(status: 'Immune').map(&:id)
                             
                             vote_count.each do |k,v|
-                                if v == vote_count.values.max
+                                if v == vote_count.values.max && Player.where(id: k, status: ['Idoled','Immune']).exists?
                                     Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) 
                                 else
                                     Vote.find_by(player: k, council: council.id).update(allowed: 1, votes: [0]) 
@@ -262,7 +262,7 @@ class Sunny
                             Vote.where(council: council.id, allowed: 1).excluding(Vote.where(player: immunes)).each do |revote|
                                 Player.find_by(id: revote.player).update(status: 'Idoled')
                             end
-                            event.respond("**Vote between **#{Vote.where(council: council.id, allowed: 0).map { |n| Player.find_by(id: n.player).name}.join('** or **')}**.\nLet's get to it!**")
+                            event.respond("Vote between **#{Vote.where(council: council.id, allowed: 0).map { |n| Player.find_by(id: n.player).name}.join('** or **')}**.\nLet's get to it!")
                             
                         when 4
                             event.channel.start_typing
