@@ -108,7 +108,7 @@ class Sunny
                 if jury.size > 0
                     channel.start_typing
                     sleep(4)
-                    BOT.send_message(channel.id, "**And welcome to the members of our" + event.server.role(JURY).mention + ":**")
+                    BOT.send_message(channel.id, "**And welcome to the members of our " + event.server.role(JURY).mention + ":**")
                     channel.start_typing
                     sleep(2)
                     BOT.send_message(channel.id, "**" + jury.map(&:name).join("\n") + "**")

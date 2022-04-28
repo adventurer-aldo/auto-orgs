@@ -60,6 +60,7 @@ class Sunny
         sleep(2)
         event.respond("...")
         all_votes = []
+        all_counted_votes = []
         counted_votes = []
         vote_count = {}
 
@@ -98,7 +99,7 @@ class Sunny
             i = 0
             max = 7
 
-            while i < 7
+            while i < max
                 i += 1
                 items = Item.where(timing: 'Tallied', season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
                 if items.exists?
@@ -168,7 +169,7 @@ class Sunny
                 unless precounted_votes == []
                     event.channel.start_typing
                     sleep(2)
-                    event.respond(COUNTING[counted_votes.size] + ' vote...')
+                    event.respond(COUNTING[all_counted_votes.size] + ' vote...')
                 end
                 event.channel.start_typing
                 sleep(2)
@@ -182,6 +183,7 @@ class Sunny
                     counted_votes += [all_votes[0]]
                     vote_count[all_votes[0]] += 1
                 end
+                all_counted_votes += [all_votes[0]]
                 all_votes.delete_at(0)
                 event.channel.start_typing
                 sleep(2)

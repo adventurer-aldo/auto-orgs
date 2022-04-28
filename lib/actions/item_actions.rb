@@ -24,7 +24,7 @@ class Sunny
         when 'Tallied'
             council = Council.where(stage: [0,1,2]).exists?
         when 'Idoled'
-            council = Council.where(stage: [0,1,2]).exists?
+            council = Council.where(stage: [0,1]).exists?
         end
 
         event.respond("You're not able to play this item now!") unless council == true
