@@ -172,7 +172,7 @@ class Sunny
             topic: "The last time we'll read the votes during this season of Maskvivor.",
             parent: FTC,
             permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
-        ).id)
+        ).id, season: Setting.last.season)
 
         finalists.each do |finalist|
             channel = event.server.create_channel(finalist.name + '-speech',
