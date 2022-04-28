@@ -165,9 +165,11 @@ class Sunny
         
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
-                event.channel.start_typing
-                sleep(2)
-                event.respond(COUNTING[counted_votes.size] + ' vote...')
+                unless precounted_votes == []
+                    event.channel.start_typing
+                    sleep(2)
+                    event.respond(COUNTING[counted_votes.size] + ' vote...')
+                end
                 event.channel.start_typing
                 sleep(2)
                 votee = Player.find_by(id: all_votes[0])
@@ -185,17 +187,19 @@ class Sunny
                 sleep(2)
                 if vote_count.values.count(vote_count.values.max) > 1 || counted_votes.size % 4 == 0
                     revel = []
-                    vote_count.each do |k,v|
-                        if v == 1
-                            revel << "#{v} vote #{Player.find_by(id: k).name}"
-                        elsif v > 1
-                            revel << "#{v} votes #{Player.find_by(id: k).name}"
+                    unless counted_votes == []
+                        vote_count.each do |k,v|
+                            if v == 1
+                                revel << "#{v} vote #{Player.find_by(id: k).name}"
+                            elsif v > 1
+                                revel << "#{v} votes #{Player.find_by(id: k).name}"
+                            end
                         end
+                        revel = "That's " + revel.join(', ')
+                        event.respond(revel)
+                        event.channel.start_typing
+                        sleep(2)
                     end
-                    revel = "That's " + revel.join(', ')
-                    event.respond(revel)
-                    event.channel.start_typing
-                    sleep(2)
                     if all_votes.size > 1
                         event.respond("**#{all_votes.size} votes left.**")
                     elsif all_votes.size == 1
