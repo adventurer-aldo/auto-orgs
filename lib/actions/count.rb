@@ -90,11 +90,6 @@ class Sunny
             event.channel.start_typing
             sleep(3)
             event.respond("This is the time to do it in your submissions channel.")
-            3.times do
-                event.channel.start_typing
-                sleep(5)
-                event.respond("...")
-            end
 
             i = 0
             max = 7
