@@ -72,7 +72,6 @@ class Sunny
             vote_count[vote.player] = 0
         end
         all_votes.shuffle!
-        all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(all_votes.max_by {|i| all_votes.count(i)})))
         majority = (Float(all_votes.size + 1)/2.0).round
         
         if council.stage == 2 && rank > 4
@@ -82,7 +81,7 @@ class Sunny
             event.channel.start_typing
             sleep(3)
             event.respond("This is the time to do it in your submissions channel.")
-            3.times do
+                3.times do
                 event.channel.start_typing
                 sleep(5)
                 event.respond("...")
@@ -113,7 +112,7 @@ class Sunny
                             embed.color = event.server.role(TRIBAL_PING).color
                         end
 
-
+                        
                         item.functions.each do |function|
                             case function
                             when 'idol'
@@ -143,13 +142,17 @@ class Sunny
                 end
             end
         end
+        precounted_votes = all_votes
+        precounted_votes -= Player.where(status: 'Idoled').map(&:id)
+        all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(precounted_votes.max_by {|i| precounted_votes.count(i)})))
+
         event.channel.start_typing
         sleep(4)
         event.respond("Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.")
         event.channel.start_typing
         sleep(2)
         event.respond("...")
-
+        
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
                 event.channel.start_typing
