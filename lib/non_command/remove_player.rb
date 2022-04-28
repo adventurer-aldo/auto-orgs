@@ -34,7 +34,7 @@ class Sunny
                         BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                         channel.permission_overwrites.each do |role, perms|
                             unless role == EVERYONE
-                                channel.define_overwrite(event.server.member(role), 0, 3072)
+                                channel.define_overwrite(event.server.member(role), 1088, 2048)
                             end
                         end
                         alliance.update(players: [])
@@ -58,7 +58,7 @@ class Sunny
                     BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                     channel.permission_overwrites.each do |role, perms|
                         unless role == EVERYONE
-                            channel.define_overwrite(event.server.member(role), 0, 3072)
+                            channel.define_overwrite(event.server.member(role), 1088, 2048)
                         end
                     end
                     alliance.update(players: [])
