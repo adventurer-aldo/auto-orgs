@@ -311,6 +311,7 @@ class Sunny
                     sleep(3)
                     event.respond("Any final words?")
                     sleep(3)
+                    puts vote_count.to_s
                     event.respond("**#{loser.name}...The tribe has spoken.**")
                 end
 
@@ -319,7 +320,6 @@ class Sunny
             end
             break if vote_count.values.max == majority || all_votes.size == 0
         end
-        puts vote_count.to_s
         break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
         loser ||= seed
