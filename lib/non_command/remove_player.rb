@@ -26,9 +26,34 @@ class Sunny
         alliances = Alliance.where("#{loser.id} = ANY (players)")
         if alliances.exists?
             alliances.each do |alliance|
-                alliance.update(players: alliance.players - [loser.id])
-                channel = BOT.channel(alliance.channel_id)
-                if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+                begin
+                    alliance.update(players: alliance.players - [loser.id])
+                    channel = BOT.channel(alliance.channel_id)
+                    if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+                        channel.parent = ARCHIVE
+                        BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
+                        channel.permission_overwrites.each do |role, perms|
+                            unless role == EVERYONE
+                                channel.define_overwrite(event.server.member(role), 0, 3072)
+                            end
+                        end
+                        alliance.update(players: [])
+                        
+                    else
+                        BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
+                        channel.permission_overwrites.each do |role, perms|
+                            unless role == EVERYONE
+                                unless role == loser.user_id
+                                    channel.define_overwrite(event.server.member(role), 3072, 0)
+                                else
+                                    channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
+                                end
+                            end
+    
+                        end
+                    end
+                rescue ActiveRecord::RecordNotUnique
+                    channel = BOT.channel(alliance.channel_id)
                     channel.parent = ARCHIVE
                     BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                     channel.permission_overwrites.each do |role, perms|
@@ -37,19 +62,6 @@ class Sunny
                         end
                     end
                     alliance.update(players: [])
-                    
-                else
-                    BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
-                    channel.permission_overwrites.each do |role, perms|
-                        unless role == EVERYONE
-                            unless role == loser.user_id
-                                channel.define_overwrite(event.server.member(role), 3072, 0)
-                            else
-                                channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
-                            end
-                        end
-
-                    end
                 end
 
             end
