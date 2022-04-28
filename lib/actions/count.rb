@@ -253,7 +253,7 @@ class Sunny
                             immunes = Player.where(status: 'Immune').map(&:id)
                             
                             vote_count.each do |k,v|
-                                if v == vote_count.values.max && Player.where(id: k, status: ['Idoled','Immune']).exists?
+                                if v == vote_count.values.max && Player.where(id: k, status: ['Idoled','Immune']).exists? == false
                                     Vote.find_by(player: k, council: council.id).update(allowed: 0, votes: []) 
                                 else
                                     Vote.find_by(player: k, council: council.id).update(allowed: 1, votes: [0]) 
