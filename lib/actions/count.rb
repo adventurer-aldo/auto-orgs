@@ -11,6 +11,14 @@ class Sunny
         return
     end
 
+    BOT.command :tribol, description: "Changes the Tribal Council stage to 1 (after 12h) to all those who have 0." do |event|
+        break unless HOSTS.include? event.user.id
+        Council.where(stage: 2).update(stage: 1)
+        event.respond("The tribal stage has changed.")
+        return
+    end
+
+
     BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
         break unless HOSTS.include? event.user.id
         council = Council.find_by(channel_id: event.channel.id)
@@ -81,7 +89,7 @@ class Sunny
             event.channel.start_typing
             sleep(3)
             event.respond("This is the time to do it in your submissions channel.")
-                3.times do
+            3.times do
                 event.channel.start_typing
                 sleep(5)
                 event.respond("...")
@@ -144,7 +152,9 @@ class Sunny
         end
         precounted_votes = all_votes
         precounted_votes -= Player.where(status: 'Idoled').map(&:id)
-        all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(precounted_votes.max_by {|i| precounted_votes.count(i)})))
+        unless precounted_votes == []
+            all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(precounted_votes.max_by {|i| precounted_votes.count(i)})))
+        end
 
         event.channel.start_typing
         sleep(4)
