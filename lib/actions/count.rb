@@ -213,8 +213,17 @@ class Sunny
                 end
                 sleep(5)
                 event.respond(BOT.user(Player.find_by(id: all_votes[0]).user_id).mention)
-                counted_votes += [all_votes[0]]
-                vote_count[all_votes[0]] += 1
+                all_counted_votes += [all_votes[0]]
+                
+                votee = Player.find_by(id: all_votes[0])
+                if votee.status == 'Idoled'
+                    event.channel.start_typing
+                    sleep(2)
+                    event.respond("**Does not count!**")
+                else
+                    counted_votes += [all_votes[0]]
+                    vote_count[all_votes[0]] += 1
+                end
                 all_votes.delete_at(0)
                 event.channel.start_typing
                 sleep(2)
