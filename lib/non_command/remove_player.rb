@@ -33,7 +33,7 @@ class Sunny
                         channel.parent = ARCHIVE
                         BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                         channel.permission_overwrites.each do |role, perms|
-                            unless role == EVERYONE
+                            unless role == EVERYONE && event.server.role(role).nil? == false
                                 channel.define_overwrite(event.server.member(role), 1088, 2048)
                             end
                         end
@@ -42,7 +42,7 @@ class Sunny
                     else
                         BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
                         channel.permission_overwrites.each do |role, perms|
-                            unless role == EVERYONE
+                            unless role == EVERYONE && event.server.role(role).nil? == false
                                 unless role == loser.user_id
                                     channel.define_overwrite(event.server.member(role), 3072, 0)
                                 else
@@ -57,7 +57,7 @@ class Sunny
                     channel.parent = ARCHIVE
                     BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
                     channel.permission_overwrites.each do |role, perms|
-                        unless role == EVERYONE
+                        unless role == EVERYONE && event.server.role(role).nil? == false
                             channel.define_overwrite(event.server.member(role), 1088, 2048)
                         end
                     end
