@@ -19,7 +19,7 @@ class Sunny
         if target
             loser = target
             eliminate(loser,event)
-            Council.all.update(status: 5)
+            Council.all.update(stage: 5)
             event.respond("#{loser.name} has been eliminated.")
         end
         return
