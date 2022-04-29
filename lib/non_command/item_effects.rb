@@ -102,7 +102,9 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
                         event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
                         Vote.where(council: council, player: targets.map(&:id)).each do |vote|
-                            vote.update(allowed: vote.allowed - 1, votes: vote.votes.delete_at(vote.votes.size - 1))
+                            a = vote.votes
+                            a.delete_at(a.size - 1)
+                            vote.update(allowed: vote.allowed - 1, votes: a)
                         end
 
                         VOTE.where(council: council, player: player.id).each do |vote|
@@ -164,7 +166,9 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
 
                         event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
                         Vote.where(council: council, player: targets.map(&:id)).each do |vote|
-                            vote.update(allowed: vote.allowed - 1, votes: vote.votes.delete_at(vote.votes.size - 1))
+                            a = vote.votes
+                            a.delete_at(a.size - 1)
+                            vote.update(allowed: vote.allowed - 1, votes: a)
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
