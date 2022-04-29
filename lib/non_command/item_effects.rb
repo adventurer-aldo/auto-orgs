@@ -77,6 +77,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
     
                     event.respond("You didn't pick a target...") if await == nil
                     break if await == nil
+
+                    content = await.message.content
     
                     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
@@ -133,6 +135,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
     
                     event.respond("You didn't pick a target...") if await == nil
                     break if await == nil
+
+                    content = await.message.content
     
                     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
                     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
