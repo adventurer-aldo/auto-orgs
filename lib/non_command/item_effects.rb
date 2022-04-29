@@ -105,6 +105,10 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                             vote.update(allowed: vote.allowed - 1, votes: vote.votes.delete_at(vote.votes.size - 1))
                         end
 
+                        VOTE.where(council: council, player: player.id).each do |vote|
+                            vote.update(allowed: vote.allowed + 1, votes: vote.votes + [0])
+                        end
+
                         BOT.channel(council.channel_id).send_embed do |embed|
                             embed.title = "**#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!**"
                             embed.description = "This advantage steals one of the target's votes and allows the owner of this advantage to cast an extra vote with the stolen parchment.."
