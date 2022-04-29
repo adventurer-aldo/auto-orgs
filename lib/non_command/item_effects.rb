@@ -51,7 +51,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                     vote = Vote.find_by(council: council.id, player: player.id)
 
                     BOT.channel(council.channel_id).send_embed do |embed|
-                        embed.title = "**#{player.name} used #{item.name}!**"
+                        embed.title = "#{player.name} used #{item.name}!"
                         embed.description = "They will now be able to cast one additional vote during this tribal council."
                         embed.color = event.server.role(TRIBAL_PING).color
                     end
@@ -112,7 +112,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
-                            embed.title = "**#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!**"
+                            embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
                             embed.description = "This advantage steals one of the target's votes and allows the owner of this advantage to cast an extra vote with the stolen parchment.."
                             embed.color = event.server.role(TRIBAL_PING).color
                         end
@@ -172,7 +172,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
-                            embed.title = "**#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!**"
+                            embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
                             embed.description = "This advantage blocks one of the target's votes."
                             embed.color = event.server.role(TRIBAL_PING).color
                         end
