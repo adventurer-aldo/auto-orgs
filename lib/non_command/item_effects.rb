@@ -107,7 +107,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                             vote.update(allowed: vote.allowed - 1, votes: a)
                         end
 
-                        VOTE.where(council: council, player: player.id).each do |vote|
+                        Vote.where(council: council, player: player.id).each do |vote|
                             vote.update(allowed: vote.allowed + 1, votes: vote.votes + [0])
                         end
 
