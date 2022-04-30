@@ -99,7 +99,7 @@ class Sunny
             topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
             permission_overwrites: perms)
 
-            council = Council.create(tribe: tribe, channel_id: channel.id, season: sets.season)
+            council = Council.create(tribe: tribe, channel_id: channel.id, season: sets.season, stage: 1)
             channel.start_typing
             sleep(6)
             BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
