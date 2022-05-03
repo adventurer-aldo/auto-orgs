@@ -46,7 +46,7 @@ class Sunny
                     end
 
                     if args[1]
-                        content = args[1..args.size-1].join(' ')
+                        content = args[1..-1].join(' ')
                     end
                     
                 elsif allowed_votes < 2 && args[0]
