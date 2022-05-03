@@ -177,10 +177,10 @@ class Sunny
                 unless parchments[all_votes[0]][0] == ''
                     lame = ''
                     event.respond(parchments[all_votes[0]][0])
-                    parchments[all_votes[0]].delete_at(0)
                     event.channel.start_typing
                     sleep(2)
                 end
+                parchments[all_votes[0]].delete_at(0)
                 votee = Player.find_by(id: all_votes[0])
                 event.respond("#{BOT.user(votee.user_id).mention}#{lame}")
                 if votee.status == 'Idoled'
@@ -225,7 +225,16 @@ class Sunny
                     event.respond("**#{COUNTING[total - rank]} seedling eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
                 end
                 sleep(5)
-                event.respond(BOT.user(Player.find_by(id: all_votes[0]).user_id).mention)
+                lame = ' (NO PARCHMENT)'
+                unless parchments[all_votes[0]][0] == ''
+                    lame = ''
+                    event.respond(parchments[all_votes[0]][0])
+                    event.channel.start_typing
+                    sleep(2)
+                end
+                parchments[all_votes[0]].delete_at(0)
+                votee = Player.find_by(id: all_votes[0])
+                event.respond("#{BOT.user(votee.user_id).mention}#{lame}")
                 all_counted_votes += [all_votes[0]]
                 
                 votee = Player.find_by(id: all_votes[0])
