@@ -88,6 +88,11 @@ class Sunny
                 parchments[ret] << vote.parchments[index]
             end
         end
+        parchments.each do |key, value|
+            parchments[key].sort_by! do |d|
+                d == ''
+            end
+        end
         all_votes.shuffle!
         majority = (Float(all_votes.size + 1)/2.0).round
         
