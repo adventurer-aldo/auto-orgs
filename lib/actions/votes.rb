@@ -83,7 +83,7 @@ class Sunny
                     event.respond("There's no single seedling that matches that.") 
                 end
 
-                break if content == '' || text_attempt.size != 1 || id_attempt.size != 1
+                break if content == '' || (text_attempt.size != 1 && id_attempt.size != 1)
 
                 if voted == vote.votes && content != ''
                     image = nil
