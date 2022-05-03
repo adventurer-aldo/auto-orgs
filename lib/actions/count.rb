@@ -81,8 +81,13 @@ class Sunny
             vote.update(votes: sub)
             all_votes += sub
             vote_count[vote.player] = 0
-            sub.each_with_index do |ret, index|
-                parchments[ret] << vote.parchments[index]
+            parchments[vote.player] = []
+        end
+        voters.each do |vote|
+            vote.votes.each do |sub|
+                sub.each_with_index do |ret, index|
+                    parchments[ret] << vote.parchments[index]
+                end
             end
         end
         all_votes.shuffle!
@@ -174,6 +179,7 @@ class Sunny
                 unless parchments[all_votes[0]][0] == ''
                     lame = ''
                     event.respond(parchments[all_votes[0]][0])
+                    parchments[all_votes[0]].delete_at(0)
                     event.channel.start_typing
                     sleep(2)
                 end
