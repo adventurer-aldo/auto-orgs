@@ -170,6 +170,7 @@ class Sunny
                 sleep(2)
                 event.respond(COUNTING[all_counted_votes.size] + ' vote...')
                 sleep(2)
+                if parchments[all_votes[0]][0] == ''
                 event.respond(parchments[all_votes[0]][0])
                 event.channel.start_typing
                 sleep(2)
@@ -324,9 +325,9 @@ class Sunny
                     event.channel.start_typing
                     sleep(3)
                     event.respond("Any final words?")
-                    sleep(3)
-                    puts vote_count.to_s
+                    sleep(60)
                     event.respond("**#{loser.name}...The tribe has spoken.**")
+                    event.respond("https://i.ibb.co/zm9tYcb/spoken.gif")
                 end
 
 

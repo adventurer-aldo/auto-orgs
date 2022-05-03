@@ -104,6 +104,7 @@ class Sunny
             sleep(6)
             BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
             if sets.game_stage == 1
+                BOT.send_message(channel.id, "https://i.ibb.co/qD2FKNF/fires.gif" )
                 jury = Player.where(status: "Jury", season: sets.season)
                 if jury.size > 0
                     channel.start_typing
@@ -116,6 +117,8 @@ class Sunny
                     sleep(2)
                     BOT.send_message(channel.id, "...")
                 end
+            else
+                BOT.send_message(channel.id, "https://i.ibb.co/TYS4wCd/torches.gif")
             end
             channel.start_typing
             sleep(6)
