@@ -89,7 +89,7 @@ class Sunny
                     event.respond("https://i.imgflip.com/45drpi.png")
                     image = event.user.await!(timeout: 120)
                 else
-                    image = event.message
+                    image = event
                 end
 
                 if image
