@@ -84,10 +84,8 @@ class Sunny
             parchments[vote.player] = []
         end
         voters.each do |vote|
-            vote.votes.each do |sub|
-                sub.each_with_index do |ret, index|
-                    parchments[ret] << vote.parchments[index]
-                end
+            vote.votes.each_with_index do |ret, index|
+                parchments[ret] << vote.parchments[index]
             end
         end
         all_votes.shuffle!
