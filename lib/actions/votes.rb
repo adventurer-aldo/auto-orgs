@@ -80,7 +80,7 @@ class Sunny
                     target = Player.find_by(id: id_attempt[0])
                     voted[number] = id_attempt[0]
                 else
-                    event.respond("There's no single seedling that matches that.") unless content == ''
+                    event.respond("There's no single seedling that matches that.") 
                 end
 
                 break if content == '' || text_attempt.size != 1 || id_attempt.size != 1
