@@ -5,7 +5,7 @@ class Sunny
     end
 
     BOT.command :test, description: "idk something random" do |event|
-        event.respond("HsIs!")
+        event.respond("Upload NADA.")
     end
     
 end

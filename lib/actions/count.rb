@@ -63,6 +63,7 @@ class Sunny
         all_counted_votes = []
         counted_votes = []
         vote_count = {}
+        parchments = {}
 
         voters = Vote.where(council: council.id)
         voters.each do |vote|
@@ -76,9 +77,13 @@ class Sunny
                     mapping
                 end
             end
+
             vote.update(votes: sub)
             all_votes += sub
             vote_count[vote.player] = 0
+            sub.each_with_index do |ret, index|
+                parchments[ret] << vote.parchments[index]
+            end
         end
         all_votes.shuffle!
         majority = (Float(all_votes.size + 1)/2.0).round
@@ -164,6 +169,8 @@ class Sunny
                 event.channel.start_typing
                 sleep(2)
                 event.respond(COUNTING[all_counted_votes.size] + ' vote...')
+                sleep(2)
+                event.respond(parchments[all_votes[0]][0])
                 event.channel.start_typing
                 sleep(2)
                 votee = Player.find_by(id: all_votes[0])

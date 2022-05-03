@@ -55,7 +55,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         embed.description = "They will now be able to cast one additional vote during this tribal council."
                         embed.color = event.server.role(TRIBAL_PING).color
                     end
-                    vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last])
+                    vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last])
                     item.update(targets: [player.id], owner: 0)
 
                 when 'steal_vote'
@@ -104,11 +104,13 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         Vote.where(council: council, player: targets.map(&:id)).each do |vote|
                             a = vote.votes
                             a.delete_at(a.size - 1)
-                            vote.update(allowed: vote.allowed - 1, votes: a)
+                            b = vote.parchments
+                            b.delete_at(b.size - 1)
+                            vote.update(allowed: vote.allowed - 1, votes: a, parchments: b)
                         end
 
                         Vote.where(council: council, player: player.id).each do |vote|
-                            vote.update(allowed: vote.allowed + 1, votes: vote.votes + [0])
+                            vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last] )
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
@@ -168,7 +170,9 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         Vote.where(council: council, player: targets.map(&:id)).each do |vote|
                             a = vote.votes
                             a.delete_at(a.size - 1)
-                            vote.update(allowed: vote.allowed - 1, votes: a)
+                            b = vote.parchments
+                            b.delete_at(b.size - 1)
+                            vote.update(allowed: vote.allowed - 1, votes: a, parchments: b)
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|

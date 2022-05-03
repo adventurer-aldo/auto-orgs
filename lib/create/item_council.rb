@@ -139,7 +139,7 @@ class Sunny
                 embed.color = tribes.map(&:color).sample
             end
             players.each do |player|
-                Vote.create(council: council.id, player: player.id)
+                Vote.create(council: council.id, player: player.id, parchments: [''])
             end
             channel.start_typing
             sleep(1)

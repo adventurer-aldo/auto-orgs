@@ -29,6 +29,7 @@ class Sunny
                 event.respond("You do not have any votes!")    
             else
                 voted = vote.votes
+                parchments = vote.parchments
                 enemies = Vote.where(council: council.id).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
                 enemies.delete(nil)
                 options = enemies.map(&:id)
@@ -83,9 +84,34 @@ class Sunny
                 end
 
                 
+                event.respond("Time to upload a parchment!")
+                image = event.user.await!(timeout: 120)
+
+                if image
+                    unless image.attachments == []
+                        parch = image.attachments.first.url
+                        if parch =~ /.*\.[png,jpg]/
+                            parchments[number] = parch
+                            event.respond("**Got your parchment!**")
+                        else
+                            event.respond "I couldn't find a parchment there..."
+                        end
+                    else
+                        parch = image.message.content.split(' ').first[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[jpg,png]/]
+                        unless parch == nil || image.message.content != parch
+                            parchments[number] = parch
+                            event.respond("**Got your parchment!**")
+                        else
+                            event.respond "I couldn't find a parchment there..."
+                        end
+                    end
+                else
+                    event.respond "I couldn't find a parchment there..."
+                end
+                
 
                 if voted == vote.votes && content != ''
-                    updater.update(votes: voted)
+                    updater.update(votes: voted, parchments: parchments)
                     event.respond("You're now voting **#{target.name}**.")
                 else
                     "No vote was submitted..."
