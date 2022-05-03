@@ -83,18 +83,16 @@ class Sunny
                     event.respond("There's no single seedling that matches that.") unless content == ''
                 end
 
-                image = nil
-                if event.message.attachments == []
-                    event.respond("Time to upload a parchment!")
-                    event.respond("https://i.imgflip.com/45drpi.png")
-                    image = event.user.await!(timeout: 120)
-                else
-                    image = event
-                end
-
-                
-                
                 if voted == vote.votes && content != ''
+                    image = nil
+                    if event.message.attachments == []
+                        event.respond("Time to upload a parchment!")
+                        event.respond("https://i.imgflip.com/45drpi.png")
+                        image = event.user.await!(timeout: 120)
+                    else
+                        image = event
+                    end
+                    
                     if image
                         unless image.message.attachments == []
                             parch = image.message.attachments.first.url
@@ -117,7 +115,6 @@ class Sunny
                     else
                         event.respond "I couldn't find a parchment there..."
                     end
-                    
                     updater.update(votes: voted, parchments: parchments)
                     event.respond("You're now voting **#{target.name}**.")
                 else
