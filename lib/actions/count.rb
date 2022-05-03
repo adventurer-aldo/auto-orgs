@@ -170,12 +170,15 @@ class Sunny
                 sleep(2)
                 event.respond(COUNTING[all_counted_votes.size] + ' vote...')
                 sleep(2)
-                if parchments[all_votes[0]][0] == ''
-                event.respond(parchments[all_votes[0]][0])
-                event.channel.start_typing
-                sleep(2)
+                lame = ' (NO PARCHMENT)'
+                unless parchments[all_votes[0]][0] == ''
+                    lame = ''
+                    event.respond(parchments[all_votes[0]][0])
+                    event.channel.start_typing
+                    sleep(2)
+                end
                 votee = Player.find_by(id: all_votes[0])
-                event.respond(BOT.user(votee.user_id).mention)
+                event.respond("#{BOT.user(votee.user_id).mention}#{lame}")
                 if votee.status == 'Idoled'
                     event.channel.start_typing
                     sleep(2)
