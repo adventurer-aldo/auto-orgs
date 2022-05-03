@@ -83,10 +83,14 @@ class Sunny
                     event.respond("There's no single seedling that matches that.") unless content == ''
                 end
 
-                
-                event.respond("Time to upload a parchment!")
-                event.respond("https://i.imgflip.com/45drpi.png")
-                image = event.user.await!(timeout: 120)
+                image = nil
+                if event.message.attachments == []
+                    event.respond("Time to upload a parchment!")
+                    event.respond("https://i.imgflip.com/45drpi.png")
+                    image = event.user.await!(timeout: 120)
+                else
+                    image = event.message
+                end
 
                 if image
                     unless image.message.attachments == []
@@ -98,8 +102,8 @@ class Sunny
                             event.respond "I couldn't find a parchment there..."
                         end
                     else
-                        parch = image.message.content.split(' ').first[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
-                        parch = image.message.content.split(' ').first[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
+                        parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
+                        parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
                         unless parch == nil || image.message.content != parch
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
