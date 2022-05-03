@@ -85,6 +85,7 @@ class Sunny
 
                 
                 event.respond("Time to upload a parchment!")
+                event.respond("https://i.imgflip.com/45drpi.png")
                 image = event.user.await!(timeout: 120)
 
                 if image
