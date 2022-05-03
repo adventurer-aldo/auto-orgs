@@ -88,8 +88,8 @@ class Sunny
                 image = event.user.await!(timeout: 120)
 
                 if image
-                    unless image.attachments == []
-                        parch = image.attachments.first.url
+                    unless image.message.attachments == []
+                        parch = image.message.attachments.first.url
                         if parch =~ /.*\.[png,jpg]/
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
