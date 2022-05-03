@@ -95,10 +95,11 @@ class Sunny
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
                         else
-                            event.respond "I couldn't find an uploaded parchment there..."
+                            event.respond "I couldn't find a parchment there..."
                         end
                     else
-                        parch = image.message.content.split(' ').first[/https:\/\/[cdn,media]\.discordapp\.[net,com]\/attachments.*\.[jpg,png]/]
+                        parch = image.message.content.split(' ').first[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[jpg,png]/]
+                        parch = image.message.content.split(' ').first[/https:\/\/media\.discordapp\.net\/attachments.*\.[jpg,png]/] if parch == nil
                         unless parch == nil || image.message.content != parch
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
