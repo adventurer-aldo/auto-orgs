@@ -92,31 +92,32 @@ class Sunny
                     image = event
                 end
 
-                if image
-                    unless image.message.attachments == []
-                        parch = image.message.attachments.first.url
-                        if parch =~ /.*\.[pj][np]g/
-                            parchments[number] = parch
-                            event.respond("**Got your parchment!**")
+                
+                
+                if voted == vote.votes && content != ''
+                    if image
+                        unless image.message.attachments == []
+                            parch = image.message.attachments.first.url
+                            if parch =~ /.*\.[pj][np]g/
+                                parchments[number] = parch
+                                event.respond("**Got your parchment!**")
+                            else
+                                event.respond "I couldn't find a parchment there..."
+                            end
                         else
-                            event.respond "I couldn't find a parchment there..."
+                            parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
+                            parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
+                            unless parch == nil || image.message.content != parch
+                                parchments[number] = parch
+                                event.respond("**Got your parchment!**")
+                            else
+                                event.respond "I couldn't find a parchment there..."
+                            end
                         end
                     else
-                        parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
-                        parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
-                        unless parch == nil || image.message.content != parch
-                            parchments[number] = parch
-                            event.respond("**Got your parchment!**")
-                        else
-                            event.respond "I couldn't find a parchment there..."
-                        end
+                        event.respond "I couldn't find a parchment there..."
                     end
-                else
-                    event.respond "I couldn't find a parchment there..."
-                end
-                
-
-                if voted == vote.votes && content != ''
+                    
                     updater.update(votes: voted, parchments: parchments)
                     event.respond("You're now voting **#{target.name}**.")
                 else
