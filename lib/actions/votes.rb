@@ -91,15 +91,15 @@ class Sunny
                 if image
                     unless image.message.attachments == []
                         parch = image.message.attachments.first.url
-                        if parch =~ /.*\.[png,jpg]/
+                        if parch =~ /.*\.[pj][np]g/
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
                         else
                             event.respond "I couldn't find a parchment there..."
                         end
                     else
-                        parch = image.message.content.split(' ').first[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[jpg,png]/]
-                        parch = image.message.content.split(' ').first[/https:\/\/media\.discordapp\.net\/attachments.*\.[jpg,png]/] if parch == nil
+                        parch = image.message.content.split(' ').first[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
+                        parch = image.message.content.split(' ').first[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
                         unless parch == nil || image.message.content != parch
                             parchments[number] = parch
                             event.respond("**Got your parchment!**")
