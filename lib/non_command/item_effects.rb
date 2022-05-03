@@ -57,6 +57,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                     end
                     vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last])
                     item.update(targets: [player.id], owner: 0)
+                    event.respond("You successfuly played #{item.name}.")
 
                 when 'steal_vote'
                     targets = []
@@ -120,6 +121,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         end
 
                         item.update(owner: 0, targets: targets.map(&:id))
+                        event.respond("You successfuly played #{item.name}.")
                     else
                         event.respond("Playing this item failed!")
                     end
@@ -182,6 +184,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         end
 
                         item.update(owner: 0, targets: targets.map(&:id))
+                        event.respond("You successfuly played #{item.name}.")
                     else
                         event.respond("Playing this item failed!")
                     end
