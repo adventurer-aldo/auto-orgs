@@ -71,6 +71,7 @@ class Sunny
             sleep(3)
             if rocks[seeds.index(seed)] == 0
                 event.respond("It's a white rock! #{seed.name} is safe.")
+                event.respond "."
             else
                 event.respond("...")
                 event.channel.start_typing
@@ -79,7 +80,9 @@ class Sunny
                 event.channel.start_typing
                 sleep(3)
                 eliminate(seed,event)
+                council.update(stage: 5)
             end
+            break unless rocks[seeds.index(seed)] == 0
         end
         return
     end

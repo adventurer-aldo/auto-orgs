@@ -69,7 +69,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                     end
 
                     event.channel.send_embed do |embed|
-                        embed.title = "Who would you like to play it on?"
+                        embed.title = "Who would you like to play #{item.name} on?"
                         embed.description = text.join("\n")
                         embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                     end
@@ -136,7 +136,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                     end
 
                     event.channel.send_embed do |embed|
-                        embed.title = "Who would you like to play it on?"
+                        embed.title = "Who would you like to play #{item.name} on?"
                         embed.description = text.join("\n")
                         embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                     end
@@ -208,7 +208,7 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
         
                     allowed_targets.times do 
                         event.channel.send_embed do |embed|
-                            embed.title = "Who would you like to play it on?"
+                            embed.title = "Who would you like to play #{item.name} on?"
                             embed.description = text.join("\n")
                             embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                         end
