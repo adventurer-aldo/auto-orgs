@@ -102,16 +102,16 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
                         event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-                        Vote.where(council: council, player: targets.map(&:id)).each do |vote|
-                            a = vote.votes
+                        Vote.where(council: council, player: targets.map(&:id)).each do |vote_block|
+                            a = vote_block.votes
                             a.delete_at(a.size - 1)
-                            b = vote.parchments
+                            b = vote_block.parchments
                             b.delete_at(b.size - 1)
-                            vote.update(allowed: vote.allowed - 1, votes: a, parchments: b)
+                            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
                         end
 
-                        Vote.where(council: council, player: player.id).each do |vote|
-                            vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last] )
+                        Vote.where(council: council, player: player.id).each do |vote_add|
+                            vote_add.update(allowed: vote_add.allowed + 1, votes: vote_add.votes + [vote_add.votes.last], parchments: vote_add.parchments + [vote_add.parchments.last] )
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
@@ -169,12 +169,12 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
                         event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-                        Vote.where(council: council, player: targets.map(&:id)).each do |vote|
-                            a = vote.votes
+                        Vote.where(council: council, player: targets.map(&:id)).each do |vote_block|
+                            a = vote_block.votes
                             a.delete_at(a.size - 1)
-                            b = vote.parchments
+                            b = vote_block.parchments
                             b.delete_at(b.size - 1)
-                            vote.update(allowed: vote.allowed - 1, votes: a, parchments: b)
+                            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
                         end
 
                         BOT.channel(council.channel_id).send_embed do |embed|
@@ -215,8 +215,8 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
         
                         await = event.user.await!(timeout: 80)
         
-                        event.respond("You didn't pick a target...") if await == nil
-                        break if await == nil
+                        event.respond("You didn't pick a target...") if await.nil?
+                        break if await.nil?
         
         
                         content = await.message.content.gsub('myself', player.id.to_s)
@@ -240,8 +240,6 @@ ah yes, the find command. although, a find command kinda...doesn't jive right no
                         event.respond("Playing this item failed!")
                     end
                     
-                when 'idol_nullifier'
-                when 'swap_idol'
                 end
             end
 

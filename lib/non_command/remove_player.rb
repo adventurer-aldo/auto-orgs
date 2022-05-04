@@ -32,7 +32,7 @@ class Sunny
                     if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
                         channel.parent = ARCHIVE
                         BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
-                        channel.permission_overwrites.each do |role, perms|
+                        channel.permission_overwrites.each do |role, _perms|
                             unless role == EVERYONE || event.server.role(role).nil? == false
                                 channel.define_overwrite(event.server.member(role), 1088, 2048)
                             end
@@ -41,7 +41,7 @@ class Sunny
                         
                     else
                         BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
-                        channel.permission_overwrites.each do |role, perms|
+                        channel.permission_overwrites.each do |role, _perms|
                             unless role == EVERYONE || event.server.role(role).nil? == false
                                 unless role == loser.user_id
                                     channel.define_overwrite(event.server.member(role), 3072, 0)
@@ -56,7 +56,7 @@ class Sunny
                     channel = BOT.channel(alliance.channel_id)
                     channel.parent = ARCHIVE
                     BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
-                    channel.permission_overwrites.each do |role, perms|
+                    channel.permission_overwrites.each do |role, _perms|
                         unless role == EVERYONE || event.server.role(role).nil? == false
                             channel.define_overwrite(event.server.member(role), 1088, 2048)
                         end

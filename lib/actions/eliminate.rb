@@ -23,13 +23,14 @@ class Sunny
             event.respond("#{loser.name} has been eliminated.")
         end
         return
+        
     end
 
     BOT.command :rocks, description: "Quick and simple goes to rocks." do |event, *args|
         break unless HOSTS.include? event.user.id
+
         council = Council.find_by(channel_id: event.channel.id)
-        break if council.id == nil
-        rank = Player.where(season: Setting.last.season, status: ALIVE).size
+        break if council.id.nil?
 
         event.message.delete
         event.channel.start_typing
@@ -37,17 +38,17 @@ class Sunny
         event.respond("We'll be drawing **ROCKS**")
         event.channel.start_typing
         sleep(3)
-        event.respond("The Seedling that draws the purple rock will be out of the game immediately.")
+        event.respond('The Seedling that draws the purple rock will be out of the game immediately.')
         event.channel.start_typing
         sleep(3)
 
         seeds = nil
         stat = nil
-        if args.join(' ').downcase == 'in'
-            stat = 'In'
-        else
-            stat = 'Idoled'
-        end
+        stat =  if args.join(' ').downcase == 'in'
+                    'In'
+                else
+                    'Idoled'
+                end
 
         seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat) }
         seeds.delete(nil)
@@ -57,7 +58,7 @@ class Sunny
         sleep(3)
         event.respond("Let's get to it!")
         seeds.delete(nil)
-        rocks = seeds.map { |n| 0 }
+        rocks = seeds.map { 0 }
         rocks[0] = 1
         rocks.shuffle!
         seeds.each do |seed|
@@ -66,14 +67,14 @@ class Sunny
             event.respond("#{seed.name} draws a rock...")
             event.channel.start_typing
             sleep(3)
-            event.respond("...")
+            event.respond('...')
             event.channel.start_typing
             sleep(3)
             if rocks[seeds.index(seed)] == 0
                 event.respond("It's a white rock! #{seed.name} is safe.")
-                event.respond "."
+                event.respond '.'
             else
-                event.respond("...")
+                event.respond('...')
                 event.channel.start_typing
                 sleep(3)
                 event.respond("It's a **purple rock**.")
@@ -82,7 +83,7 @@ class Sunny
                 eliminate(seed,event)
                 council.update(stage: 5)
             end
-            break unless rocks[seeds.index(seed)] == 0
+            break unless rocks[seeds.index(seed)].zero?
         end
         return
     end
