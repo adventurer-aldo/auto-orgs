@@ -1,6 +1,6 @@
 class Sunny
 
-    BOT.command :vote, description: "Vote a seedling for Tribal Council" do |event, *args|
+    BOT.command :vote, description: 'Vote a seedling for Tribal Council' do |event, *args|
         # ===========================================================================================
         # Once votes are TOTAL_ALLOWED_VOTES == SUBMITTED VOTES, then enter Lock phase.
         # Once you lock, the Bot will make tribal council by itself.
@@ -10,11 +10,11 @@ class Sunny
 
         break unless event.user.id.player?
 
-        if [0,1].include? Setting.last.game_stage
-            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
-        else
-            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
-        end
+        player = if [0,1].include? Setting.last.game_stage
+                     Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+                 else
+                     Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
+                 end
         break unless event.channel.id == player.submissions
 
         vote = Vote.where(player: player.id)
@@ -26,7 +26,7 @@ class Sunny
             
             allowed_votes = vote.allowed
             if allowed_votes <= 0
-                event.respond("You do not have any votes!")    
+                event.respond('You do not have any votes!')    
             else
                 voted = vote.votes
                 parchments = vote.parchments
@@ -36,7 +36,7 @@ class Sunny
 
 
                 
-                content = ""
+                content = ''
                 number = 0
                 if allowed_votes > 1 && args[0]
                     
@@ -46,20 +46,20 @@ class Sunny
                     end
 
                     if args[1]
-                        content = args[1..-1].join(' ')
+                        content = args[1..].join(' ')
                     end
                     
                 elsif allowed_votes < 2 && args[0]
                     content = args.map(&:downcase).join(' ')
                 end
 
-                if content == ""
+                if content == ''
                     text = enemies.map do |en|
                         "**#{en.id}** — #{en.name}"
                     end
 
                     event.channel.send_embed do |embed|
-                        embed.title = "Who would you like to vote?"
+                        embed.title = 'Who would you like to vote?'
                         embed.description = text.join("\n")
                         embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
                     end
@@ -88,8 +88,8 @@ class Sunny
                 if voted == vote.votes && content != ''
                     image = nil
                     if event.message.attachments == []
-                        event.respond("Time to upload a parchment!")
-                        event.respond("https://i.imgflip.com/45drpi.png")
+                        event.respond('Time to upload a parchment!')
+                        event.respond('https://i.imgflip.com/45drpi.png')
                         image = event.user.await!(timeout: 120)
                     else
                         image = event
@@ -100,16 +100,16 @@ class Sunny
                             parch = image.message.attachments.first.url
                             if parch =~ /.*\.[pj][np]g/
                                 parchments[number] = parch
-                                event.respond("**Got your parchment!**")
+                                event.respond('**Got your parchment!**')
                             else
                                 event.respond "I couldn't find a parchment there..."
                             end
                         else
                             parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
                             parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
-                            unless parch == nil || image.message.content != parch
+                            if !parch.nil? || image.message.content == parch
                                 parchments[number] = parch
-                                event.respond("**Got your parchment!**")
+                                event.respond('**Got your parchment!**')
                             else
                                 event.respond "I couldn't find a parchment there..."
                             end
@@ -120,7 +120,7 @@ class Sunny
                     updater.update(votes: voted, parchments: parchments)
                     event.respond("You're now voting **#{target.name}**.")
                 else
-                    "No vote was submitted..."
+                    'No vote was submitted...'
                 end
             end
         end

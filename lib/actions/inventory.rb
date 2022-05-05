@@ -1,20 +1,21 @@
 class Sunny
 
-    BOT.command :inventory, description: "Shows your items and current votes." do |event|
+    BOT.command :inventory, description: 'Shows your items and current votes.' do |event|
         break unless event.user.id.player?
+
         player = nil
-        if [0,1].include? Setting.last.game_stage
-            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
-        else
-            player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
-        end
+        player = if [0,1].include? Setting.last.game_stage
+                     Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+                 else
+                     Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
+                 end
         break if player.nil?
 
         break unless [player.confessional,player.submissions].include? event.channel.id
 
         items = Item.where(owner: player.id)
 
-        text = ""
+        text = ''
 
         items = items.map do |item|
             "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
@@ -23,36 +24,34 @@ class Sunny
         text << items.join("\n\n")
 
         vote = Vote.where(player: player.id)
-        council = Council.where(id: vote.map(&:council), stage: [0,1,2,3])
+        council = Council.where(id: vote.map(&:council), stage: [0, 1, 2, 3])
         if vote.exists? && council.exists?
             council = council.first
             vote = Vote.where(council: council.id).and(vote).first.votes
             vote.map! do |parch|
-                if parch == 0
+                if parch.zero?
                     if vote.size == 1
-                        "No One"
+                        'No One'
                     elsif vote.size > 1
-                        "Vote " + (vote.index(parch) + 1).to_s + ": No One"
+                        "Vote #{vote.index(parch) + 1}: No One"
                     end
                 else
                     if vote.size == 1
                         Player.find_by(id: parch).name
                     elsif vote.size > 1
-                        "Vote " + (vote.index(parch) + 1).to_s + ": " + Player.find_by(id: parch).name
+                        "Vote #{vote.index(parch) + 1} : #{Player.find_by(id: parch).name}"
                     end
                 end
             end
 
-            text << "\n\n**For the Tribal Council, currently voting:**\n" + vote.join("\n")
+            text << "\n\n**For the Tribal Council, currently voting:**\n#{vote.join("\n")}"
         end
 
         event.channel.send_embed do |embed|
             embed.title = "#{player.name}'s Inventory"
             embed.description = text
             tribe = Tribe.find_by(id: player.tribe)
-            if tribe
-                embed.color = event.server.role(tribe.role_id).color
-            end
+            embed.color = event.server.role(tribe.role_id).color if tribe
         end
 
 

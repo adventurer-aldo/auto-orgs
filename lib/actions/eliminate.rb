@@ -1,6 +1,6 @@
 class Sunny
 
-    BOT.command :eliminate, description: "Removes a castaway from the game." do |event, *args|
+    BOT.command :eliminate, description: 'Removes a castaway from the game.' do |event, *args|
         break unless HOSTS.include? event.user.id
         content = args.join(' ')
         enemies = Player.where(season: Setting.last.season, status: ALIVE)
