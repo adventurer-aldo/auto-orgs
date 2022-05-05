@@ -103,7 +103,7 @@ class Sunny
             event.respond("This is the time to do it in your submissions channel.")
 
             i = 0
-            max = 7
+            max = 10
 
             while i < max
                 i += 1
@@ -206,7 +206,7 @@ class Sunny
                 all_votes.delete_at(0)
                 event.channel.start_typing
                 sleep(2)
-                if vote_count.values.count(vote_count.values.max) > 1 || counted_votes.size % 4 == 0
+                if vote_count.values.count(vote_count.values.max) > 1 || (counted_votes.size % 4).zero?
                     revel = []
                     unless counted_votes.empty?
                         vote_count.sort_by { |_n, k| k }.reverse.each do |k, v|
@@ -269,10 +269,10 @@ class Sunny
                 event.channel.start_typing
                 sleep(2)
                 if vote_count.values.count(vote_count.values.max) > 1
-                    event.respond("**We're tied!**")
+                    event.respond(["**We're tied!**", '**To be determined!**', '**is still unknown!**'].sample)
                     event.channel.start_typing
                     sleep(3)
-                    event.respond("Here's how we'll do this.")
+                    event.respond(["Here's how we'll do this.", "Alright, let's do something about this...", 'Bummer. Here is what we will do next...'].sample)
                     event.channel.start_typing
                     if rank == 4
                         sleep(3)
