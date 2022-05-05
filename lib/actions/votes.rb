@@ -83,7 +83,7 @@ class Sunny
                     event.respond("There's no single seedling that matches that.") unless content == ''
                 end
 
-                event.respond('Timed out!') if content == '' || (text_attempt.size != 1 && id_attempt.size != 1)
+                event.respond('Timed out! Take your time to decide who you really want to vote.') if content == '' || (text_attempt.size != 1 && id_attempt.size != 1)
                 break if content == '' || (text_attempt.size != 1 && id_attempt.size != 1)
 
                 if voted == vote.votes && content != ''
