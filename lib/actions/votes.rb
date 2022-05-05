@@ -91,7 +91,7 @@ class Sunny
                         event.respond('Time to upload a parchment!')
                         file = nil
                         begin
-                            file = URI.parse('https://i.imgflip.com/45drpi.jpg').open
+                            file = URI.parse('https://i.imgflip.com/45drpi.png').open
                         rescue OpenURI::HTTPError
                             file = URI.parse('https://preview.redd.it/3j7ip4vuoxh81.png?width=680&format=png&auto=webp&s=a55f0d9832a064ff80a24e3519b0bc67b4df60c5').open
                         end
@@ -112,7 +112,7 @@ class Sunny
                             end
                         else
                             parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
-                            parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch == nil
+                            parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch.nil?
                             if !parch.nil? || image.message.content == parch
                                 parchments[number] = parch
                                 event.respond('**Got your parchment!**')
