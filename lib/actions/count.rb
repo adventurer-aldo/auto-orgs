@@ -120,7 +120,7 @@ class Sunny
                         event.respond("**#{owner.name} stands!**")
                         event.channel.start_typing
                         sleep(4)
-                        event.respond("*I'd like to play this on **#{targets.map(&:name).join('**, **').gsub(owner.name,'myself')}***")
+                        event.respond("*\"I'd like to play this on **#{targets.map(&:name).join('**, **').gsub(owner.name,'myself')}**\"*")
                         event.channel.send_embed do |embed|
                             embed.title = item.name
                             embed.description = item.description
@@ -220,10 +220,11 @@ class Sunny
                         event.respond(revel)
                         event.channel.start_typing
                         sleep(2)
+                        if all_votes.size > 1
+                            event.respond("**#{all_votes.size} votes left.**")
+                        end
                     end
-                    if all_votes.size > 1
-                        event.respond("**#{all_votes.size} votes left.**")
-                    elsif all_votes.size == 1
+                    if all_votes.size == 1
                         event.respond('**ONE VOTE LEFT**')
                     end
                 end
