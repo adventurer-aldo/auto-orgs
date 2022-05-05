@@ -209,7 +209,7 @@ class Sunny
                 if vote_count.values.count(vote_count.values.max) > 1 || counted_votes.size % 4 == 0
                     revel = []
                     unless counted_votes.empty?
-                        vote_count.each do |k,v|
+                        vote_count.sort_by { |_n, k| k }.reverse.each do |k, v|
                             if v == 1
                                 revel << "#{v} vote #{Player.find_by(id: k).name}"
                             elsif v > 1
