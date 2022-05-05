@@ -71,7 +71,7 @@ class Sunny
                 end
 
                 target = nil
-                text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content }
+                text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
                 id_attempt = options.filter { |id| id == content.to_i }
                 if text_attempt.size == 1
                     target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)

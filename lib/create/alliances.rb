@@ -41,6 +41,8 @@ class Sunny
 
             end
 
+            event.respond "You did not give me any options..." if choices == []
+            break if choices == []
 
             choices.map! do |option|
                 if option.to_i == 0
