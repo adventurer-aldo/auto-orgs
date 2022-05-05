@@ -108,7 +108,7 @@ class Sunny
                         else
                             parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
                             parch = image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/] if parch.nil?
-                            if !parch.nil? || image.message.content == parch
+                            if !parch.nil?
                                 parchments[number] = parch
                                 event.respond('**Got your parchment!**')
                             else
