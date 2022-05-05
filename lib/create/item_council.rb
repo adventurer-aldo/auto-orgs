@@ -136,6 +136,9 @@ class Sunny
                 BOT.send_message(channel.id, 'It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you can use the `!vote` command in your submissions channel.')
 
             end
+            
+            file = URI.parse(PARCHMENT).open
+            BOT.send_file(channel.id, file, filename: 'parchment.png')
 
             channel.send_embed do |embed|
                 embed.title = 'Seedlings attending Tribal Council:'

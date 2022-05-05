@@ -47,15 +47,16 @@ class Sunny
     Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
     
     
-    DEFINED_FUNCTIONS = %W(
-        idol 
-        idol_nullifier 
+    DEFINED_FUNCTIONS = %w[
+        idol
+        idol_nullifier
         steal_vote
         block_vote
         extra_vote
         swap_idol
-        )
+    ]
 
     # MISC
     CONFIRMATIONS = ['yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
+    PARCHMENT = 'https://i.imgflip.com/45drpi.png'
 end

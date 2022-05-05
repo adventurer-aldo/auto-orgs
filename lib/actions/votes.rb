@@ -89,7 +89,7 @@ class Sunny
                     image = nil
                     if event.message.attachments.empty?
                         event.respond('Time to upload a parchment!')
-                        file = URI.parse('https://i.imgflip.com/45drpi.png').open
+                        file = URI.parse(PARCHMENT).open
                         BOT.send_file(event.channel, file, filename: 'parchment.png')
                         image = event.user.await!(timeout: 120)
                     else
