@@ -51,7 +51,11 @@ class Sunny
             break unless msger
             if CONFIRMATIONS.include? msger.message.content
                 item.update(owner: targets.first.id)
-                event.respond("**#{item.name} now belongs to **#{targets.first.name}**")
+                event.respond("**#{item.name}** now belongs to **#{targets.first.name}**")
+                BOT.channel(targets.first.submissions).send_embed do |embed|
+                    embed.title = "#{player.name} has sent you an item!"
+                    embed.description = "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
+                end
             else
                 event.respond 'Okay!'
             end

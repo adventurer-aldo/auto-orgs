@@ -1,6 +1,6 @@
 class Sunny
 
-    BOT.command :immunity, description: "Grants immunity to all members of a role and the mentioned users." do |event|
+    BOT.command :immunity, description: 'Grants immunity to all members of a role and the mentioned users.' do |event|
         break unless HOSTS.include? event.user.id
 
         players = []

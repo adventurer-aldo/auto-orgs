@@ -8,11 +8,11 @@ require 'require_all'
 Dotenv.load
 
 class Sunny
-    BOT = Discordrb::Commands::CommandBot.new token: ENV['TOKEN'], prefix: "!"
+    BOT = Discordrb::Commands::CommandBot.new token: ENV['TOKEN'], prefix: '!'
 
     def self.run
         BOT.run
-        puts "Sunny Go!"
+        puts 'Sunny Go!'
     end
 
 end
@@ -23,4 +23,3 @@ require_all 'models'
 require_all 'lib'
 
 Sunny.run
-
