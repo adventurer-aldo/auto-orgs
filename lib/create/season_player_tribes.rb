@@ -28,14 +28,14 @@ class Sunny
         cast.each do |person|
             player =  Player.create(user_id: person.id, name: person.display_name, season: Setting.last.season,
             confessional: event.server.create_channel(
-                person.display_name + '-confessional',
+                "#{person.display_name}-confessional",
                 parent: CONFESSIONALS,
-                topic: person.display_name + "'s Confessional. Talk to the spectators about your game here!",
+                topic: "#{person.display_name}'s Confessional. Talk to the spectators about your game here!",
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
                 TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
-            submissions: event.server.create_channel(person.display_name + '-submissions',
+            submissions: event.server.create_channel("#{person.display_name}-submissions",
                 parent: CONFESSIONALS,
-                topic: "Your Submissions channel. Submit challenge scores, check your inventory and play your items!",
+                topic: 'Your Submissions channel. Submit challenge scores, check your inventory and play your items!',
                 permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
                 DENY_EVERY_SPECTATE]).id)
 
@@ -46,12 +46,12 @@ class Sunny
             BOT.channel(player.confessional).sort_after(BOT.channel(PLAYING_SPLITTER))
             BOT.channel(player.submissions).sort_after(BOT.channel(player.confessional))
             BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
-            BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!inventory`!")
+            BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!help`!")
         end
-        return "The cast has been selected!"
+        return 'The cast has been selected!'
     end
 
-    BOT.command :tribes, description: "Creates new tribes and automatically puts alive seedlings in them." do |event, *args|
+    BOT.command :tribes, description: 'Creates new tribes and automatically puts alive seedlings in them.' do |event, *args|
         break unless HOSTS.include? event.user.id
         event.message.delete
         tribes = event.message.role_mentions
@@ -62,9 +62,9 @@ class Sunny
                 @set_tribes = []
                 tribes.each do |tribe|
                     # > Voice Channel for the Tribe
-                    #event.server.create_channel(tribe.name + ' Voice',2, parent: TRIBES,
-                    #permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
-                    #Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
+                    event.server.create_channel(tribe.name + ' Voice',2, parent: TRIBES,
+                    permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
+                    Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
                     chan = event.server.create_channel(tribe.name + '-camp',
                     parent: TRIBES,
                     topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
@@ -158,10 +158,10 @@ class Sunny
                 @set_tribes = []
                 tribes.each do |tribe|
                     # Voice
-                    #event.server.create_channel(tribe.name,2,
-                    #parent: TRIBES,
-                    #permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
-                    #Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
+                    event.server.create_channel(tribe.name,2,
+                    parent: TRIBES,
+                    permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
+                    Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
                     chan = event.server.create_channel(tribe.name + '-camp',
                     parent: TRIBES,
                     topic: tribe.name + "'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
@@ -191,7 +191,7 @@ class Sunny
 
             return
         else
-            return "You need to select at least one **tribe**!"
+            return 'You need to select at least one **tribe**!'
         end
     end
 

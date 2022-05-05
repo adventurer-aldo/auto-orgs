@@ -279,7 +279,7 @@ class Sunny
                         event.respond("We'll do a **Firemaking Challenge.**")
                         event.channel.start_typing
                         sleep(3)
-                        event.respond("The winner will get to move on to the **Final 3**.")
+                        event.respond('The winner will get to move on to the **Final 3**.')
                         event.respond("#{BOT.user(HOSTS.sample).mention} can take it from here.")
                     else
                         sleep(3)
