@@ -359,7 +359,7 @@ class Sunny
                     event.channel.start_typing
                     sleep(3)
                     event.respond('Any final words?')
-                    sleep(60)
+                    sleep(300)
                     event.respond("**#{loser.name}...The tribe has spoken.**")
                     file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
                     BOT.send_file(event.channel, file, filename: 'spoken.gif')
