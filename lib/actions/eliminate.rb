@@ -81,6 +81,7 @@ class Sunny
                 event.channel.start_typing
                 sleep(3)
                 eliminate(seed,event)
+                event.respond("#{seed.name} has unfortunately been eliminated from the game.")
                 council.update(stage: 5)
             end
             break unless rocks[seeds.index(seed)].zero?

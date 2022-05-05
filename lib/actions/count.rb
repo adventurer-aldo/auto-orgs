@@ -133,7 +133,7 @@ class Sunny
                             when 'idol'
                                 event.channel.start_typing
                                 sleep(2)
-                                event.respond("This is a valid item!")
+                                event.respond('This is a valid item!')
                                 
                                 event.channel.start_typing
                                 sleep(3)
@@ -145,38 +145,37 @@ class Sunny
                         end
                         event.channel.start_typing
                         sleep(3)
-                        event.respond("...")
+                        event.respond('...')
                         event.channel.start_typing
                         sleep(3)
-                        event.respond("Anyone else?")
+                        event.respond('Anyone else?')
                     end
                 else
                     event.channel.start_typing
                     sleep(5)
-                    event.respond("...")
+                    event.respond('...')
                 end
             end
         end
         precounted_votes = all_votes
         precounted_votes -= Player.where(status: 'Idoled').map(&:id)
         unless precounted_votes == []
-            all_votes.insert((all_votes.size-1),all_votes.delete_at(all_votes.index(precounted_votes.max_by {|i| precounted_votes.count(i)})))
+            all_votes.insert((all_votes.size - 1), all_votes.delete_at(all_votes.index(precounted_votes.max_by { |i| precounted_votes.count(i)})))
         end
 
         event.channel.start_typing
         sleep(4)
-        event.respond("Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.")
+        event.respond('Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.')
         event.channel.start_typing
         sleep(2)
-        event.respond("...")
+        event.respond('...')
         
         loop do
             if all_votes.size > 1 && vote_count[all_votes[0]] + 1 != majority
                 event.channel.start_typing
                 sleep(2)
-                event.respond(COUNTING[all_counted_votes.size] + ' vote...')
+                event.respond("#{COUNTING[all_counted_votes.size]} vote...")
                 sleep(2)
-                file = nil
                 lame = ' (NO PARCHMENT)'
                 unless parchments[all_votes[0]][0] == ''
                     begin
@@ -225,7 +224,7 @@ class Sunny
                         end
                     end
                     if all_votes.size == 1
-                        event.respond('**ONE VOTE LEFT**')
+                        event.respond(['**ONE VOTE LEFT**','**ONLY ONE VOTE LEFT**','**IT ALL COMES DOWN TO THE LAST VOTE**'])
                     end
                 end
             elsif all_votes.size == 1 || vote_count[all_votes[0]] + 1 == majority
