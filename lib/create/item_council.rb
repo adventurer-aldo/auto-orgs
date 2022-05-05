@@ -104,41 +104,41 @@ class Sunny
             sleep(6)
             BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
             if sets.game_stage == 1
-                BOT.send_message(channel.id, "https://i.ibb.co/qD2FKNF/fires.gif" )
-                jury = Player.where(status: "Jury", season: sets.season)
-                if jury.size > 0
+                BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
+                jury = Player.where(status: 'Jury', season: sets.season)
+                if jury.size.positive?
                     channel.start_typing
                     sleep(4)
-                    BOT.send_message(channel.id, "**And welcome to the members of our " + event.server.role(JURY).mention + ":**")
+                    BOT.send_message(channel.id, "**And welcome to the members of our #{event.server.role(JURY).mention}:**")
                     channel.start_typing
                     sleep(2)
-                    BOT.send_message(channel.id, "**" + jury.map(&:name).join("\n") + "**")
+                    BOT.send_message(channel.id, "**#{jury.map(&:name).join("\n")}**")
                     channel.start_typing
                     sleep(2)
-                    BOT.send_message(channel.id, "...")
+                    BOT.send_message(channel.id, '...')
                 end
             else
-                BOT.send_message(channel.id, "https://i.ibb.co/TYS4wCd/torches.gif")
+                BOT.send_file(channel.id, URI.parse('https://i.ibb.co/TYS4wCd/torches.gif').open, filename: 'torches.gif')
             end
             channel.start_typing
             sleep(6)
-            if Setting.last.game_stage == 0
-                BOT.send_message(channel.id, "Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear..." )
+            if Setting.last.game_stage.zero?
+                BOT.send_message(channel.id, 'Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear...')
                 channel.start_typing
                 sleep(7)
-                BOT.send_message(channel.id, "But you can decide, as a group, which seedling should disappear. For that, you can use the `!vote` command in your submissions channel.")
+                BOT.send_message(channel.id, 'But you can decide, as a group, which seedling should disappear. For that, you can use the `!vote` command in your submissions channel.')
             else
-                BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you." )
+                BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you.")
                 channel.start_typing
                 sleep(7)
-                BOT.send_message(channel.id, "It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you can use the `!vote` command in your submissions channel.")
+                BOT.send_message(channel.id, 'It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you can use the `!vote` command in your submissions channel.')
 
             end
 
             channel.send_embed do |embed|
-                embed.title = "Seedlings attending Tribal Council:"
+                embed.title = 'Seedlings attending Tribal Council:'
                 embed.description = players.map(&:name).join("\n")
-                embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: "You have more or less 24 hours to decide on who to vote!")
+                embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'You have more or less 24 hours to decide on who to vote!')
                 embed.color = tribes.map(&:color).sample
             end
             players.each do |player|
@@ -155,15 +155,15 @@ class Sunny
 
             end
 
-            if immunes.size > 0
+            if immunes.size.positive?
                 BOT.send_message(channel.id,"Everyone but **#{immunes.map(&:name).join(', ')}** are fair game.")
             end
             
-            BOT.send_message(channel.id, "Good luck!")
+            BOT.send_message(channel.id, 'Good luck!')
         end
     end
 
-    BOT.command :ftc, description: "Begins the Final Tribal Council." do |event|
+    BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
         break unless HOSTS.include? event.user.id
 
         finalists = Player.where(status: ALIVE, season: Setting.last.season)
@@ -171,7 +171,7 @@ class Sunny
 
         Setting.last.update(game_stage: 2)
         council = Council.create(tribe: [finalists.first.tribe], channel_id: event.server.create_channel(
-            "final-tribal-council",
+            'final-tribal-council',
             topic: "The last time we'll read the votes during this season of Maskvivor.",
             parent: FTC,
             permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]

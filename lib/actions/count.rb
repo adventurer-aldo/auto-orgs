@@ -176,10 +176,18 @@ class Sunny
                 sleep(2)
                 event.respond(COUNTING[all_counted_votes.size] + ' vote...')
                 sleep(2)
+                file = nil
                 lame = ' (NO PARCHMENT)'
                 unless parchments[all_votes[0]][0] == ''
-                    lame = ''
-                    event.respond(parchments[all_votes[0]][0])
+                    begin
+                        file = URI.parse(parchments[all_votes[0]][0]).open
+                        filenam = '.png'
+                        filenam = '.jpg' if filenam.include? '.jpg'
+                        BOT.send_file(event.channel, file, filename: "parchment#{filenam}")
+                        lame = ''
+                    rescue OpenURI::HTTPError
+
+                    end
                     event.channel.start_typing
                     sleep(2)
                 end
@@ -189,7 +197,7 @@ class Sunny
                 if votee.status == 'Idoled'
                     event.channel.start_typing
                     sleep(2)
-                    event.respond("**Does not count!**")
+                    event.respond('**Does not count!**')
                 else
                     counted_votes += [all_votes[0]]
                     vote_count[all_votes[0]] += 1
@@ -200,7 +208,7 @@ class Sunny
                 sleep(2)
                 if vote_count.values.count(vote_count.values.max) > 1 || counted_votes.size % 4 == 0
                     revel = []
-                    unless counted_votes == []
+                    unless counted_votes.empty?
                         vote_count.each do |k,v|
                             if v == 1
                                 revel << "#{v} vote #{Player.find_by(id: k).name}"
@@ -208,7 +216,7 @@ class Sunny
                                 revel << "#{v} votes #{Player.find_by(id: k).name}"
                             end
                         end
-                        revel = "That's " + revel.join(', ')
+                        revel = "That's #{revel.join(', ')}"
                         event.respond(revel)
                         event.channel.start_typing
                         sleep(2)
@@ -216,15 +224,16 @@ class Sunny
                     if all_votes.size > 1
                         event.respond("**#{all_votes.size} votes left.**")
                     elsif all_votes.size == 1
-                        event.respond("**ONE VOTE LEFT**")
+                        event.respond('**ONE VOTE LEFT**')
                     end
                 end
             elsif all_votes.size == 1 || vote_count[all_votes[0]] + 1 == majority
                 event.channel.start_typing
                 sleep(2)
-                if Setting.last.game_stage == 0
+                case Setting.last.game_stage
+                when 0
                     event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Maskvivor is...**")
-                elsif Setting.last.game_stage == 1
+                when 1
                     event.respond("**#{COUNTING[total - rank]} seedling eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
                 end
                 sleep(5)
@@ -244,7 +253,7 @@ class Sunny
                 if votee.status == 'Idoled'
                     event.channel.start_typing
                     sleep(2)
-                    event.respond("**Does not count!**")
+                    event.respond('**Does not count!**')
                 else
                     counted_votes += [all_votes[0]]
                     vote_count[all_votes[0]] += 1
@@ -257,8 +266,8 @@ class Sunny
                     event.channel.start_typing
                     sleep(3)
                     event.respond("Here's how we'll do this.")
+                    event.channel.start_typing
                     if rank == 4
-                        event.channel.start_typing
                         sleep(3)
                         event.respond("We'll do a **Firemaking Challenge.**")
                         event.channel.start_typing
@@ -266,7 +275,6 @@ class Sunny
                         event.respond("The winner will get to move on to the **Final 3**.")
                         event.respond("#{BOT.user(HOSTS.sample).mention} can take it from here.")
                     else
-                        event.channel.start_typing
                         sleep(3)
                         case council.stage
                         when 2
@@ -343,16 +351,15 @@ class Sunny
                     event.respond("It's time to go.")
                     event.channel.start_typing
                     sleep(3)
-                    event.respond("Any final words?")
+                    event.respond('Any final words?')
                     sleep(60)
                     event.respond("**#{loser.name}...The tribe has spoken.**")
-                    event.respond("https://i.ibb.co/zm9tYcb/spoken.gif")
+                    file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
+                    BOT.send_file(event.channel, file, filename: 'spoken.gif')
                 end
 
-
-            else
             end
-            break if vote_count.values.max == majority || all_votes.size == 0
+            break if vote_count.values.max == majority || all_votes.size.zero?
         end
         break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
