@@ -186,7 +186,7 @@ class Sunny
                     sleep(3)
                 end
 
-                event.respond "Congratulations, and welcome to the beginning of the **Endgame**."
+                event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'
             end
 
             return
