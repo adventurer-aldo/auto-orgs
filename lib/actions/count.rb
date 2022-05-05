@@ -239,8 +239,15 @@ class Sunny
                 sleep(5)
                 lame = ' (NO PARCHMENT)'
                 unless parchments[all_votes[0]][0] == ''
-                    lame = ''
-                    event.respond(parchments[all_votes[0]][0])
+                    begin
+                        file = URI.parse(parchments[all_votes[0]][0]).open
+                        filenam = '.png'
+                        filenam = '.jpg' if filenam.include? '.jpg'
+                        BOT.send_file(event.channel, file, filename: "parchment#{filenam}")
+                        lame = ''
+                    rescue OpenURI::HTTPError
+
+                    end
                     event.channel.start_typing
                     sleep(2)
                 end
