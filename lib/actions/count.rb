@@ -352,7 +352,7 @@ class Sunny
 
                 else
                     loser = Player.find_by(id: vote_count.keys[vote_count.values.index(vote_count.values.max)])
-                    event.respond("**#{loser.name}**")
+                    #event.respond("**#{loser.name}**")
                     event.channel.start_typing
                     sleep(3)
                     event.respond("It's time to go.")
