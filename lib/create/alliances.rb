@@ -26,7 +26,7 @@ class Sunny
             end
 
             choices = []
-            if args.empty?
+            if !args.empty?
                 choices = args
             else
                 event.channel.send_embed do |embed|
@@ -97,7 +97,7 @@ class Sunny
                     rescue ActiveRecord::RecordNotUnique
                         event.respond("**This alliance already exists!**")
                     end
-                when 'no','nah','nop','nay','noo','nope','nuh uh','nuh','nuh-uh'
+                when 'no', 'nah', 'nop', 'nay', 'noo', 'nope', 'nuh uh', 'nuh', 'nuh-uh'
                     event.respond('Okay!')
                 else
                     event.respond("Sorry, I didn't quite understand what you said. Can you start all over?")
