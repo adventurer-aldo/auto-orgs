@@ -224,7 +224,7 @@ class Sunny
                         end
                     end
                     if all_votes.size == 1
-                        event.respond(['**ONE VOTE LEFT**','**ONLY ONE VOTE LEFT**','**IT ALL COMES DOWN TO THE LAST VOTE**'])
+                        event.respond(['**ONE VOTE LEFT**', '**ONLY ONE VOTE LEFT**', '**IT ALL COMES DOWN TO THE LAST VOTE**'].sample)
                     end
                 end
             elsif all_votes.size == 1 || vote_count[all_votes[0]] + 1 == majority
