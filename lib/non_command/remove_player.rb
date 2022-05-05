@@ -55,7 +55,7 @@ class Sunny
                 rescue ActiveRecord::RecordNotUnique
                     channel = BOT.channel(alliance.channel_id)
                     channel.parent = ARCHIVE
-                    BOT.send_message(channel.id, ":ballot_box_with_check: **This channel has been archived!**")
+                    BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
                     channel.permission_overwrites.each do |role, _perms|
                         unless role == EVERYONE || event.server.role(role).nil? == false
                             channel.define_overwrite(event.server.member(role), 1088, 2048)

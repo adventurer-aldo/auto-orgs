@@ -4,7 +4,7 @@ class Sunny
         break unless event.user.id.player?
 
         player = nil
-        player = if [0,1].include? Setting.last.game_stage
+        player = if [0, 1].include? Setting.last.game_stage
                      Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
                  else
                      Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')

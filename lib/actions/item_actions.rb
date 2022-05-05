@@ -6,7 +6,7 @@ class Sunny
         event.respond("You didn't write a code!") if args[0].nil?
         break if args[0].nil?
         
-        player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+        player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
         item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
         
         break unless [player.confessional, player.submissions].include? event.channel.id
@@ -72,10 +72,10 @@ class Sunny
         break if args[0].nil?
 
         
-        player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+        player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
         item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
         
-        break unless [player.confessional,player.submissions].include? event.channel.id
+        break unless [player.confessional, player.submissions].include? event.channel.id
 
         event.respond("You don't have any item with that code.") unless item.exists?
         break unless item.exists?
