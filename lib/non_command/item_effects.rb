@@ -86,14 +86,13 @@ class Sunny
 
                         BOT.channel(council.channel_id).send_embed do |embed|
                             embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
-                            embed.description = "This advantage steals one of the target's votes and allows the owner of this advantage to cast an extra vote with the stolen parchment.."
+                            embed.description = "This advantage steals one of #{targets.map(&:name).join(', ')}'s votes and allows #{player.name} to cast an extra vote with the stolen parchment..."
                             embed.color = event.server.role(TRIBAL_PING).color
                         end
 
                         item.update(owner: 0, targets: targets.map(&:id))
-                        event.respond("You successfuly played #{item.name}.")
                     else
-                        event.respond("Playing this item failed!")
+                        event.respond('Playing this item failed!')
                     end
 
                 when 'block_vote'
@@ -149,14 +148,13 @@ class Sunny
 
                         BOT.channel(council.channel_id).send_embed do |embed|
                             embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
-                            embed.description = "This advantage blocks one of the target's votes."
+                            embed.description = "This advantage blocks one of #{targets.map(&:name).join(', ')}'s votes."
                             embed.color = event.server.role(TRIBAL_PING).color
                         end
 
                         item.update(owner: 0, targets: targets.map(&:id))
-                        event.respond("You successfuly played #{item.name}.")
                     else
-                        event.respond("Playing this item failed!")
+                        event.respond('Playing this item failed!')
                     end
 
                 end
