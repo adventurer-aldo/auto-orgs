@@ -61,7 +61,7 @@ class Sunny
                         event.respond("There's no single seedling that matches that.") unless content == ''
                     end
                     
-                    unless targets == []
+                    if !targets.empty?
                         event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
                         confirmation = event.user.await!(timeout: 50)
     
@@ -74,9 +74,9 @@ class Sunny
                         event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
                         Vote.where(council: council, player: targets.map(&:id)).each do |vote_block|
                             a = vote_block.votes
-                            a.delete_at(a.size - 1)
+                            a.delete_at(-1)
                             b = vote_block.parchments
-                            b.delete_at(b.size - 1)
+                            b.delete_at(-1)
                             vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
                         end
 

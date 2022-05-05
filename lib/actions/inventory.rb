@@ -24,7 +24,7 @@ class Sunny
         text << items.join("\n\n")
 
         vote = Vote.where(player: player.id)
-        council = Council.where(id: vote.map(&:council), stage: [0, 1, 2, 3])
+        council = Council.where(id: vote.map(&:council), stage: Array(0..3))
         if vote.exists? && council.exists?
             council = council.first
             vote = Vote.where(council: council.id).and(vote).first.votes
