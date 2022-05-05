@@ -17,6 +17,7 @@ class Sunny
             embed.title = 'All commands'
             embed.description = 'Stuff'
             embed.fields = fields
+            embed.color = event.user.on(event.server).color
         end
         
     end
