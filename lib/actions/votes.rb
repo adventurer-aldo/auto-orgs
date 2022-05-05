@@ -87,16 +87,17 @@ class Sunny
 
                 if voted == vote.votes && content != ''
                     image = nil
-                    if event.message.attachments == []
+                    if event.message.attachments.empty?
                         event.respond('Time to upload a parchment!')
-                        event.respond('https://i.imgflip.com/45drpi.png')
+                        file = URI.parse('https://i.imgflip.com/45drpi.png').open
+                        BOT.send_file(event.channel, file)
                         image = event.user.await!(timeout: 120)
                     else
                         image = event
                     end
                     
                     if image
-                        unless image.message.attachments == []
+                        unless image.message.attachments.empty?
                             parch = image.message.attachments.first.url
                             if parch =~ /.*\.[pj][np]g/
                                 parchments[number] = parch

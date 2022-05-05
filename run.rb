@@ -1,6 +1,7 @@
 require 'active_record'
 require 'discordrb'
 require 'dotenv'
+require 'open-uri'
 require 'pg'
 require 'require_all'
 
