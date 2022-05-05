@@ -37,8 +37,7 @@ class Sunny
                                 channel.define_overwrite(event.server.member(role), 1088, 2048)
                             end
                         end
-                        alliance.update(players: [])
-                        
+                        alliance.destroy
                     else
                         BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
                         channel.permission_overwrites.each do |role, _perms|
@@ -49,7 +48,7 @@ class Sunny
                                     channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
                                 end
                             end
-    
+
                         end
                     end
                 rescue ActiveRecord::RecordNotUnique
@@ -61,7 +60,7 @@ class Sunny
                             channel.define_overwrite(event.server.member(role), 1088, 2048)
                         end
                     end
-                    alliance.update(players: [])
+                    alliance.destroy
                 end
 
             end
