@@ -7,9 +7,10 @@ class Sunny
     
     BOT.command :season, description: "Creates a new season." do |event, *args|
         break unless HOSTS.include? event.user.id
+
         newseason = Season.create(name: args.join(' '))
         Setting.update(season: newseason.id, game_stage: 0)
-        return "New season created!"
+        return 'New season created!'
     end
     
     BOT.command :players, description: "Registers the user as a new player in the current season." do |event|
@@ -53,6 +54,7 @@ class Sunny
 
     BOT.command :tribes, description: 'Creates new tribes and automatically puts alive seedlings in them.' do |event, *args|
         break unless HOSTS.include? event.user.id
+        
         event.message.delete
         tribes = event.message.role_mentions
         players = Player.where(season: Setting.last.season, status: ALIVE+['Exiled'])
@@ -86,22 +88,22 @@ class Sunny
                 @buffs.shuffle!
                 event.respond "It's time to swap between " + tribes.map(&:mention).join(" ") + "!"
                 event.channel.start_typing
-                sleep(2)
+                sleep(1)
                 event.respond "Come and take your buffs, veggies!"
                 event.channel.start_typing
-                sleep(2)
+                sleep(1)
                 players = players.shuffle
                 event.respond "First up, #{players[0].name}. Come here!"
                 players.each do |player|
                     event.channel.start_typing
-                    sleep(3)
+                    sleep(1)
                     event.respond "**#{BOT.user(player.user_id).mention} takes a buff...**"
                     rand = @buffs.sample
                     event.channel.start_typing
-                    sleep(3)
+                    sleep(1)
                     event.respond "...the buff taken out was from..."
                     event.channel.start_typing
-                    sleep(3)
+                    sleep(1)
                     event.respond "**Tribe #{tribes[rand].mention}!**"
                     player.update(tribe: Tribe.find_by(role_id: tribes[rand].id).id)
                     @buffs.delete_at(@buffs.index(rand))
@@ -181,9 +183,9 @@ class Sunny
                     player.update(tribe: Tribe.find_by(role_id: tribes[0].id).id)
                     BOT.user(player.user_id).on(event.server).add_role(Tribe.find_by(id: player.tribe).role_id)
                     event.channel.start_typing
-                    sleep(3)
+                    sleep(1)
                     event.respond sprintf(@cheers.sample, BOT.user(player.user_id).mention)
-                    sleep(3)
+                    sleep(1)
                 end
 
                 event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'

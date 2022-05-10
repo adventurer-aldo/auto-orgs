@@ -1,7 +1,7 @@
 class Sunny
 
     BOT.command :help do |event|
-        break unless event.user.id.player?
+        break unless event.user.id.player? || event.user.id.host?
 
         fields = [
             ['!alliance', 'Make an alliance with other players from your tribe.'],
@@ -19,7 +19,7 @@ class Sunny
             embed.fields = fields
             embed.color = event.user.on(event.server).color
         end
-        
+
     end
 
 end
