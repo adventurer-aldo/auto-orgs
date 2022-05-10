@@ -103,36 +103,36 @@ class Sunny
 
             council = Council.create(tribe: tribe, channel_id: channel.id, season: sets.season, stage: 1)
             channel.start_typing
-            sleep(6)
+            sleep(2)
             BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
             if sets.game_stage == 1
                 BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
                 jury = Player.where(status: 'Jury', season: sets.season)
                 if jury.size.positive?
                     channel.start_typing
-                    sleep(4)
+                    sleep(2)
                     BOT.send_message(channel.id, "**And welcome to the members of our #{event.server.role(JURY).mention}:**")
                     channel.start_typing
-                    sleep(2)
+                    sleep(1)
                     BOT.send_message(channel.id, "**#{jury.map(&:name).join("\n")}**")
                     channel.start_typing
-                    sleep(2)
+                    sleep(1)
                     BOT.send_message(channel.id, '...')
                 end
             else
                 BOT.send_file(channel.id, URI.parse('https://i.ibb.co/TYS4wCd/torches.gif').open, filename: 'torches.gif')
             end
             channel.start_typing
-            sleep(6)
+            sleep(1)
             if Setting.last.game_stage.zero?
                 BOT.send_message(channel.id, 'Tonight, one of you seedlings will stop receiving resources. And when that happens, you will disappear...')
                 channel.start_typing
-                sleep(7)
+                sleep(1)
                 BOT.send_message(channel.id, 'But you can decide, as a group, which seedling should disappear. For that, you must use the `!vote` command in your submissions channel.')
             else
                 BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you.")
                 channel.start_typing
-                sleep(7)
+                sleep(1)
                 BOT.send_message(channel.id, 'It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you must use the `!vote` command in your submissions channel.')
 
             end
