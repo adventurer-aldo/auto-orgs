@@ -17,7 +17,7 @@ class Sunny
 
 end
 
-ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+ActiveRecord::Base.establish_connection(ENV['OG_DATABASE_URL'])
 require_relative 'settings'
 require_all 'models'
 require_all 'lib'
