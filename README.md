@@ -1,2 +1,2 @@
 # auto-orgs
- YAY
+ Survivor Discord Bot
