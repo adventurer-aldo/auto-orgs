@@ -8,16 +8,15 @@ require 'require_all'
 Dotenv.load
 
 class Sunny
-    BOT = Discordrb::Commands::CommandBot.new token: ENV['TOKEN'], prefix: '!'
+  BOT = Discordrb::Commands::CommandBot.new token: ENV['TOKEN'], prefix: '!'
 
-    def self.run
-        BOT.run
-        puts 'Sunny Go!'
-    end
-
+  def self.run
+    BOT.run
+    puts 'Sunny Go!'
+  end
 end
 
-ActiveRecord::Base.establish_connection(ENV['OG_DATABASE_URL'])
+ActiveRecord::Base.establish_connection(ENV['DB'])
 require_relative 'settings'
 require_all 'models'
 require_all 'lib'
