@@ -1,62 +1,64 @@
+# frozen_string_literal: true
+
 class Sunny
-    # PLAYER STATUS
-    ALIVE = ['In','Immune','Idoled']
-    DEAD = ['Out','Jury']
+  # PLAYER STATUS
+  ALIVE = %w[In Immune Idoled]
+  DEAD = %w[Out Jury]
 
-    # USERGROUPS/ROLES IDs
-    HOSTS = [974069508862013480]
-    EVERYONE = 963136641969569852
-    IMMUNITY = 967156678728491058
-    CASTAWAY = 964564440685101076
-    JURY = 965717073454043268
-    PREJURY = 965717099202904064
-    SPECTATOR = 963454509269532752
-    TRUSTED_SPECTATOR = 963454772189470720
-    TRIBAL_PING = 965589333690179618
-    ANNOUNCEMENTS_PING = 965589323049209887
-    CHALLENGES_PING = 965589338807226408
+  # USERGROUPS/ROLES IDs
+  HOSTS = [460766095188688903]
+  EVERYONE = 1113165917870895256
+  IMMUNITY = 1113175246971863102
+  CASTAWAY = 1113175244774060123
+  JURY = 1113175243020828702
+  PREJURY = 1113175241011765329
+  SPECTATOR = 1113168262461673532
+  TRUSTED_SPECTATOR = 1113175228290441386
+  TRIBAL_PING = 1113175235051663410
+  ANNOUNCEMENTS_PING = 1113175237073322066
+  CHALLENGES_PING = 1113175238998503605
 
-    # OVERWRITES SETTINGS FOR CHANNELS
-    DENY_EVERY_SPECTATE = Discordrb::Overwrite.new(EVERYONE, deny: 3072)
-    EVERY_SPECTATE = Discordrb::Overwrite.new(EVERYONE, allow: 1088, deny: 2048)
-    TRUE_SPECTATE = Discordrb::Overwrite.new(963454772189470720, type: 'role', allow: 1088, deny: 2048)
-    JURY_SPECTATE = Discordrb::Overwrite.new(965717073454043268, type: 'role', allow: 1088, deny: 2048)
-    PREJURY_SPECTATE = Discordrb::Overwrite.new(965717099202904064, type: 'role', allow: 1088, deny: 2048)
+  # OVERWRITES SETTINGS FOR CHANNELS
+  DENY_EVERY_SPECTATE = Discordrb::Overwrite.new(EVERYONE, deny: 3072)
+  EVERY_SPECTATE = Discordrb::Overwrite.new(EVERYONE, allow: 1088, deny: 2048)
+  TRUE_SPECTATE = Discordrb::Overwrite.new(1113175228290441386, type: 'role', allow: 1088, deny: 2048)
+  JURY_SPECTATE = Discordrb::Overwrite.new(1113175243020828702, type: 'role', allow: 1088, deny: 2048)
+  PREJURY_SPECTATE = Discordrb::Overwrite.new(1113175241011765329, type: 'role', allow: 1088, deny: 2048)
 
-    # SERVER_STUFF
-    USER_JOIN_CHANNEL = 963456028517757008
-    USER_LEAVE_CHANNEL = 963456028517757008
-    SERVER_ID = 963136641969569852
+  # SERVER_STUFF
+  USER_JOIN_CHANNEL = 963456028517757008
+  USER_LEAVE_CHANNEL = 963456028517757008
+  SERVER_ID = 1113165917870895256
 
-    PLAYING_SPLITTER = 968584931456458852
-    PRE_JURY_SPLITTER = 968582054931480577
-    JURY_SPLITTER = 968582138955976704
+  PLAYING_SPLITTER = 968584931456458852
+  PRE_JURY_SPLITTER = 1113176402884304946
+  JURY_SPLITTER = 1113176442004570244
 
-    # PARENT CATEGORIES IDs
-    ALLIANCES = 966772850348404816
-    COUNCILS = 965726451309641829
-    FTC = 967058944365322240
-    CHALLENGES = 965726505017671700
-    TRIBES = 965620874453590056
-    CONFESSIONALS = 965539764369518622
-    ARCHIVE = 965563736372940880
-    
-    # TRIBAL
-    COUNTING = %W(First Second Third Fourth Fifth Sixth Seventh Eigthth Ninth Tenth 
-    Eleventh Twelfth Thirteenth Fourteenth Fifteenth Sixteenth Seventeeth Eighteenth Nineteenth Twentieth 
-    Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
-    
-    
-    DEFINED_FUNCTIONS = %w[
-        idol
-        idol_nullifier
-        steal_vote
-        block_vote
-        extra_vote
-        swap_idol
-    ]
+  # PARENT CATEGORIES IDs
+  ALLIANCES = 1113176204741197914
+  COUNCILS = 1113177022001324052
+  FTC = 1113176972022005800
+  CHALLENGES = 1113177058173005864
+  TRIBES = 1113176868389146766
+  CONFESSIONALS = 1113176156611555369
+  ARCHIVE = 1113176920004247713
 
-    # MISC
-    CONFIRMATIONS = ['yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
-    PARCHMENT = 'https://i.imgflip.com/45drpi.png'
+  # TRIBAL
+  COUNTING = %W(First Second Third Fourth Fifth Sixth Seventh Eigthth Ninth Tenth 
+  Eleventh Twelfth Thirteenth Fourteenth Fifteenth Sixteenth Seventeeth Eighteenth Nineteenth Twentieth 
+  Twenty-First Twenty-Second Twenty-Third Twenty-Fourth)
+
+
+  DEFINED_FUNCTIONS = %w[
+      idol
+      idol_nullifier
+      steal_vote
+      block_vote
+      extra_vote
+      swap_idol
+  ]
+
+  # MISC
+  CONFIRMATIONS = ['yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
+  PARCHMENT = 'https://i.ibb.co/HdkxRNz/Parchment.png'
 end
