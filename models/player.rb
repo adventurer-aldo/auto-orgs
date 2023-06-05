@@ -21,5 +21,6 @@ class Player < ActiveRecord::Base
     # No powers at all.
     #
     # Exiled
-    # Is In, but does not participate in anything other than challenges. 
+    # Is In, but does not participate in anything other than challenges.
+    belongs_to :season, foreign_key: "season_id"
 end
