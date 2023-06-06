@@ -13,13 +13,13 @@ class Sunny
 
         case type
         when 'n'
-            type = 'Now'
+          type = 'Now'
         when 't'
-            type = 'Tallied'
+          type = 'Tallied'
         when 'i'
-            type = 'Idoled'
+          type = 'Idoled'
         when 's'
-            type = 'Super'
+          type = 'Super'
         end
 
         event.respond 'What is/are the function codes?'
@@ -27,16 +27,16 @@ class Sunny
 
         checked = true
         functions.each do |function|
-            checked = false if DEFINED_FUNCTIONS.include?(function) == false
-            break if DEFINED_FUNCTIONS.include?(function) == false
+          checked = false if DEFINED_FUNCTIONS.include?(function) == false
+          break if DEFINED_FUNCTIONS.include?(function) == false
         end
 
         event.respond 'One or more of the submitted functions does not exist!' if checked == false
         break if checked == false
-        
+
         event.respond("**What's the name?**")
         name = event.user.await!(timeout: 70).message.content
-        
+
         event.respond("**What's the description?**")
         description = event.user.await!(timeout: 80).message.content
 
@@ -53,11 +53,11 @@ class Sunny
         event.respond '**Your item has been created!**'
 
         event.channel.send_embed do |embed|
-            embed.title = item.name
-            embed.description = "**Code:** `#{item.code}`\n"
-            embed.description << "**Description:** #{item.description}"
+          embed.title = item.name
+          embed.description = "**Code:** `#{item.code}`\n"
+          embed.description << "**Description:** #{item.description}"
         end
-        
+
     end
 
     BOT.command :council, description: "Creates a new Tribal Council channel and sets up everything related to." do |event|
@@ -74,25 +74,25 @@ class Sunny
         perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
         cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
         tribes.each do |tribed|
-            unless Tribe.where(role_id: tribed.id).exists?
-                confirm << false
+          unless Tribe.where(role_id: tribed.id).exists?
+            confirm << false
+          else
+            if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season: Setting.last.season).id
+              tribe += [Tribe.find_by(role_id: tribed.id).id]
+              perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
             else
-                if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season: Setting.last.season).id
-                    tribe += [Tribe.find_by(role_id: tribed.id).id]
-                    perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
-                else
-                    confirm << false
-                end
+              confirm << false
             end
+          end
         end
 
         if Setting.last.game_stage == 1
-            perms += [JURY_SPECTATE]
+          perms += [JURY_SPECTATE]
         end
 
         if confirm.include? false
-            event.respond 'One or more of those tribes do not exist in the database.'
-            return
+          event.respond 'One or more of those tribes do not exist in the database.'
+          return
         else
             sets = Setting.last
             players = Player.where(tribe: tribe, status: ALIVE, season: sets.season)

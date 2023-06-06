@@ -35,17 +35,17 @@ class Sunny
         rank = Player.where(season: Setting.last.season, status: ALIVE).size
         total = Player.where(season: Setting.last.season).size
         if council.stage > 2
-            event.respond("**It's time to read the votes, once again!**")
-            event.channel.start_typing
-            council.update(stage: 4)
-            sleep(2)
-            event.respond("Your votes can no longer be changed.")
+          event.respond("**It's time to read the votes, once again!**")
+          event.channel.start_typing
+          council.update(stage: 4)
+          sleep(2)
+          event.respond("Your votes can no longer be changed.")
         else
-            event.respond("**It is time for the F#{rank} read-off!**")
-            council.update(stage: 2)
-            event.channel.start_typing
-            sleep(2)
-            event.respond("Your votes can no longer be changed.")
+          event.respond("**It is time for the F#{rank} read-off!**")
+          council.update(stage: 2)
+          event.channel.start_typing
+          sleep(2)
+          event.respond("Your votes can no longer be changed.")
         end
         event.channel.start_typing
         sleep(1)
@@ -67,33 +67,33 @@ class Sunny
 
         voters = Vote.where(council: council.id)
         voters.each do |vote|
-            sub = vote.votes.map do |mapping|
-                if mapping == 0
-                    event.channel.start_typing
-                    sleep(2)
-                    event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
-                    vote.player
-                else
-                    mapping
-                end
+          sub = vote.votes.map do |mapping|
+            if mapping == 0
+              event.channel.start_typing
+              sleep(2)
+              event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
+              vote.player
+            else
+              mapping
             end
+          end
 
-            vote.update(votes: sub)
-            all_votes += sub
-            vote_count[vote.player] = 0
-            parchments[vote.player] = []
+          vote.update(votes: sub)
+          all_votes += sub
+          vote_count[vote.player] = 0
+          parchments[vote.player] = []
         end
         voters.each do |vote|
-            vote.votes.each_with_index do |ret, index|
-                parchments[ret] << vote.parchments[index]
-            end
+          vote.votes.each_with_index do |ret, index|
+            parchments[ret] << vote.parchments[index]
+          end
         end
         parchments.each do |key, value|
-            parchments[key].sort_by!(&:length)
+          parchments[key].sort_by!(&:length)
         end
         all_votes.shuffle!
         majority = (Float(all_votes.size + 1)/2.0).round
-        
+
         if council.stage == 2 && rank > 4
             event.channel.start_typing
             sleep(5)
