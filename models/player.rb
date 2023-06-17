@@ -23,5 +23,7 @@ class Player < ActiveRecord::Base
   # Exiled
   # Is In, but does not participate in anything other than challenges.
   belongs_to :season, foreign_key: 'season_id'
+  belongs_to :tribe, foreign_key: 'tribe_id'
   has_many :items, foreign_key: 'owner_id'
+  has_many :votes, foreign_key: 'player_id'
 end
