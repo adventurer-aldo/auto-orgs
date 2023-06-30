@@ -50,7 +50,7 @@ class Sunny
                     'Idoled'
                 end
 
-        seeds = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat) }
+        seeds = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat) }
         seeds.delete(nil)
         
         event.respond("This will be between #{seeds.map(&:name).join(', ')}")
