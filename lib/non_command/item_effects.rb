@@ -17,7 +17,7 @@ class Sunny
           event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
-          vote = Vote.find_by(council: council.id, player: player.id)
+          vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name}!"
@@ -30,7 +30,7 @@ class Sunny
 
         when 'steal_vote'
           targets = []
-          enemies = Vote.where(council: council.id, allowed: Array(1..10)).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
+          enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
           enemies.delete(nil)
 
           text = enemies.map do |en|
@@ -71,7 +71,7 @@ class Sunny
             break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
             event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-            Vote.where(council:, player: targets.map(&:id)).each do |vote_block|
+            Vote.where(council:, player_id: targets.map(&:id)).each do |vote_block|
               a = vote_block.votes
               a.delete_at(-1)
               b = vote_block.parchments
@@ -79,7 +79,7 @@ class Sunny
               vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
             end
 
-            Vote.where(council: council, player: player.id).each do |vote_add|
+            Vote.where(council_id: council, player_id: player.id).each do |vote_add|
               vote_add.update(allowed: vote_add.allowed + 1, votes: vote_add.votes + [vote_add.votes.last], parchments: vote_add.parchments + [vote_add.parchments.last] )
             end
 
@@ -96,7 +96,7 @@ class Sunny
 
         when 'block_vote'
           targets = []
-          enemies = Vote.where(council: council.id, allowed: Array(1..10)).excluding(Vote.where(player: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
+          enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
           enemies.delete(nil)
 
           text = enemies.map do |en|
@@ -139,7 +139,7 @@ class Sunny
             break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
             event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-            Vote.where(council: council, player: targets.map(&:id)).each do |vote_block|
+            Vote.where(council_id: council, player_id: targets.map(&:id)).each do |vote_block|
               a = vote_block.votes
               a.delete_at(a.size - 1)
               b = vote_block.parchments
@@ -166,7 +166,7 @@ class Sunny
         case function
         when 'idol'
           council = Council.where(season: Setting.last.season, stage: [0,1,2]).last
-          enemies = Vote.where(council: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+          enemies = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
           enemies.delete(nil)
 
           text = enemies.map do |en|

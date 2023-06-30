@@ -4,6 +4,6 @@ class Integer
   end
 
   def host?
-    HOSTS.include? event.user.id
+    Sunny.hosts.include? self
   end
 end

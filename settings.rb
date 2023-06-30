@@ -6,7 +6,7 @@ class Sunny
   DEAD = %w[Out Jury]
 
   # USERGROUPS/ROLES IDs
-  HOSTS = [460766095188688903, 1113165917870895256]
+  HOSTS = [460766095188688903, 867100839654719498]
   EVERYONE = 1113165917870895256
   IMMUNITY = 1113175246971863102
   CASTAWAY = 1113175244774060123
@@ -61,4 +61,8 @@ class Sunny
   # MISC
   CONFIRMATIONS = ['yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
   PARCHMENT = 'https://i.ibb.co/HdkxRNz/Parchment.png'
+
+  def self.hosts
+    return HOSTS
+  end
 end
