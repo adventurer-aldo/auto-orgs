@@ -4,7 +4,7 @@ class Sunny
 
     unless args.join(' ') == 'all'
       event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
-      break if [JURY_SPLITTER,PRE_JURY_SPLITTER,PLAYING_SPLITTER].include? event.channel.id
+      break if [JURY_SPLITTER, PRE_JURY_SPLITTER, PLAYING_SPLITTER].include? event.channel.id
 
       event.channel.parent = ARCHIVE
       event.respond ':ballot_box_with_check: **This channel has been archived!**'
