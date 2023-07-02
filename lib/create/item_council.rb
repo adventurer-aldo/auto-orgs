@@ -121,7 +121,7 @@ class Sunny
     channel.start_typing
     sleep(1)
     if Setting.last.game_stage.zero?
-      BOT.send_message(channel.id, 'Tonight, one of you castaways will stop receiving resources. And when that happens, you will disappear...')
+      BOT.send_message(channel.id, 'Tonight, one of you castaways will have their torch snuffed out. And when that happens, you will be eliminated from the game...')
       channel.start_typing
       sleep(1)
       BOT.send_message(channel.id, 'But you can decide, as a group, which castaway should disappear. For that, you must use the `!vote` command in your submissions channel.')
