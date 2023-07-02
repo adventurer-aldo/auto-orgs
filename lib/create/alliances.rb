@@ -14,7 +14,7 @@ class Sunny
     if event.user.id.player? && event.server.role(tribe.role_id).members.size > 3
       break unless [player.confessional, player.submissions].include? event.channel.id
 
-      enemies = Player.where(tribe: tribe.id, season_id: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
+      enemies = Player.where(tribe_id: tribe.id, season_id: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
       options = enemies.map(&:id)
       options_text = enemies.map(&:name)
       text = []

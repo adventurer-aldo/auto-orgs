@@ -90,7 +90,7 @@ class Sunny
     break if confirm.include? false
 
     sets = Setting.last
-    players = Player.where(tribe: tribe, status: ALIVE, season_id: sets.season)
+    players = Player.where(tribe_id: tribe, status: ALIVE, season_id: sets.season)
     channel = event.server.create_channel("f#{cast_left}-#{tribes.map(&:name).join('-')}",
     parent: COUNCILS,
     topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
@@ -161,7 +161,7 @@ class Sunny
     jury_all = Player.where(status: 'Jury', season_id: Setting.last.season)
 
     Setting.last.update(game_stage: 2)
-    council = Council.create(tribe: [finalists.first.tribe], channel_id: event.server.create_channel(
+    council = Council.create(tribe_id: [finalists.first.tribe], channel_id: event.server.create_channel(
         'final-tribal-council',
         topic: "The last time we'll read the votes during this season of Maskvivor.",
         parent: FTC,

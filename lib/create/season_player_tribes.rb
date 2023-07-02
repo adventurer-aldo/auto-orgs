@@ -70,7 +70,7 @@ class Sunny
           topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
           permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
-          chan.send_message("Welcome to your new camp, #{tribe.mention}!\nHope you have fun!")
+          chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")
 
           @set_tribes << Tribe.create(name: tribe.name,
           role_id: tribe.id,
@@ -103,7 +103,7 @@ class Sunny
           event.channel.start_typing
           sleep(1)
           event.respond "**Tribe #{tribes[rand].mention}!**"
-          player.update(tribe: Tribe.find_by(role_id: tribes[rand].id).id)
+          player.update(tribe_id: Tribe.find_by(role_id: tribes[rand].id).id)
           @buffs.delete_at(@buffs.index(rand))
           event.channel.start_typing
           sleep(2)
@@ -167,7 +167,7 @@ class Sunny
           permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
 
-          chan.send_message("Welcome to your new camp, #{tribe.mention}!\nHope you have fun!")
+          chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")
 
           @set_tribes << Tribe.create(
             name: tribe.name,
@@ -179,7 +179,7 @@ class Sunny
         Setting.last.update(tribes: @set_tribes, game_stage: 1)
 
         players.each do |player|
-          player.update(tribe: Tribe.find_by(role_id: tribes[0].id).id)
+          player.update(tribe_id: Tribe.find_by(role_id: tribes[0].id).id)
           BOT.user(player.user_id).on(event.server).add_role(Tribe.find_by(id: player.tribe).role_id)
           event.channel.start_typing
           sleep(1)
