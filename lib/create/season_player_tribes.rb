@@ -54,11 +54,10 @@ class Sunny
   BOT.command :tribes, description: 'Creates new tribes and automatically puts alive castaways in them.' do |event, *args|
     break unless HOSTS.include? event.user.id
 
-    event.message.delete
     tribes = event.message.role_mentions
     players = Player.where(season_id: Setting.last.season, status: ALIVE+['Exiled'])
     if tribes.size > 1
-      if players.size % tribes.size == 0
+      if (players.size % tribes.size).zero?
         @set_tribes = []
         tribes.each do |tribe|
           # > Voice Channel for the Tribe

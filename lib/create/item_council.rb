@@ -72,9 +72,10 @@ class Sunny
     perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
     cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.last.season).size
     tribes.each do |tribed|
-      if Tribe.where(role_id: tribed.id).exists?
-        if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season_id: Setting.last.season).id
-          tribe += [Tribe.find_by(role_id: tribed.id).id]
+      if Tribe.where(role_id: tribed.id, season_id: Setting.last.season).exists?
+        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first.&.id
+        if Setting.last.tribes.include? tribe_query
+          tribe += [tribe_query]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
         else
           confirm << false
@@ -84,7 +85,7 @@ class Sunny
       end
     end
 
-    perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
+    # perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
 
     event.respond('One or more of those tribes do not exist in the database.') if confirm.include? false
     break if confirm.include? false
