@@ -73,7 +73,7 @@ class Sunny
     cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.last.season).size
     tribes.each do |tribed|
       if Tribe.where(role_id: tribed.id, season_id: Setting.last.season).exists?
-        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first.&.id
+        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first&.id
         if Setting.last.tribes.include? tribe_query
           tribe += [tribe_query]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
