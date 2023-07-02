@@ -179,7 +179,7 @@ class Sunny
 
         players.each do |player|
           player.update(tribe_id: Tribe.find_by(role_id: tribes[0].id).id)
-          BOT.user(player.user_id).on(event.server).add_role(Tribe.find_by(id: player.tribe).role_id)
+          BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           event.channel.start_typing
           sleep(1)
           event.respond format(@cheers.sample, BOT.user(player.user_id).mention)

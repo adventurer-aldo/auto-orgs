@@ -39,7 +39,7 @@ class Sunny
           event.channel.send_embed do |embed|
             embed.title = "Who would you like to play #{item.name} on?"
             embed.description = text.join("\n")
-            embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+            embed.color = event.server.role(player.tribe.role_id).color
           end
 
           await = event.user.await!(timeout: 80)
@@ -103,7 +103,7 @@ class Sunny
           event.channel.send_embed do |embed|
             embed.title = "Who would you like to play #{item.name} on?"
             embed.description = text.join("\n")
-            embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+            embed.color = event.server.role(player.tribe.role_id).color
           end
 
           await = event.user.await!(timeout: 80)
@@ -172,7 +172,7 @@ class Sunny
             event.channel.send_embed do |embed|
               embed.title = "Who would you like to play #{item.name} on?"
               embed.description = text.join("\n")
-              embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+              embed.color = event.server.role(player.tribe.role_id).color
             end
 
             await = event.user.await!(timeout: 80)

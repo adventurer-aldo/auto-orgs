@@ -1,15 +1,15 @@
 class Sunny
-  def self.eliminate(loser,event)
+  def self.eliminate(loser, event)
     rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
-    tribe = Tribe.find_by(id: loser.tribe)
+    tribe = loser.tribe
     if Setting.last.game_stage == 1
-      loser.update(status: 'Jury', inventory: [], rank:)
+      loser.update(status: 'Jury', rank:)
       user = BOT.user(loser.user_id).on(event.server)
       user.remove_role(tribe.role_id) if tribe
       user.remove_role(CASTAWAY)
       user.add_role(JURY)
     else
-      loser.update(status: 'Out', inventory: [], rank:)
+      loser.update(status: 'Out', rank:)
       user = BOT.user(loser.user_id).on(event.server)
 
       user.remove_role(tribe.role_id) if tribe

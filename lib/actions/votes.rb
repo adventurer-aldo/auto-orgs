@@ -50,7 +50,7 @@ class Sunny
           event.channel.send_embed do |embed|
             embed.title = 'Who would you like to vote?'
             embed.description = text.join("\n")
-            embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+            embed.color = event.server.role(player.tribe.role_id).color
           end
 
           event.user.await!(timeout: 40) do |await|

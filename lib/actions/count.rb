@@ -29,9 +29,9 @@ class Sunny
     loser = nil
     seed = nil
     event.message.delete
-    roles = council.tribe.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
+    roles = council.tribes.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
     roles << event.server.role(TRIBAL_PING)
-    event.respond("#{roles.map(&:mention).join(' ')}")
+    event.respond(roles.map(&:mention).join(' ').to_s)
     event.channel.start_typing
     sleep(2)
     rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
@@ -68,7 +68,7 @@ class Sunny
     voters = Council.votes
     voters.each do |vote|
       sub = vote.votes.map do |mapping|
-        if mapping == 0
+        if mapping.zero?
           event.channel.start_typing
           sleep(2)
           event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
@@ -88,11 +88,11 @@ class Sunny
         parchments[ret] << vote.parchments[index]
       end
     end
-    parchments.each do |key, value|
+    parchments.each do |key, _value|
       parchments[key].sort_by!(&:length)
     end
     all_votes.shuffle!
-    majority = (Float(all_votes.size + 1)/2.0).round
+    majority = (Float(all_votes.size + 1) / 2.0).round
 
     if council.stage == 2 && rank > 4
       event.channel.start_typing

@@ -10,7 +10,7 @@ class Sunny
 
   BOT.command :alliance, description: 'Make an alliance with other players on your tribe.' do |event, *args|
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-    tribe = Tribe.find_by(id: player.tribe)
+    tribe = player.tribe
     if event.user.id.player? && event.server.role(tribe.role_id).members.size > 3
       break unless [player.confessional, player.submissions].include? event.channel.id
 
