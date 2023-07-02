@@ -5,8 +5,8 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    item = Item.where(code: args[0], owner: player.id, season_id: Setting.last.season)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
@@ -15,7 +15,7 @@ class Sunny
 
     item = item.first
 
-    enemies = Player.where(season: Setting.last.season, status: ALIVE).excluding(Player.where(user_id: event.user.id))
+    enemies = Player.where(season_id: Setting.last.season, status: ALIVE).excluding(Player.where(user_id: event.user.id))
     text = enemies.map do |en|
       "**#{en.id}** — #{en.name}"
     end
@@ -36,7 +36,7 @@ class Sunny
     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
     if text_attempt.size == 1
-      targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+      targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
     elsif id_attempt.size == 1
       targets << Player.find_by(id: id_attempt[0])
     else
@@ -70,8 +70,8 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], owner: player.id, season: Setting.last.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    item = Item.where(code: args[0], owner: player.id, season_id: Setting.last.season)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
@@ -81,9 +81,9 @@ class Sunny
     item = item.first
     council = case item.timing
               when 'Now', 'Idoled'
-                Council.where(stage: [0,1]).exists?
+                Council.where(stage: [0, 1]).exists?
               when 'Tallied'
-                Council.where(stage: [0,1,2]).exists?
+                Council.where(stage: [0, 1, 2]).exists?
               end
 
     event.respond("You're not able to play this item now!") unless council == true

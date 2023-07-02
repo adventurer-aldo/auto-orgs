@@ -8,14 +8,14 @@ class Sunny
     break unless event.user.id.player?
 
     player = if [0, 1].include? Setting.last.game_stage
-               Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+               Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
              else
-               Player.find_by(user_id: event.user.id, season: Setting.last.season, status: 'Jury')
+               Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: 'Jury')
              end
     break unless event.channel.id == player.submissions
 
     vote = Vote.where(player_id: player.id)
-    council = Council.where(id: vote.map(&:council), stage: [0,1,3], season: Setting.last.season)
+    council = Council.where(id: vote.map(&:council), stage: [0,1,3], season_id: Setting.last.season)
     if vote.exists? && council.exists?
       council = council.last
       updater = Vote.where(council_id: council.id).and(vote)
@@ -63,7 +63,7 @@ class Sunny
         text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
         id_attempt = options.filter { |id| id == content.to_i }
         if text_attempt.size == 1
-          target = Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
+          target = Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
           voted[number] = target.id
         elsif id_attempt.size == 1
           target = Player.find_by(id: id_attempt[0])

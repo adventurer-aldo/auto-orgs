@@ -6,14 +6,14 @@ class Sunny
 
     unless event.message.mentions.empty?
       event.message.mentions.each do |user|
-        players << Player.find_by(user_id: user.id, season: Setting.last.season, status: ALIVE)
+        players << Player.find_by(user_id: user.id, season_id: Setting.last.season, status: ALIVE)
       end
     end
 
     unless event.message.role_mentions.empty?
       event.message.role_mentions.each do |role|
         role.members.each do |member|
-          players << Player.find_by(user_id: member.id, season: Setting.last.season, status: ALIVE)
+          players << Player.find_by(user_id: member.id, season_id: Setting.last.season, status: ALIVE)
         end
       end
     end

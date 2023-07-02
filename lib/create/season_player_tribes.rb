@@ -9,7 +9,7 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     newseason = Season.create(name: args.join(' '))
-    Setting.update(season: newseason.id, game_stage: 0)
+    Setting.update(season_id: newseason.id, game_stage: 0)
     return 'New season created!'
   end
 
@@ -56,7 +56,7 @@ class Sunny
 
     event.message.delete
     tribes = event.message.role_mentions
-    players = Player.where(season: Setting.last.season, status: ALIVE+['Exiled'])
+    players = Player.where(season_id: Setting.last.season, status: ALIVE+['Exiled'])
     if tribes.size > 1
       if players.size % tribes.size == 0
         @set_tribes = []
@@ -75,7 +75,7 @@ class Sunny
           @set_tribes << Tribe.create(name: tribe.name,
           role_id: tribe.id,
           channel_id: chan.id,
-          season: Setting.last.season).id
+          season_id: Setting.last.season).id
         end
         Setting.last.update(tribes: @set_tribes)
 
@@ -173,7 +173,7 @@ class Sunny
             name: tribe.name,
             role_id: tribe.id,
             channel_id: chan.id,
-            season: Setting.last.season
+            season_id: Setting.last.season
           ).id
         end
         Setting.last.update(tribes: @set_tribes, game_stage: 1)

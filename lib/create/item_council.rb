@@ -43,12 +43,12 @@ class Sunny
     event.respond('**And lastly, what will be the code?**')
     code = event.user.await!(timeout: 50).message.content.gsub(' ', '_')
 
-    condition = Item.where(code:, season: Setting.last.season).exists?
+    condition = Item.where(code:, season_id: Setting.last.season).exists?
 
     event.respond('An item with this code already exists!') if condition == true
     break if condition == true
 
-    item = Item.create(code:, name:, description:, timing: type, functions:, season: Setting.last.season)
+    item = Item.create(code:, name:, description:, timing: type, functions:, season_id: Setting.last.season)
     make_item_commands
     event.respond '**Your item has been created!**'
 
@@ -70,10 +70,10 @@ class Sunny
     tribe = []
     confirm = []
     perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
-    cast_left = Player.where(status: ALIVE+['Exiled'], season: Setting.last.season).size
+    cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.last.season).size
     tribes.each do |tribed|
       if Tribe.where(role_id: tribed.id).exists?
-        if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season: Setting.last.season).id
+        if Setting.last.tribes.include? Tribe.find_by(role_id: tribed.id, season_id: Setting.last.season).id
           tribe += [Tribe.find_by(role_id: tribed.id).id]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
         else
@@ -90,7 +90,7 @@ class Sunny
     break if confirm.include? false
 
     sets = Setting.last
-    players = Player.where(tribe: tribe, status: ALIVE, season: sets.season)
+    players = Player.where(tribe: tribe, status: ALIVE, season_id: sets.season)
     channel = event.server.create_channel("f#{cast_left}-#{tribes.map(&:name).join('-')}",
     parent: COUNCILS,
     topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
@@ -102,7 +102,7 @@ class Sunny
     BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
     if sets.game_stage == 1
       BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
-      jury = Player.where(status: 'Jury', season: sets.season)
+      jury = Player.where(status: 'Jury', season_id: sets.season)
       if jury.size.positive?
         channel.start_typing
         sleep(2)
@@ -157,8 +157,8 @@ class Sunny
   BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
     break unless HOSTS.include? event.user.id
 
-    finalists = Player.where(status: ALIVE, season: Setting.last.season)
-    jury_all = Player.where(status: 'Jury', season: Setting.last.season)
+    finalists = Player.where(status: ALIVE, season_id: Setting.last.season)
+    jury_all = Player.where(status: 'Jury', season_id: Setting.last.season)
 
     Setting.last.update(game_stage: 2)
     council = Council.create(tribe: [finalists.first.tribe], channel_id: event.server.create_channel(
@@ -166,7 +166,7 @@ class Sunny
         topic: "The last time we'll read the votes during this season of Maskvivor.",
         parent: FTC,
         permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
-    ).id, season: Setting.last.season)
+    ).id, season_id: Setting.last.season)
 
     finalists.each do |finalist|
       channel = event.server.create_channel("#{finalist.name}-speech",

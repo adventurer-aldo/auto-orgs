@@ -9,12 +9,12 @@ class Sunny
   end
 
   BOT.command :alliance, description: 'Make an alliance with other players on your tribe.' do |event, *args|
-    player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
     tribe = Tribe.find_by(id: player.tribe)
     if event.user.id.player? && event.server.role(tribe.role_id).members.size > 3
-      break unless [player.confessional,player.submissions].include? event.channel.id
+      break unless [player.confessional, player.submissions].include? event.channel.id
 
-      enemies = Player.where(tribe: tribe.id, season: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
+      enemies = Player.where(tribe: tribe.id, season_id: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
       options = enemies.map(&:id)
       options_text = enemies.map(&:name)
       text = []
@@ -72,7 +72,7 @@ class Sunny
       event.user.await!(timeout: 70) do |await|
         case await.message.content.downcase
         when 'yes', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess'
-          rank = Player.where(season: Setting.last.season, status: ALIVE).size
+          rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
           begin
             choices << player
             choices.sort_by!(&:id)
@@ -89,10 +89,10 @@ class Sunny
                 topic: "Created at F#{rank} by **#{player.name}**. | #{choices.map(&:name).join('-')}",
                 permission_overwrites: perms
               ).id)
-            BOT.send_message(alliance.channel_id, "#{event.server.role(tribe.role_id).mention}")
+            BOT.send_message(alliance.channel_id, event.server.role(tribe.role_id).mention.to_s)
             event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
           rescue ActiveRecord::RecordNotUnique
-            event.respond("**This alliance already exists!**")
+            event.respond('**This alliance already exists!**')
           end
         when 'no', 'nah', 'nop', 'nay', 'noo', 'nope', 'nuh uh', 'nuh', 'nuh-uh'
           event.respond('Okay!')

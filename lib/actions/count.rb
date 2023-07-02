@@ -107,7 +107,7 @@ class Sunny
 
       while i < max
         i += 1
-        items = Item.where(timing: 'Tallied', season: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
+        items = Item.where(timing: 'Tallied', season_id: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
         if items.exists?
           max += 3
           items.map.each do |item|
@@ -231,7 +231,7 @@ class Sunny
         when 0
           event.respond("**The #{COUNTING[total - rank]} castaway eliminated from Maskvivor is...**")
         when 1
-          event.respond("**#{COUNTING[total - rank]} castaway eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season: Setting.last.season).size].downcase} member of the Jury is...**")
+          event.respond("**#{COUNTING[total - rank]} castaway eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
         end
         sleep(5)
         lame = ' (NO PARCHMENT)'
@@ -288,7 +288,7 @@ class Sunny
               sleep(3)
               event.respond('You will only be able to vote the castaways tied.')
 
-              Player.where(season: Setting.last.season, status: 'Idoled').update(status: 'Immune')
+              Player.where(season_id: Setting.last.season, status: 'Idoled').update(status: 'Immune')
               immunes = Player.where(status: 'Immune').map(&:id)
 
               vote_count.each do |k,v|

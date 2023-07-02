@@ -2,7 +2,7 @@ class Sunny
   BOT.command :inventory, description: 'Shows your items and current votes.' do |event|
     break unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season: Setting.last.season, status: ALIVE)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
     break if player.nil?
 
     break unless [player.confessional, player.submissions].include? event.channel.id
