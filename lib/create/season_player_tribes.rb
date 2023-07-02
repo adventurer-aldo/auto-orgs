@@ -115,7 +115,7 @@ class Sunny
 
         return "And that's about it. Go meet your new tribemates!"
       else
-        return "There's not enough seeds to split equally amongst those roles."
+        return "There's not enough castaways to split equally amongst those roles."
       end
     elsif tribes.size == 1
       event.respond "You've only selected one tribe. **This will start Merge.**\nAre you sure about it?"

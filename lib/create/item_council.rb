@@ -87,8 +87,8 @@ class Sunny
 
     # perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
 
-    event.respond('One or more of those tribes do not exist in the database.') if confirm.include? false
-    break if confirm.include? false
+    event.respond('One or more of those tribes do not exist in the database.') if confirm.intersect? [false, nil]
+    break if confirm.intersect? [false, nil]
 
     sets = Setting.last
     players = Player.where(tribe_id: tribe, status: ALIVE, season_id: sets.season)
@@ -134,7 +134,7 @@ class Sunny
     file = URI.parse(PARCHMENT).open
     BOT.send_file(channel.id, file, filename: 'parchment.png')
     channel.send_embed do |embed|
-      embed.title = 'Seedlings attending Tribal Council:'
+      embed.title = 'Castaways attending Tribal Council:'
       embed.description = players.map(&:name).join("\n")
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'You have more or less 24 hours to decide on who to vote!')
       embed.color = tribes.map(&:color).sample

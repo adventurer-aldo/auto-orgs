@@ -37,7 +37,7 @@ class Sunny
     event.respond("We'll be drawing **ROCKS**")
     event.channel.start_typing
     sleep(3)
-    event.respond('The Seedling that draws the purple rock will be out of the game immediately.')
+    event.respond('The castaway that draws the purple rock will be out of the game immediately.')
     event.channel.start_typing
     sleep(3)
     stat =  if args.join(' ').downcase == 'in'
