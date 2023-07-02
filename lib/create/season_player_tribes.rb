@@ -111,7 +111,7 @@ class Sunny
         end
 
         players.each do |player|
-          BOT.user(player.user_id).on(event.server).add_role(Tribe.find_by(id: player.tribe).role_id)
+          BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
         end
 
         return "And that's about it. Go meet your new tribemates!"
