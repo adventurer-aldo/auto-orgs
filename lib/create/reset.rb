@@ -15,12 +15,9 @@ class Sunny
   BOT.command :prune, description: 'Cleans up a channel.' do |event|
     break unless HOSTS.include? event.user.id
 
-
     event.channel.prune(100)
     return
-
   end
-
 
   def self.make_item_commands
     @items = Item.where(season: Setting.last.season)

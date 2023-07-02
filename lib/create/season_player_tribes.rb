@@ -51,7 +51,7 @@ class Sunny
     return 'The cast has been selected!'
   end
 
-  BOT.command :tribes, description: 'Creates new tribes and automatically puts alive seedlings in them.' do |event, *args|
+  BOT.command :tribes, description: 'Creates new tribes and automatically puts alive castaways in them.' do |event, *args|
     break unless HOSTS.include? event.user.id
 
     event.message.delete

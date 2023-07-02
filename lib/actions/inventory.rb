@@ -23,12 +23,10 @@ class Sunny
           elsif vote.size > 1
             "Vote #{vote.index(parch) + 1}: No One"
           end
-        else
-          if vote.size == 1
-            Player.find_by(id: parch).name
-          elsif vote.size > 1
-            "Vote #{vote.index(parch) + 1} : #{Player.find_by(id: parch).name}"
-          end
+        elsif vote.size == 1
+          Player.find_by(id: parch).name
+        elsif vote.size > 1
+          "Vote #{vote.index(parch) + 1} : #{Player.find_by(id: parch).name}"
         end
       end
 

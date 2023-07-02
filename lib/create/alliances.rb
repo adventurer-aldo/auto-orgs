@@ -103,6 +103,5 @@ class Sunny
       end
     end
     return
-
   end
 end

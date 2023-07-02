@@ -1,5 +1,4 @@
 class Sunny
-
   def self.playItem(event, targets, item)
     case item.timing
     when 'Now'
@@ -57,43 +56,41 @@ class Sunny
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
           else
-            event.respond("There's no single seedling that matches that.") unless content == ''
+            event.respond("There's no single castaway that matches that.") unless content == ''
           end
 
-          if !targets.empty?
-            event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
-            confirmation = event.user.await!(timeout: 50)
+          event.respond('Playing this item failed!') if targets.empty?
+          break if targets.empty?
 
-            event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
-            break if confirmation.nil?
+          event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
+          confirmation = event.user.await!(timeout: 50)
 
-            event.respond("Okay!") unless CONFIRMATIONS.include? confirmation.message.content.downcase
-            break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+          break if confirmation.nil?
 
-            event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-            Vote.where(council:, player_id: targets.map(&:id)).each do |vote_block|
-              a = vote_block.votes
-              a.delete_at(-1)
-              b = vote_block.parchments
-              b.delete_at(-1)
-              vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
-            end
+          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
-            Vote.where(council_id: council, player_id: player.id).each do |vote_add|
-              vote_add.update(allowed: vote_add.allowed + 1, votes: vote_add.votes + [vote_add.votes.last], parchments: vote_add.parchments + [vote_add.parchments.last] )
-            end
-
-            BOT.channel(council.channel_id).send_embed do |embed|
-              embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
-              embed.description = "This advantage steals one of #{targets.map(&:name).join(', ')}'s votes and allows #{player.name} to cast an extra vote with the stolen parchment..."
-              embed.color = event.server.role(TRIBAL_PING).color
-            end
-
-            item.update(owner: 0, targets: targets.map(&:id))
-          else
-            event.respond('Playing this item failed!')
+          event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
+          Vote.where(council:, player_id: targets.map(&:id)).each do |vote_block|
+            a = vote_block.votes
+            a.delete_at(-1)
+            b = vote_block.parchments
+            b.delete_at(-1)
+            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
           end
 
+          Vote.where(council_id: council, player_id: player.id).each do |vote_add|
+            vote_add.update(allowed: vote_add.allowed + 1, votes: vote_add.votes + [vote_add.votes.last], parchments: vote_add.parchments + [vote_add.parchments.last] )
+          end
+
+          BOT.channel(council.channel_id).send_embed do |embed|
+            embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
+            embed.description = "This advantage steals one of #{targets.map(&:name).join(', ')}'s votes and allows #{player.name} to cast an extra vote with the stolen parchment..."
+            embed.color = event.server.role(TRIBAL_PING).color
+          end
+
+          item.update(owner: 0, targets: targets.map(&:id))
         when 'block_vote'
           targets = []
           enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
@@ -122,40 +119,38 @@ class Sunny
             targets << Player.find_by(name: text_attempt[0], season: Setting.last.season, status: ALIVE)
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
-          else
-            event.respond("There's no single seedling that matches that.") unless content == ''
+          elsif content != ''
+            event.respond("There's no single castaway that matches that.")
           end
 
-          if targets == []
-            event.respond('Playing this item failed!')
-          else
-            event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
-            confirmation = event.user.await!(timeout: 50)
+          event.respond('Playing this item failed!') if targets.empty?
+          break if targets.empty?
 
-            event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
-            break if confirmation.nil?
+          event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
+          confirmation = event.user.await!(timeout: 50)
 
-            event.respond("Okay!") unless CONFIRMATIONS.include? confirmation.message.content.downcase
-            break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+          break if confirmation.nil?
 
-            event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-            Vote.where(council_id: council, player_id: targets.map(&:id)).each do |vote_block|
-              a = vote_block.votes
-              a.delete_at(a.size - 1)
-              b = vote_block.parchments
-              b.delete_at(b.size - 1)
-              vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
-            end
+          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
-            BOT.channel(council.channel_id).send_embed do |embed|
-              embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
-              embed.description = "This advantage blocks one of #{targets.map(&:name).join(', ')}'s votes."
-              embed.color = event.server.role(TRIBAL_PING).color
-            end
-
-            item.update(owner: 0, targets: targets.map(&:id))
+          event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
+          Vote.where(council_id: council, player_id: targets.map(&:id)).each do |vote_block|
+            a = vote_block.votes
+            a.delete_at(a.size - 1)
+            b = vote_block.parchments
+            b.delete_at(b.size - 1)
+            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
           end
 
+          BOT.channel(council.channel_id).send_embed do |embed|
+            embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
+            embed.description = "This advantage blocks one of #{targets.map(&:name).join(', ')}'s votes."
+            embed.color = event.server.role(TRIBAL_PING).color
+          end
+
+          item.update(owner: 0, targets: targets.map(&:id))
         end
       end
     else
@@ -195,7 +190,7 @@ class Sunny
             elsif id_attempt.size == 1
               targets << Player.find_by(id: id_attempt[0])
             elsif content != ''
-              event.respond("There's no single seedling that matches that.")
+              event.respond("There's no single castaway that matches that.")
             end
           end
 
@@ -212,5 +207,4 @@ class Sunny
     return
 
   end
-
 end

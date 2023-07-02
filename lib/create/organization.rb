@@ -2,18 +2,18 @@ class Sunny
   BOT.command :archive, description: "Sends the current channel to archive and removes talking permissions, while allowing it to be viewed. Add 'all' to archive all channels within the current category." do |event, *args|
     break unless HOSTS.include? event.user.id
 
-    unless args.join(' ') == 'all'
+    if args.join(' ') != 'all'
       event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
       break if [JURY_SPLITTER, PRE_JURY_SPLITTER, PLAYING_SPLITTER].include? event.channel.id
 
       event.channel.parent = ARCHIVE
       event.respond ':ballot_box_with_check: **This channel has been archived!**'
-      event.channel.permission_overwrites.each do |role, perms|
+      event.channel.permission_overwrites.each do |role, _perms|
         if event.server.role(role)
-          unless role == EVERYONE
-              event.channel.define_overwrite(event.server.role(role), 1024, 2048)
+          if role != EVERYONE
+            event.channel.define_overwrite(event.server.role(role), 1024, 2048)
           else
-              event.channel.define_overwrite(event.server.role(role), 0, 3072)
+            event.channel.define_overwrite(event.server.role(role), 0, 3072)
           end
         elsif event.server.member(role)
           event.channel.define_overwrite(event.server.member(role), 1024, 2048)
@@ -25,9 +25,9 @@ class Sunny
 
         channel.parent = ARCHIVE
         BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
-        channel.permission_overwrites.each do |role, perms|
+        channel.permission_overwrites.each do |role, _perms|
           if event.server.role(role)
-            unless role == EVERYONE
+            if role != EVERYONE
               channel.define_overwrite(event.server.role(role), 1024, 2048)
             else
               channel.define_overwrite(event.server.role(role), 0, 3072)
