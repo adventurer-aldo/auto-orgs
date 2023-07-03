@@ -104,7 +104,7 @@ class Sunny
     if sets.game_stage == 1
       BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
       jury = Player.where(status: 'Jury', season_id: sets.season)
-      if jury.size.positive?
+      if !jury.empty?
         channel.start_typing
         sleep(2)
         BOT.send_message(channel.id, "**And welcome to the members of our #{event.server.role(JURY).mention}:**")
