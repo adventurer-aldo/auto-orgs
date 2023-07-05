@@ -45,7 +45,7 @@ class Sunny
             embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: "You can play it with `!play #{item.code}` or give it to someone else with `!give #{item.code}`")
             embed.color = event.server.role(TRIBAL_PING).color
           end
-          item.update(plyayer_id: player.id)
+          item.update(player_id: player.id)
         else
           event.channel.start_typing
           sleep(2)

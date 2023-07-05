@@ -172,7 +172,7 @@ class Sunny
           topic: "#{tribe.name}'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
           permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
-          cchan = event.server.create_channel(tribe.name + '-camp',
+          cchan = event.server.create_channel(tribe.name + '-challenges',
             parent: TRIBES,
             topic: "#{tribe.name}'s Challenges channel. This is where you'll team up or pit against each other when needed...",
             permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
