@@ -11,8 +11,8 @@ class Sunny
       "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
     end.join("\n\n")
 
-    vote = Vote.where(player_id: player.id)
-    council = Council.where(id: vote.map(&:council), stage: Array(0..3))
+    vote = player.votes
+    council = Council.where(id: vote.map(&:council_id), stage: Array(0..3))
     if vote.exists? && council.exists?
       council = council.first
       vote = Vote.where(council_id: council.id).and(vote).first.votes

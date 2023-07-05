@@ -3,7 +3,7 @@ class Sunny
     case item.timing
     when 'Now'
       item.functions.each do |function|
-        council = Council.find_by(stage: [0, 1], season_id: Setting.last.season)
+        council = Council.where(stage: [0, 1], season_id: Setting.last.season)
         player = Player.find_by(id: item.owner, season_id: Setting.last.season)
         case function
         when 'extra_vote'
@@ -55,8 +55,8 @@ class Sunny
             targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
-          else
-            event.respond("There's no single castaway that matches that.") unless content == ''
+          elsif content != ''
+            event.respond("There's no single castaway that matches that.")
           end
 
           event.respond('Playing this item failed!') if targets.empty?
@@ -72,7 +72,7 @@ class Sunny
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
-          Vote.where(council:, player_id: targets.map(&:id)).each do |vote_block|
+          Vote.where(council_id: council, player_id: targets.map(&:id)).each do |vote_block|
             a = vote_block.votes
             a.delete_at(-1)
             b = vote_block.parchments
@@ -108,7 +108,7 @@ class Sunny
 
           await = event.user.await!(timeout: 80)
 
-          event.respond("You didn't pick a target...") if await.nil?
+          event.respond("You didn't pick a target in time...") if await.nil?
           break if await.nil?
 
           content = await.message.content
