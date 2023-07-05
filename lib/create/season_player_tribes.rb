@@ -26,7 +26,7 @@ class Sunny
     break unless cast.size > 0
 
     cast.each do |person|
-      player =  Player.create(user_id: person.id, name: person.display_name, season_id: Setting.last.season,
+      player = Player.create(user_id: person.id, name: person.display_name, season_id: Setting.last.season,
       confessional: event.server.create_channel(
           "#{person.display_name}-confessional",
           parent: CONFESSIONALS,
@@ -55,15 +55,20 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     tribes = event.message.role_mentions
-    players = Player.where(season_id: Setting.last.season, status: ALIVE+['Exiled'])
+    players = Player.where(season_id: Setting.last.season, status: ALIVE + ['Exiled'])
     if tribes.size > 1
       if (players.size % tribes.size).zero?
         @set_tribes = []
         tribes.each do |tribe|
           # > Voice Channel for the Tribe
-          event.server.create_channel(tribe.name + ' Voice',2, parent: TRIBES,
+          vchan = event.server.create_channel(tribe.name + ' Voice',2, parent: TRIBES,
           permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
           Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
+          cchan = event.server.create_channel(tribe.name + '-challenges',
+            parent: TRIBES,
+            topic: tribe.name + "'s Challenges channel. This is where you'll submit challenges-related stuff or play in them if needed.",
+            permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+            Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           chan = event.server.create_channel(tribe.name + '-camp',
           parent: TRIBES,
           topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
@@ -74,6 +79,8 @@ class Sunny
           @set_tribes << Tribe.create(name: tribe.name,
           role_id: tribe.id,
           channel_id: chan.id,
+          vchannel_id: vchan.id,
+          cchannel_id: cchan.id,
           season_id: Setting.last.season).id
         end
         Setting.last.update(tribes: @set_tribes)
@@ -102,7 +109,7 @@ class Sunny
           event.channel.start_typing
           sleep(1)
           event.respond "**Tribe #{tribes[rand].mention}!**"
-          player.update(tribe_id: Tribe.find_by(role_id: tribes[rand].id).id)
+          player.update(tribe_id: Tribe.where(role_id: tribes[rand].id).last.id)
           @buffs.delete_at(@buffs.index(rand))
           event.channel.start_typing
           sleep(2)
@@ -156,7 +163,7 @@ class Sunny
         @set_tribes = []
         tribes.each do |tribe|
           # Voice
-          event.server.create_channel(tribe.name,2,
+          vchan = event.server.create_channel(tribe.name,2,
           parent: TRIBES,
           permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
           Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
@@ -165,6 +172,11 @@ class Sunny
           topic: "#{tribe.name}'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
           permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
+          cchan = event.server.create_channel(tribe.name + '-camp',
+            parent: TRIBES,
+            topic: "#{tribe.name}'s Challenges channel. This is where you'll team up or pit against each other when needed...",
+            permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+            Discordrb::Overwrite.new(tribe.id, allow: 3072)])
 
           chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")
 
@@ -172,6 +184,8 @@ class Sunny
             name: tribe.name,
             role_id: tribe.id,
             channel_id: chan.id,
+            vchannel_id: vchan.id,
+            cchannel_id: cchan.id,
             season_id: Setting.last.season
           ).id
         end

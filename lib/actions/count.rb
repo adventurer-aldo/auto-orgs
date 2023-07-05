@@ -65,14 +65,14 @@ class Sunny
     vote_count = {}
     parchments = {}
 
-    voters = Council.votes
+    voters = council.votes
     voters.each do |vote|
       sub = vote.votes.map do |mapping|
         if mapping.zero?
           event.channel.start_typing
           sleep(2)
-          event.respond("**#{Player.find_by(id: vote.player).name} has self-voted!**")
-          vote.player
+          event.respond("**#{vote.player.name} has self-voted!**")
+          vote.player.id
         else
           mapping
         end
@@ -80,8 +80,8 @@ class Sunny
 
       vote.update(votes: sub)
       all_votes += sub
-      vote_count[vote.player] = 0
-      parchments[vote.player] = []
+      vote_count[vote.player.id] = 0
+      parchments[vote.player.id] = []
     end
     voters.each do |vote|
       vote.votes.each_with_index do |ret, index|
@@ -107,14 +107,14 @@ class Sunny
 
       while i < max
         i += 1
-        items = Item.where(timing: 'Tallied', season_id: Setting.last.season).excluding(Item.where(owner: 0)).excluding(Item.where(targets: []))
+        items = Item.where(timing: 'Tallied', season_id: Setting.last.season).excluding(Item.where(player_id: nil)).excluding(Item.where(targets: []))
         if items.exists?
           max += 3
           items.map.each do |item|
-            owner = Player.find_by(id: item.owner, status: ALIVE)
+            owner = item.player
             targets = item.targets.map { |n| Player.find_by(id: n, status: ALIVE) }
 
-            item.update(owner: 0, targets: [])
+            item.update(player_id: nil, targets: [])
             event.channel.start_typing
             sleep(1)
             event.respond("**#{owner.name} stands!**")
@@ -229,9 +229,9 @@ class Sunny
         sleep(2)
         case Setting.last.game_stage
         when 0
-          event.respond("**The #{COUNTING[total - rank]} castaway eliminated from Maskvivor is...**")
+          event.respond("**The #{COUNTING[total - rank]} castaway eliminated from Botvivor is...**")
         when 1
-          event.respond("**#{COUNTING[total - rank]} castaway eliminated from Maskvivor and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
+          event.respond("**#{COUNTING[total - rank]} castaway eliminated from Botvivor and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
         end
         sleep(5)
         lame = ' (NO PARCHMENT)'

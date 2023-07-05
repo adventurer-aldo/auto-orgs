@@ -34,7 +34,7 @@ class Sunny
         sleep(2)
         event.respond('**You found an item!**')
 
-        if item.owner.nil?
+        if item.player_id.nil?
           subm = BOT.channel(player.submissions)
           subm.start_typing
           sleep(4)
@@ -45,7 +45,7 @@ class Sunny
             embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: "You can play it with `!play #{item.code}` or give it to someone else with `!give #{item.code}`")
             embed.color = event.server.role(TRIBAL_PING).color
           end
-          item.update(owner: player.id)
+          item.update(plyayer_id: player.id)
         else
           event.channel.start_typing
           sleep(2)

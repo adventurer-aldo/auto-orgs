@@ -18,7 +18,7 @@ class Sunny
 
     if target
       loser = target
-      eliminate(loser,event)
+      eliminate(loser, event)
       Council.all.update(stage: 5)
       event.respond("#{loser.name} has been eliminated.")
     end
@@ -73,7 +73,10 @@ class Sunny
         event.respond('...')
         event.channel.start_typing
         sleep(3)
-        event.respond("It's a **purple rock**.")
+        event.respond('...')
+        event.channel.start_typing
+        sleep(3)
+        event.respond("It's a **purple rock**...")
         event.channel.start_typing
         sleep(3)
         eliminate(seed,event)

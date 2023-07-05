@@ -144,13 +144,13 @@ class Sunny
     end
     channel.start_typing
     sleep(1)
-    voters = Vote.where(council_id: council.id).map { |vote| Player.find_by(id: vote.player) }
+    voters = Vote.where(council_id: council.id).map(&:player)
     immunes = []
     voters.each do |player|
       immunes << player if player.status == 'Immune'
     end
     if immunes.size.positive?
-      BOT.send_message(channel.id, "Everyone but **#{immunes.map(&:name).join(', ')}** is fair game.")
+      BOT.send_message(channel.id, "Everyone but **#{immunes.map(&:name).join(', ')}** is fair game since they have earned immunity.")
     end
     BOT.send_message(channel.id, 'Good luck!')
   end
@@ -162,7 +162,7 @@ class Sunny
     jury_all = Player.where(status: 'Jury', season_id: Setting.last.season)
 
     Setting.last.update(game_stage: 2)
-    council = Council.create(tribe_id: [finalists.first.tribe], channel_id: event.server.create_channel(
+    council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
         'final-tribal-council',
         topic: "The last time we'll read the votes during this season of Botvivor.",
         parent: FTC,

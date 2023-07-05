@@ -59,8 +59,18 @@ class Sunny
 
       end
     end
+    addendum = case rank
+    when 1
+      'st'
+    when 2
+      'nd'
+    when 3
+      'rd'
+    else
+      'th'
+    end
     conf = BOT.channel(loser.confessional)
-    conf.name = "#{rank}th-" + conf.name
+    conf.name = "#{rank}#{addendum}-" + conf.name
     if Setting.last.game_stage == 1
       conf.sort_after(BOT.channel(JURY_SPLITTER))
     else

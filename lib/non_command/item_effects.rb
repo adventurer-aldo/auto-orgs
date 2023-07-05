@@ -24,7 +24,7 @@ class Sunny
             embed.color = event.server.role(TRIBAL_PING).color
           end
           vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last])
-          item.update(targets: [player.id], owner: 0)
+          item.update(targets: [player.id], player_id: nil)
           event.respond("You successfuly played #{item.name}.")
 
         when 'steal_vote'
@@ -150,7 +150,7 @@ class Sunny
             embed.color = event.server.role(TRIBAL_PING).color
           end
 
-          item.update(owner: 0, targets: targets.map(&:id))
+          item.update(player_id: nil, targets: targets.map(&:id))
         end
       end
     else

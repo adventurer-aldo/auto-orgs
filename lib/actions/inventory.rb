@@ -7,7 +7,7 @@ class Sunny
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
-    text = Item.where(owner: player.id).map do |item|
+    text = player.items.map do |item|
       "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
     end.join("\n\n")
 
