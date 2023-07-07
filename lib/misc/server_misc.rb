@@ -1,5 +1,5 @@
 class Sunny
-  BOT.command(:remove_role, description: 'Removes mentioned role(s) from all members with the role') do |event|
+  BOT.command(:removerole, description: 'Removes mentioned role(s) from all members with the role') do |event|
     # Check if the user invoking the command has the necessary permissions
     unless event.user.permission?(:manage_roles)
       event.respond("You don't have permission to manage roles.")
