@@ -120,7 +120,7 @@ class Sunny
             event.respond("**#{owner.name} stands!**")
             event.channel.start_typing
             sleep(4)
-            event.respond("*\"I'd like to play this on **#{targets.map(&:name).join('**, **').gsub(owner.name,'myself')}**\"*")
+            event.respond("*\"I'd like to play this on **#{targets.map(&:name).join('**, **').gsub(owner.name, 'myself')}**\"*")
             event.channel.send_embed do |embed|
               embed.title = item.name
               embed.description = item.description
@@ -293,9 +293,9 @@ class Sunny
 
               vote_count.each do |k,v|
                 if v == vote_count.values.max && Player.where(id: k, status: ['Idoled', 'Immune']).exists? == false
-                  Vote.find_by(player_id: k, council_id: council.id).update(allowed: 0, votes: []) 
+                  Vote.find_by(player_id: k, council_id: council.id).update(allowed: 0, votes: [])
                 else
-                  Vote.find_by(player_id: k, council_id: council.id).update(allowed: 1, votes: [0]) 
+                  Vote.find_by(player_id: k, council_id: council.id).update(allowed: 1, votes: [0])
                 end
               end
               Vote.where(council_id: council.id, allowed: 1).excluding(Vote.where(player_id: immunes)).each do |revote|
@@ -311,8 +311,8 @@ class Sunny
               event.respond('The castaway that draws the purple rock will be out of the game immediately.')
               event.channel.start_typing
               sleep(3)
-              Player.find_by(status: 'In').update(status: 'Immune')
-              seeds = Player.where(status: 'Idoled')
+              Player.where(status: 'In', season_id: Setting.last.season).update(status: 'Immune')
+              seeds = Player.where(status: 'Idoled', season_id: Setting.last.season)
               event.respond("This will be between #{seeds.map(&:name).join(', ')}")
               event.channel.start_typing
               sleep(3)

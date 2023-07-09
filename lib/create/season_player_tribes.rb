@@ -127,19 +127,17 @@ class Sunny
     elsif tribes.size == 1
       event.respond "You've only selected one tribe. **This will start Merge.**\nAre you sure about it?"
       @confirm = false
-      loop do
-        event.message.await!(timeout: 30) do |confirm_event|
-          if confirm_event.message.content.downcase == 'yes'
-            @confirm = true
-            @merge = true
-          elsif confirm_event.message.content.downcase == 'no'
-            event.respond 'Got it'
-            @confirm = true
-            @merge = false
-          end
+      event.message.await!(timeout: 30) do |confirm_event|
+        if confirm_event.message.content.downcase == 'yes'
+          @confirm = true
+          @merge = true
+        elsif confirm_event.message.content.downcase == 'no'
+          event.respond 'Got it'
+          @confirm = true
+          @merge = false
         end
-        break if @confirm == true
       end
+      break if @confirm == true
 
       if @confirm == true && @merge == true
         begin
@@ -192,7 +190,7 @@ class Sunny
         Setting.last.update(tribes: @set_tribes, game_stage: 1)
 
         players.each do |player|
-          player.update(tribe_id: Tribe.find_by(role_id: tribes[0].id).id)
+          player.update(tribe_id: Tribe.where(season: Setting.last.season, role_id: tribes[0].id).last.id)
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           event.channel.start_typing
           sleep(1)

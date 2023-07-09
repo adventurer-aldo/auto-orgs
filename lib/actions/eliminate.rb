@@ -9,7 +9,7 @@ class Sunny
     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
     target = nil
     if text_attempt.size == 1
-      target = Player.find_by(name: text_attempt[0])
+      target = Player.find_by(name: text_attempt[0], season: Setting.last.season)
     elsif id_attempt.size == 1
       target = Player.find_by(id: id_attempt[0])
     else

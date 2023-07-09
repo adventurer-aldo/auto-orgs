@@ -4,7 +4,7 @@ class Sunny
     when 'Now'
       item.functions.each do |function|
         council = Council.where(stage: [0, 1], season_id: Setting.last.season)
-        player = Player.find_by(id: item.owner, season_id: Setting.last.season)
+        player = Player.find_by(id: item.player_id, season_id: Setting.last.season)
         case function
         when 'extra_vote'
           event.respond('Are you sure?')
@@ -90,7 +90,7 @@ class Sunny
             embed.color = event.server.role(TRIBAL_PING).color
           end
 
-          item.update(owner: 0, targets: targets.map(&:id))
+          item.update(player_id: 0, targets: targets.map(&:id))
         when 'block_vote'
           targets = []
           enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
@@ -154,7 +154,7 @@ class Sunny
         end
       end
     else
-      player = Player.find_by(id: item.owner, season_id: Setting.last.season)
+      player = Player.find_by(id: item.player_id, season_id: Setting.last.season)
       allowed_targets = 1
       targets = []
       item.functions.each do |function|

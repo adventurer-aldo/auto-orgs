@@ -6,7 +6,7 @@ class Sunny
     break if args[0].nil?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], owner: player.id, season_id: Setting.last.season)
+    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.last.season)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
@@ -71,7 +71,7 @@ class Sunny
     break if args[0].nil?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], owner: player.id, season_id: Setting.last.season)
+    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.last.season)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
