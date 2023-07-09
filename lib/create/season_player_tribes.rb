@@ -127,17 +127,19 @@ class Sunny
     elsif tribes.size == 1
       event.respond "You've only selected one tribe. **This will start Merge.**\nAre you sure about it?"
       @confirm = false
-      event.message.await!(timeout: 30) do |confirm_event|
-        if confirm_event.message.content.downcase == 'yes'
-          @confirm = true
-          @merge = true
-        elsif confirm_event.message.content.downcase == 'no'
-          event.respond 'Got it'
-          @confirm = true
-          @merge = false
+      loop do
+        event.message.await!(timeout: 30) do |confirm_event|
+          if confirm_event.message.content.downcase == 'yes'
+            @confirm = true
+            @merge = true
+          elsif confirm_event.message.content.downcase == 'no'
+            event.respond 'Got it'
+            @confirm = true
+            @merge = false
+          end
         end
+        break if @confirm == true
       end
-      break if @confirm == true
 
       if @confirm == true && @merge == true
         begin
