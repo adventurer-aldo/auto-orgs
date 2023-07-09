@@ -4,7 +4,7 @@ class Sunny
 
     if Alliance.where(channel_id: event.channel.id).exists?
       event.channel.name = args.join(' ')
-      event.respond("The alliance's name has changed to **#{args.join('-').downcase.gsub(' ', '-')}**")
+      event.respond("The alliance's name has changed to **#{args.join('-').downcase.gsub(' ', '-').gsub('@', '')}**")
     end
   end
 
