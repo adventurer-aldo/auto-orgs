@@ -159,6 +159,9 @@ class Sunny
         event.channel.start_typing
         sleep(5)
         event.respond 'Welcome your last partners and/or foes in the last stage of the game!'
+        event.channel.start_typing
+        sleep(3)
+        event.respond '.'
 
         @set_tribes = []
         tribes.each do |tribe|
@@ -195,11 +198,16 @@ class Sunny
           player.update(tribe_id: Tribe.where(season: Setting.last.season, role_id: tribes[0].id).last.id)
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           event.channel.start_typing
-          sleep(1)
+          sleep(3)
           event.respond format(@cheers.sample, BOT.user(player.user_id).mention)
-          sleep(1)
+          sleep(2)
         end
 
+        event.channel.start_typing
+        sleep(3)
+        event.respond '.'
+        event.channel.start_typing
+        sleep(5)
         event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'
       end
 

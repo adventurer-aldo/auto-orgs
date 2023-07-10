@@ -68,7 +68,9 @@ class Sunny
     voters = council.votes
     voters.each do |vote|
       sub = vote.votes.map do |mapping|
-        if mapping.zero?
+        if mapping.zero? && council.stage == 4
+          nil
+        elsif mapping.zero?
           event.channel.start_typing
           sleep(2)
           event.respond("**#{vote.player.name} has self-voted!**")
@@ -77,6 +79,8 @@ class Sunny
           mapping
         end
       end
+
+      sub.delete(nil)
 
       vote.update(votes: sub)
       all_votes += sub
