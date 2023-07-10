@@ -68,6 +68,8 @@ class Sunny
       sleep(3)
       if rocks[seeds.index(seed)].zero?
         event.respond("It's a white rock! #{seed.name} is safe.")
+        event.channel.start_typing
+        sleep(3)
         event.respond '.'
       else
         event.respond('...')

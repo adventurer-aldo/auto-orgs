@@ -76,7 +76,7 @@ class Sunny
       conf.sort_after(BOT.channel(PRE_JURY_SPLITTER))
     end
     subm = BOT.channel(loser.submissions)
-    subm.name = "#{rank}th-" + subm.name
+    subm.name = "#{rank}#{addendum}-" + subm.name
     subm.sort_after(conf)
     Player.where(status: ALIVE).update(status: 'In')
     event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }

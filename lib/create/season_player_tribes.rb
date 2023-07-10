@@ -143,7 +143,7 @@ class Sunny
 
       if @confirm == true && @merge == true
         begin
-          File.open('./lib/setup/merge_cheers.txt', 'r') do |file|
+          File.open('./lib/create/merge_cheers.txt', 'r') do |file|
             @cheers = file.readlines
             file.close
           end

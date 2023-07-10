@@ -44,12 +44,10 @@ class Sunny
   BOT.command :dehive, description: 'Delete all channels on the Archives category.' do |event|
     break unless HOSTS.include? event.user.id
 
-    if event.channel.parent == ARCHIVE
-      return 'You cannot do this action while inside the archives.'
-    else
-      BOT.channel(ARCHIVE).children.each(&:delete)
-      return 'The archives have been deleted.'
-    end
+    return 'You cannot do this action while inside the archives.' if event.channel.parent == ARCHIVE
+
+    BOT.channel(ARCHIVE).children.each(&:delete)
+    return 'The archives have been deleted.'
   end
 
   BOT.command :add, description: 'Adds all mentioned roles to all mentioned members.' do |event|

@@ -23,5 +23,6 @@ class Sunny
 
       event.respond("Role #{role.mention} has been removed from all members.")
     end
+    return
   end
 end
