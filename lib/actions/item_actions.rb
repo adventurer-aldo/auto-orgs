@@ -71,7 +71,7 @@ class Sunny
     break if args[0].nil?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.last.season)
+    item = player.items.where(code: args[0])
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
