@@ -102,7 +102,7 @@ class Sunny
   BOT.command(:finish) do |event|
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
-      embed.title = 'Application Question 7'
+      embed.title = 'Your application is complete!'
       embed.description = "Thank you for applying! We'll mention you again for check-ins, and then see you at #{BOT.channel(1125139196420563147).mention}!"
       embed.color = 'e7df36'
     end
