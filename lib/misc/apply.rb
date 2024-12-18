@@ -93,7 +93,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Final Question'
-      embed.description = 'Why did you choose to apply to Botvivor: Hard Drive?'
+      embed.description = "Why did you choose to apply to Alvivor Season 1: Vegetables?\nNot an interview question, we're just curious!"
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!finish` to settle things.')
     end
