@@ -63,7 +63,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 6'
-      embed.description = 'How do you deal with uncertainty and unpredictable situations? Are you comfortable taking risks, or do you prefer a more cautious approach?'
+      embed.description = 'Who are you? What are your hobbies and interests? Tell us about yourself!'
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply7` when you are done.')
     end
@@ -73,27 +73,17 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 7'
-      embed.description = 'Who are you? What are your hobbies and interests? Tell us about yourself!'
+      embed.description = 'In a scale of 1-10, how much engagement can we expect from you?'
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply8` when you are done.')
     end
   end
-
+  
   BOT.command(:apply8) do |event|
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
-      embed.title = 'Application Question 8'
-      embed.description = 'In a scale of 1-10, how much engagement can we expect from you?'
-      embed.color = 'e7df36'
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply9` when you are done.')
-    end
-  end
-  
-  BOT.command(:apply9) do |event|
-    break unless event.channel.parent == 1128056313721659423
-    event.channel.send_embed do |embed|
       embed.title = 'Final Question'
-      embed.description = "Why did you choose to apply to Alvivor Season 1: Vegetables?\nNot an interview question, we're just curious!"
+      embed.description = "Why did you choose to apply to Alvivor Season 1: Vegetables?\nThe answer won't impact anything, we're just curious!"
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!finish` to settle things.')
     end
