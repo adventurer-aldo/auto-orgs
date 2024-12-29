@@ -61,4 +61,21 @@ class Sunny
   BOT.command(:judgement, description: 'Clue.') do |event|
     event.respond("Singularly add your name before this clue, before passing it on...")
   end
+  
+  BOT.command(:carl_bot, description: 'Clue.') do |event|
+    event.respond("An `extra` is the first word that comes to mind when seeing this one. Mee6 is a welcoming one. In the garden of Alvivor, those who can't survive are weeded out.")
+  end
+  
+  BOT.command(:extra, description: 'Clue.') do |event|
+    event.respond("To survive being weeded out, you must manage your resources smartly. For the one who grants you most of your nutrients needed for your survival is above you. Claim their name.")
+  end
+  
+  BOT.command(:sun, description: 'Clue.') do |event|
+    event.respond("The ?iggest... n?, the largest star, wh? ?hines down upon us. ?hank you.")
+  end
+
+  BOT.command(:boost, description: 'Clue.') do |event|
+    event.respond("To find that which you seek, do not take your first step. Take all the second, third and fourth steps together, in order.")
+  end
+
 end
