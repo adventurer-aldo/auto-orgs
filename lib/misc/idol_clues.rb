@@ -78,4 +78,23 @@ class Sunny
     event.respond("To find that which you seek, do not take your first step. Take all the second, third and fourth steps together, in order.")
   end
 
+  BOT.command(:trusted_spectator, description: 'Clue.') do |event|
+    event.respond("A similar color, yet different in `essence`. Onions can be yellow, red or white besides purple... but they still have the same `essence`. That is the same for you. No matter what you look like, deep down... you have your own `essence`.")
+  end
+  
+  BOT.command(:essence_essence_essence, description: 'Clue.') do |event|
+    event.respond("Onions have a distant rela?ion w?th carrots. The e?es. Carrots will improve your sigh?, whil? onions may make you cry. Is that a myth? Or t?uth?")
+  end
+
+  BOT.command(:tiyter, description: 'Clue.') do |event|
+    event.respond("Onions in Alvivor are all about the colors. The Hidden Immunity Idol lies in your tribe's own color, but first... what's the order of the colors in the #cast-info?")
+  end
+
+  BOT.command(:yellow_purple_green_red, description: 'Clue.') do |event|
+    event.respond("https://www.jigsawplanet.com/?rc=play&pid=1b6eb481d5ec")
+  end
+
+  BOT.command(:yellow_purple_green_red, description: 'Clue.') do |event|
+    event.respond("A hexcode is a color's digital code. Find your tribe's digital code among the list of seedlings and the Hidden Immunity Idol shall be yours.")
+  end
 end
