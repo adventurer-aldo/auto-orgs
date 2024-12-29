@@ -50,7 +50,7 @@ class Sunny
   end
   
   BOT.command(:sight_sight_sight, description: 'Clue.') do |event|
-    event.respond("Test the mettle of your sight as a carrot and type out the beginning of every 𝐕𝐞𝐠𝐞𝐭𝐚𝐛𝐥𝐞𝐬.")
+    event.respond("Test the mettle of your sight as a carrot and type out the beginning of every `𝐕𝐞𝐠𝐞𝐭𝐚𝐛𝐥𝐞𝐬´.")
   end
 
   BOT.command(:tcmec, description: 'Clue.') do |event|
