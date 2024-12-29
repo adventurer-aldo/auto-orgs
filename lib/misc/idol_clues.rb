@@ -14,6 +14,7 @@ class Sunny
   
   BOT.command(:nearly_there, description: 'Clue.') do |event|
     event.respond("What's the name of the decision that holds that Tomatoes are classified as **Vegetables**?")
+  end
   
   BOT.command(:nix_v_hedden, description: 'Clue.') do |event|
     event.respond("https://www.jigsawplanet.com/?rc=play&pid=15eac5aa9715")
