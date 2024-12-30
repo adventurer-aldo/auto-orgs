@@ -178,7 +178,7 @@ class Sunny
         event.respond("#{COUNTING[all_counted_votes.size]} vote...")
         sleep(2)
         lame = ' (NO PARCHMENT)'
-        unless parchments[all_votes[0]][0] == ''
+        unless parchments[all_votes[0]][0] == '0'
           begin
             file = URI.parse(parchments[all_votes[0]][0]).open
             filenam = '.png'

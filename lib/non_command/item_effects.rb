@@ -7,7 +7,7 @@ class Sunny
         player = item.player
         case function
         when 'extra_vote'
-          event.respond('Are you sure?')
+          event.respond('Are you sure? Everyone will be informed of your advantage being used.')
           confirmation = event.user.await!(timeout: 50)
 
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
@@ -62,7 +62,7 @@ class Sunny
           event.respond('Playing this item failed!') if targets.empty?
           break if targets.empty?
 
-          event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
+          event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure? Everyone will be informed of your advantage being used.")
           confirmation = event.user.await!(timeout: 50)
 
           event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
@@ -77,7 +77,9 @@ class Sunny
             a.delete_at(-1)
             b = vote_block.parchments
             b.delete_at(-1)
-            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
+            new_allowed = vote_block.allowed - 1
+            new_allowed = 0 if new_allowed.negative?
+            vote_block.update(allowed: new_allowed, votes: a, parchments: b)
           end
 
           Vote.where(council_id: council.id, player_id: player.id).each do |vote_add|
@@ -135,13 +137,15 @@ class Sunny
           event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
-          event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
+          event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")
           Vote.where(council_id: council.id, player_id: targets.map(&:id)).each do |vote_block|
             a = vote_block.votes
             a.delete_at(a.size - 1)
             b = vote_block.parchments
             b.delete_at(b.size - 1)
-            vote_block.update(allowed: vote_block.allowed - 1, votes: a, parchments: b)
+            new_allowed = vote_block.allowed - 1
+            new_allowed = 0 if new_allowed.negative?
+            vote_block.update(allowed: new_allowed, votes: a, parchments: b)
           end
 
           BOT.channel(council.channel_id).send_embed do |embed|
