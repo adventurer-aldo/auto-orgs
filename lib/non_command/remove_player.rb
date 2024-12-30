@@ -23,7 +23,7 @@ class Sunny
         begin
           alliance.update(players: alliance.players - [loser.id])
           channel = BOT.channel(alliance.channel_id)
-          if alliance.players.size < 4 || alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size
+          if alliance.players.size < 4 || (alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size && Setting.last.game_stage == 1)
             channel.parent = ARCHIVE
             BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
             channel.permission_overwrites.each do |role, _perms|
