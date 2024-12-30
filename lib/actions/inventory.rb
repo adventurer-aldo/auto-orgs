@@ -37,7 +37,7 @@ class Sunny
       embed.title = "#{player.name}'s Inventory"
       embed.description = text
       embed.color = event.server.role(player.tribe.role_id).color if player.tribe
-      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use `!give CODE` to send your items to other castaways or `!play CODE` to play it yourself.')
+      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use `!give CODE` to send your items to other seedlings or `!play CODE` to play it yourself.')
     end
   end
 end

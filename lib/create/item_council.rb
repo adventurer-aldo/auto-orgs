@@ -121,20 +121,20 @@ class Sunny
     channel.start_typing
     sleep(1)
     if Setting.last.game_stage.zero?
-      BOT.send_message(channel.id, 'Tonight, one of you castaways will have their torch snuffed out. And when that happens, you will be eliminated from the game...')
+      BOT.send_message(channel.id, 'Tonight, one of you seedlings will have their torch snuffed out. And when that happens, you will be eliminated from the game...')
       channel.start_typing
       sleep(1)
-      BOT.send_message(channel.id, 'But you can decide, as a group, which castaway should disappear. For that, you must use the `!vote` command in your submissions channel.')
+      BOT.send_message(channel.id, 'But you can decide, as a group, which seedling should disappear. For that, you must use the `!vote` command in your submissions channel.')
     else
       BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you.")
       channel.start_typing
       sleep(1)
-      BOT.send_message(channel.id, 'It is ultimately every castaway for itself, but you can decide in unison who you want gone. For that, you must use the `!vote` command in your submissions channel.')
+      BOT.send_message(channel.id, 'It is ultimately every seedling for itself, but you can decide in unison who you want gone. For that, you must use the `!vote` command in your submissions channel.')
     end
     file = URI.parse(PARCHMENT).open
     BOT.send_file(channel.id, file, filename: 'parchment.png')
     channel.send_embed do |embed|
-      embed.title = 'Castaways attending Tribal Council:'
+      embed.title = 'Seedlings attending Tribal Council:'
       embed.description = players.map(&:name).join("\n")
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'You have more or less 24 hours to decide on who to vote!')
       embed.color = tribes.map(&:color).sample
@@ -164,7 +164,7 @@ class Sunny
     Setting.last.update(game_stage: 2)
     council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
         'final-tribal-council',
-        topic: "The last time we'll read the votes during this season of Botvivor.",
+        topic: "The last time we'll read the votes during this season of Alvivor.",
         parent: FTC,
         permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
     ).id, season_id: Setting.last.season)

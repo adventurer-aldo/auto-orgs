@@ -122,7 +122,7 @@ class Sunny
 
         return "And that's about it. Go meet your new tribemates!"
       else
-        return "There's not enough castaways to split equally amongst those roles."
+        return "There's not enough seedlings to split equally amongst those roles."
       end
     elsif tribes.size == 1
       event.respond "You've only selected one tribe. **This will start Merge.**\nAre you sure about it?"
@@ -155,7 +155,7 @@ class Sunny
         event.respond '**Merge has begun!**'
         event.channel.start_typing
         sleep(6)
-        event.respond "Castaways that are voted off from now on will make part of the #{event.server.role(JURY).mention}"
+        event.respond "Seedlings that are voted off from now on will make part of the #{event.server.role(JURY).mention}"
         event.channel.start_typing
         sleep(5)
         event.respond 'Welcome your last partners and/or foes in the last stage of the game!'

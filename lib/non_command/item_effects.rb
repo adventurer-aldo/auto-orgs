@@ -56,7 +56,7 @@ class Sunny
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
           elsif content != ''
-            event.respond("There's no single castaway that matches that.")
+            event.respond("There's no single seedling that matches that.")
           end
 
           event.respond('Playing this item failed!') if targets.empty?
@@ -122,7 +122,7 @@ class Sunny
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
           elsif content != ''
-            event.respond("There's no single castaway that matches that.")
+            event.respond("There's no single seedling that matches that.")
           end
 
           event.respond('Playing this item failed!') if targets.empty?
@@ -194,7 +194,7 @@ class Sunny
             elsif id_attempt.size == 1
               targets << Player.find_by(id: id_attempt[0])
             elsif content != ''
-              event.respond("There's no single castaway that matches that.")
+              event.respond("There's no single seedling that matches that.")
             end
           end
 
