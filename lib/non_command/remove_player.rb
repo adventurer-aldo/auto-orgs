@@ -69,7 +69,7 @@ class Sunny
                  'th'
                end
     conf = BOT.channel(loser.confessional)
-    conf.name = "#{rank}#{addendum}-" + loser.name
+    conf.name = "#{rank}#{addendum}-" + conf.name
     if Setting.last.game_stage == 1
       conf.sort_after(BOT.channel(JURY_SPLITTER))
     else
