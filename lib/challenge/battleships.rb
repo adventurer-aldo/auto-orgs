@@ -1,8 +1,8 @@
 class Sunny
-  GRID_SIZE = 10
+  GRID_SIZE = 8
   SHIP_SIZES = [1, 2, 3, 4, 5]
-  VALID_COLUMNS = ('a'..'j').to_a
-  VALID_ROWS = (1..10).to_a.map(&:to_s)
+  VALID_COLUMNS = ('a'..'h').to_a
+  VALID_ROWS = (1..8).to_a.map(&:to_s)
   SHIP_COLORS = { 5 => ':white_large_square:', 4 => ':yellow_square:', 3 => ':orange_square:', 2 => ':purple_square:', 1 => ':green_square:' }
 
   def self.graphics(id, destroy = false)
