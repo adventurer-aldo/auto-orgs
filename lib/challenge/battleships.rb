@@ -21,7 +21,7 @@ class Sunny
   end
 
   def self.valid_position?(pos)
-    !!pos.match(/^[a-jA-J](10|[1-9])$/)
+    !!pos.match(/^[a-gA-G](7|[1-6])$/)
   end
 
   def self.generate_grid
