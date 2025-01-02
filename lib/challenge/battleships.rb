@@ -59,12 +59,15 @@ class Sunny
     Turn.create(current_tribe: first.id)
   end
 
-  BOT.command :removeships do |event|
+  BOT.command :restartship do |event|
     Battleship.destroy_all
+    Turn.destroy_all
     return "OK, done."
   end
 
   BOT.command :placeship do |event, *args|
+    return unless Turn.all.empty?
+
     all_size = Battleship.where(tribe_id: 9).size
     return if all_size >= 5
     size = args.length
@@ -108,6 +111,8 @@ class Sunny
   end
 
   BOT.command :attack do |event, *args|
+    return if Turn.all.empty?
+
     position = args.join('').downcase
     event.respond("Invalid attack position: #{position}") unless valid_position?(position)
     return unless valid_position?(position)
@@ -139,6 +144,16 @@ class Sunny
     attacks.push(position)
     if (ships.flatten - attacks).empty?
       event.respond("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
+      event.channel.start_typing
+      sleep(3)
+      event.respond("...")
+      event.channel.start_typing
+      sleep(3)
+      event.respond("And as such...")
+      event.channel.start_typing
+      sleep(3)
+      event.respond("**#{event.server.role(enemy.role_id).mention} HAVE WON IMMUNITY!**")
+      event.respond("The other hosts will take it from here.")
     end
     enemy.damages.create(square: position)
     event.respond("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
