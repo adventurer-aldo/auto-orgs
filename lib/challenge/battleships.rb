@@ -1,4 +1,6 @@
 class Sunny
+  BATTLESHIP_CHANNEL = 1324340468934512694
+
   GRID_SIZE = 7
   SHIP_SIZES = [1, 2, 3, 4, 5]
   VALID_COLUMNS = ('a'..'g').to_a
@@ -24,9 +26,9 @@ class Sunny
     !!pos.match(/^[a-gA-G](7|[1-6])$/)
   end
 
-  def self.generate_grid
+  def self.generate_grid(id)
     grid = Array.new(GRID_SIZE) { Array.new(GRID_SIZE, ':blue_square:') }
-    Battleship.all.each do |ship|
+    Battleship.where(tribe_id: id).each do |ship|
       color = SHIP_COLORS[ship.squares.size]
       ship.squares.each do |pos|
         col = VALID_COLUMNS.index(pos[0])
@@ -38,20 +40,22 @@ class Sunny
   end
 
   BOT.command :grid do |event|
-    event.respond(generate_grid())
+    return unless HOSTS.include? event.user.id
+
+    event.respond(Setting.last.tribes.map { |tribe_id| generate_grid(tribe_id) }.join("\n\n"))
   end
 
   BOT.command :battleships do |event|
     return unless HOSTS.include? event.user.id
 
     tribes = Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }
-    event.respond("The first tribe to attack will be decided by a coinflip!")
+    event.respond('The first tribe to attack will be decided by a coinflip!')
     event.channel.start_typing
     sleep(3)
-    event.respond("...")
+    event.respond('...')
     event.channel.start_typing
     sleep(3)
-    event.respond("First tribe to go will be...")
+    event.respond('First tribe to go will be...')
     event.channel.start_typing
     sleep(3)
     first = tribes.sample
@@ -60,17 +64,27 @@ class Sunny
   end
 
   BOT.command :restartship do |event|
+    break unless event.user.id.host?
+
     Battleship.destroy_all
     Damage.destroy_all
     Turn.destroy_all
     return "OK, done."
   end
 
-  BOT.command :placeship do |event, *args|
+  BOT.command :place_ship do |event, *args|
+    break unless event.user.id.player? || event.user.id.host?
     return unless Turn.all.empty?
 
-    all_size = Battleship.where(tribe_id: 9).size
+    player = Player.find_by(user_id: event.user.id, status: ALIVE)
+    tribe = player.tribe
+    tribe_ships = Battleship.where(tribe_id: tribe.id)
+
+    return unless event.channel.id == tribe.cchannel_id
+
+    all_size = tribe_ships.size
     return if all_size >= 5
+
     size = args.length
     event.respond("That Ship size, (#{size}), is invalid. A Ship must be between 1 and 5 squares wide.") unless SHIP_SIZES.include?(size)
     return unless SHIP_SIZES.include?(size)
@@ -82,11 +96,11 @@ class Sunny
       return unless valid_position?(pos)
     end
 
-    size_conflict = Battleship.all.map { |ship| ship.squares.size }.include?(args.size)
+    size_conflict = tribe_ships.map { |ship| ship.squares.size }.include?(args.size)
     event.respond("There's already a Ship with that size!") if size_conflict
     return if size_conflict
 
-    all_occupied_squares = Battleship.all.map { |ship| ship.squares }.flatten
+    all_occupied_squares = tribe_ships.map { |ship| ship.squares }.flatten
     event.respond("There's already a ship occupying **#{all_occupied_squares.intersection(positions).map(&:upcase).join('**, **')}**") if all_occupied_squares.intersect?(positions)
     return if all_occupied_squares.intersect?(positions)
 
@@ -94,19 +108,20 @@ class Sunny
     cols = positions.map { |pos| pos[0].ord }.sort
 
     if !rows.uniq.one? && !cols.uniq.one?
-      event.respond("Ship must be placed in a straight line (horizontal or vertical).")
+      event.respond('Ship must be placed in a straight line (horizontal or vertical).')
       return
     end
 
     if !(rows.each_cons(2).all? { |a, b| b - a == 1 } || cols.each_cons(2).all? { |a, b| b - a == 1 })
-      event.respond "Ship positions must be sequential."
+      event.respond 'Ship positions must be sequential.'
       return
     end
 
     Battleship.create(squares: positions, tribe_id: 9)
-    Battleship.create(squares: positions, tribe_id: 10)
-    event.respond("Ship placed successfully.\n" + generate_grid())
+    event.respond("Ship placed successfully.\n" + generate_grid(tribe.id))
+    BOT.channel(BATTLESHIP_CHANNEL).send_message("*#{event.server.role(tribe.role_id).name} have placed a ship...*")
 
+    BOT.channel(BATTLESHIP_CHANNEL).send_message("All ships belonging to #{event.server.role(tribe.role_id).name} have been positioned!") if all_size + 1 >= 5
     event.respond("All ships have been positioned!") if all_size + 1 >= 5
     return
   end
@@ -114,33 +129,42 @@ class Sunny
   BOT.command :attack do |event, *args|
     return if Turn.all.empty?
 
+    break unless event.user.id.player? || event.user.id.host?
+
     position = args.join('').downcase
     event.respond("Invalid attack position: #{position}") unless valid_position?(position)
     return unless valid_position?(position)
 
-    player = Tribe.find_by(id: Turn.all.last.current_tribe)
-    enemy = Tribe.where.not(id: Turn.all.last.current_tribe).last
-    Turn.all.last.update(current_tribe: enemy.id)
+    player = Player.find_by(user_id: event.user.id, status: ALIVE).tribe
+    enemy = Tribe.where.not(id: player.id).last
+    turn = Turn.all.last
+
+    return unless event.channel.id == player.cchannel_id
+
+    event.respond("It's not your turn yet!") unless turn.current_tribe == player.id
+    return unless turn.current_tribe == player.id
+
+    turn.update(current_tribe: enemy.id)
 
     ships = enemy.battleships.all.map { |ship| ship.squares }
     attacks = enemy.damages.all.map { |damage| damage.square }
 
-    event.respond("**#{event.server.role(player.role_id).name}** have decided to attack **#{position.upcase}**...")
+    BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(player.role_id).name}** have decided to attack **#{position.upcase}**...")
     if (ships.flatten - attacks).include? position
       if ((ships.select { |ship| ship.include? position }[0] - [position]) - attacks).empty?
-        event.respond(graphics(player.id, true))
-        event.respond("**DECISIVE STRIKE!**\n**#{event.server.role(enemy.role_id).name}** had one of their Ships **SINK**!")
+        BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, true))
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("**DECISIVE STRIKE!**\n**#{event.server.role(enemy.role_id).name}** had one of their Ships **SINK**!")
       else
-        event.respond(graphics(player.id, false))
-        event.respond("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit!")
+        BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit!")
       end
     elsif (ships.map { |ship| ship.include?(position) && !(ship - attacks).empty? }.include?(true))
       # Hit and it was hit before but not completely gone yet
-      event.respond(graphics(player.id, false))
-      event.respond("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit, but the attack didn't do much damage...")
+      BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit, but the attack didn't do much damage...")
     else
       # Miss!
-      event.respond('It was a miss...')
+      BOT.channel(BATTLESHIP_CHANNEL).send_message('It was a miss...')
     end
 
     attacks.push(position)
@@ -149,20 +173,20 @@ class Sunny
       Battleship.destroy_all
       Damage.destroy_all
       Turn.destroy_all
-      event.respond("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
-      event.channel.start_typing
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
+      BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
-      event.respond("...")
-      event.channel.start_typing
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("...")
+      BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
-      event.respond("And as such...")
-      event.channel.start_typing
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("And as such...")
+      BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
-      event.respond("**#{event.server.role(enemy.role_id).mention} HAVE WON IMMUNITY!**")
-      event.respond("The other hosts will take it from here.")
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(enemy.role_id).mention} HAVE WON IMMUNITY!**")
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("The other hosts will take it from here.")
       return
     end
-    event.respond("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
+    BOT.channel(BATTLESHIP_CHANNEL).send_message("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
     return
   end
 end
