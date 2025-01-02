@@ -17,7 +17,7 @@ class Sunny
   end
 
   BOT.command(:sparky, description: 'Clue.') do |event|
-    event.respond("The Sunchokes are not the only vegetables referred to as earth apples, and not in english... Who else is there?")
+    event.respond("This clue leads nowhere...yet!")
   end
   # Sunchokes
 
