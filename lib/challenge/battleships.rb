@@ -55,8 +55,8 @@ class Sunny
     event.channel.start_typing
     sleep(3)
     first = tribes.sample
-    event.respond("**#{event.server.role(first.role_id).mention}**")
     Turn.create(current_tribe: first.id)
+    return "**#{event.server.role(first.role_id).mention}**"
   end
 
   BOT.command :restartship do |event|
@@ -120,6 +120,7 @@ class Sunny
 
     player = Tribe.find_by(id: Turn.all.last.current_tribe)
     enemy = Tribe.where.not(id: Turn.all.last.current_tribe).last
+    Turn.all.last.update(current_tribe: enemy.id)
 
     ships = enemy.battleships.all.map { |ship| ship.squares }
     attacks = enemy.damages.all.map { |damage| damage.square }
@@ -158,7 +159,6 @@ class Sunny
     end
     enemy.damages.create(square: position)
     event.respond("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
-    Turn.all.last.update(current_tribe: enemy.id)
     return
   end
 end
