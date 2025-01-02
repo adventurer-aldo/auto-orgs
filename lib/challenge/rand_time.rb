@@ -5,6 +5,12 @@ class Sunny
     event.respond("Time's up!")
   end
 
+  BOT.command :reward_result do |event|
+    break unless HOSTS.include? event.user.id
+
+    event.respond(Challenge.all.order(end_time: :desc).map { |result| "**#{result.player.name}** — #{result.end_time - result.start_time}"}.join("\n"))
+  end
+
   BOT.command :reward_challenge do |event|
     break unless event.user.id.player?
 

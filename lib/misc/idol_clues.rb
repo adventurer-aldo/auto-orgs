@@ -1,4 +1,28 @@
 class Sunny
+  # Amaranths
+  BOT.command(:earth_apples, description: 'Clue.') do |event|
+    event.respond("The Sunchokes are not the only vegetables referred to as earth apples, and not in english... Who else is there?")
+  end
+
+  BOT.command(:potatoes, description: 'Clue.') do |event|
+    event.respond("The garden of Alvivor is constantly weeding out the vegetables that can't survive its harsh conditions. But from time to time, clues may be planted in some places that tell you how to survive. At the bottom right of an image, what advice did it give you?")
+  end
+
+  BOT.command(:check_the_roles, description: 'Clue.') do |event|
+    event.respond("Once the `harvest` is complete, there is space for more seeds to be planted. And as such, `harvest` is an essential step for improving the garden of Alvivor. `Harvest` away!")
+  end
+
+  BOT.command(:harvest_harvest_harvest, description: 'Clue.') do |event|
+    event.respond("Name the first seedling to have been eliminated from Alvivor.")
+  end
+
+  BOT.command(:sparky, description: 'Clue.') do |event|
+    event.respond("The Sunchokes are not the only vegetables referred to as earth apples, and not in english... Who else is there?")
+  end
+  # Sunchokes
+
+
+
   # Tomatoes
   BOT.command(:casteways, description: 'Clue.') do |event|
     event.respond("They're unorthodox. Why is there a debate over whether they're fruits or vegetables? This is `strange`. Very `strange`. Really `strange`!")
