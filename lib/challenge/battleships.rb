@@ -144,7 +144,11 @@ class Sunny
     end
 
     attacks.push(position)
+    enemy.damages.create(square: position)
     if (ships.flatten - attacks).empty?
+      Battleship.destroy_all
+      Damage.destroy_all
+      Turn.destroy_all
       event.respond("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
       event.channel.start_typing
       sleep(3)
@@ -156,8 +160,8 @@ class Sunny
       sleep(3)
       event.respond("**#{event.server.role(enemy.role_id).mention} HAVE WON IMMUNITY!**")
       event.respond("The other hosts will take it from here.")
+      return
     end
-    enemy.damages.create(square: position)
     event.respond("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
     return
   end
