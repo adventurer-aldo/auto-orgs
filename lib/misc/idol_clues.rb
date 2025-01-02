@@ -75,7 +75,7 @@ class Sunny
   end
   
   BOT.command(:sight_sight_sight, description: 'Clue.') do |event|
-    event.respond("Test the mettle of your sight as a carrot and type out the beginning of every `𝐕𝐞𝐠𝐞𝐭𝐚𝐛𝐥𝐞𝐬´.")
+    event.respond("Test the mettle of your sight as a carrot and type out the beginning of every 𝐕𝐞𝐠𝐞𝐭𝐚𝐛𝐥𝐞.")
   end
 
   BOT.command(:tcmec, description: 'Clue.') do |event|
@@ -85,6 +85,8 @@ class Sunny
   BOT.command(:judgement, description: 'Clue.') do |event|
     event.respond("Singularly add your name before this clue, before passing it on...")
   end
+
+  # Extra Vote
   
   BOT.command(:carl_bot, description: 'Clue.') do |event|
     event.respond("An `extra` is the first word that comes to mind when seeing this one. Mee6 is a welcoming one. In the garden of Alvivor, those who can't survive are weeded out.")
@@ -102,6 +104,8 @@ class Sunny
     event.respond("To find that which you seek, do not take your first step. Take all the second, third and fourth steps together, in order.")
   end
 
+  # Onions
+
   BOT.command(:trusted_spectator, description: 'Clue.') do |event|
     event.respond("A similar color, yet different in `essence`. Onions can be yellow, red or white besides purple... but they still have the same `essence`. That is the same for you. No matter what you look like, deep down... you have your own `essence`.")
   end
@@ -111,7 +115,7 @@ class Sunny
   end
 
   BOT.command(:tiyter, description: 'Clue.') do |event|
-    event.respond("Onions in Alvivor are all about the colors. The Hidden Immunity Idol lies in your tribe's own color, but first... what's the order of the colors in the #cast-info?")
+    event.respond("Onions in Alvivor are all about the colors. The Hidden Immunity Idol lies in your tribe's own color, but first... look at the whole garden, and tell me the sequence of its rainbow.")
   end
 
   BOT.command(:yellow_purple_green_red, description: 'Clue.') do |event|
