@@ -61,6 +61,7 @@ class Sunny
 
   BOT.command :restartship do |event|
     Battleship.destroy_all
+    Damage.destroy_all
     Turn.destroy_all
     return "OK, done."
   end
