@@ -117,7 +117,7 @@ class Sunny
       return
     end
 
-    Battleship.create(squares: positions, tribe_id: 9)
+    Battleship.create(squares: positions, tribe_id: tribe.id)
     event.respond("Ship placed successfully.\n" + generate_grid(tribe.id))
     BOT.channel(BATTLESHIP_CHANNEL).send_message("*#{event.server.role(tribe.role_id).name} have placed a ship...*")
 
