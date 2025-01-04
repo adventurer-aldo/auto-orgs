@@ -107,7 +107,7 @@ class Sunny
       event.respond('This is the time to do it in your submissions channel.')
 
       i = 0
-      max = 10
+      max = 15
 
       while i < max
         i += 1
