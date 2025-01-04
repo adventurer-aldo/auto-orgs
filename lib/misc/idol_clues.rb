@@ -49,7 +49,7 @@ class Sunny
     event.respond("Lettuces, between all the others, are clearly the ones most worthy of the title of `vegetables`. I mean, look at all that green? The other `vegetables` don't have that! They're all colorful and rainbow-like. Not obviously `vegetables` at all!")
   end
 
-  BOT.command(:vegetables_vegetables_vegetables, description: 'Clue.') do |event|
+  BOT.command(:vegetablesa_vegetables_vegetables, description: 'Clue.') do |event|
     event.respond("The pa?h of the l?ttuces will ?xp?ore your origins. The idol was always ?h?re within you, lettuc?s. Seek aid about who you are, and you'?l have it.")
   end
 
@@ -74,7 +74,7 @@ class Sunny
     event.respond("It was within your `sight`. The odd one out. Carrots are said to be helpful for your `sight`. Never lose `sight` of your goals.")
   end
   
-  BOT.command(:sight_sight_sight, description: 'Clue.') do |event|
+  BOT.command(:sighta_sight_sight, description: 'Clue.') do |event|
     event.respond("Test the mettle of your sight as a carrot and type out the beginning of every 𝐕𝐞𝐠𝐞𝐭𝐚𝐛𝐥𝐞.")
   end
 
@@ -110,7 +110,7 @@ class Sunny
     event.respond("A similar color, yet different in `essence`. Onions can be yellow, red or white besides purple... but they still have the same `essence`. That is the same for you. No matter what you look like, deep down... you have your own `essence`.")
   end
   
-  BOT.command(:essence_essence_essence, description: 'Clue.') do |event|
+  BOT.command(:essencea_essence_essence, description: 'Clue.') do |event|
     event.respond("Onions have a distant rela?ion w?th carrots. The e?es. Carrots will improve your sigh?, whil? onions may make you cry. Is that a myth? Or t?uth?")
   end
 
