@@ -9,15 +9,15 @@ class Sunny
   end
 
   BOT.command(:check_the_roles, description: 'Clue.') do |event|
-    event.respond("Once the `harvest` is complete, there is space for more seeds to be planted. And as such, `harvest` is an essential step for improving the garden of Alvivor. `Harvest` away!")
+    event.respond("Name the second, first and then the second seedling to have been eliminated from Alvivor.")
   end
 
-  BOT.command(:harvest_harvest_harvest, description: 'Clue.') do |event|
-    event.respond("Name the first seedling to have been eliminated from Alvivor.")
+  BOT.command(:joey_sparky_joey, description: 'Clue.') do |event|
+    event.respond("Attach ? branch to a tree, and a?other ?hall grow ?here it has be?n attached... ?oots don't just belong underground.")
   end
-
-  BOT.command(:sparky, description: 'Clue.') do |event|
-    event.respond("This clue leads nowhere...yet!")
+  
+  BOT.command(:answer, description: 'Clue.') do |event|
+    event.respond("My opposite is...")
   end
   # Sunchokes
 
