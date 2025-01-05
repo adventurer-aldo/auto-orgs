@@ -4,6 +4,11 @@ class Sunny
     event.respond("The Sunchokes are not the only vegetables referred to as earth apples, and not in english... Who else is there?")
   end
 
+  # Amaranths
+  BOT.command(:earth_apple, description: 'Clue.') do |event|
+    event.respond("The Sunchokes are not the only vegetables referred to as earth apples, and not in english... Who else is there?")
+  end
+
   BOT.command(:potatoes, description: 'Clue.') do |event|
     event.respond("The garden of Alvivor is constantly weeding out the vegetables that can't survive its harsh conditions. But from time to time, clues may be planted in some places that tell you how to survive. At the bottom right of an image, what advice did it give you?")
   end
