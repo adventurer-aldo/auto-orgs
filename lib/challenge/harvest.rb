@@ -13,8 +13,10 @@ class Sunny
   end
 
   BOT.command :tomato do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -25,8 +27,10 @@ class Sunny
   end
 
   BOT.command :carrot do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -37,8 +41,10 @@ class Sunny
   end
 
   BOT.command :onion do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -49,8 +55,10 @@ class Sunny
   end
 
   BOT.command :lettuce do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -61,8 +69,10 @@ class Sunny
   end
 
   BOT.command :sunchokes do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -73,8 +83,10 @@ class Sunny
   end
   
   BOT.command :amaranths do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -85,8 +97,10 @@ class Sunny
   end
   
   BOT.command :sweet_potatoes do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -97,8 +111,10 @@ class Sunny
   end
   
   BOT.command :bell_peppers do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -109,8 +125,10 @@ class Sunny
   end
   
   BOT.command :pea_pods do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -121,8 +139,10 @@ class Sunny
   end
   
   BOT.command :cucumbers do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
@@ -133,8 +153,10 @@ class Sunny
   end
   
   BOT.command :salad do |event|
-    break unless Challenge.where(player_id: player.id).exists?
+    break unless event.user.id.player?
+
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    break unless Challenge.where(player_id: player.id).exists?
     break unless [player.confessional, player.submissions].include? event.channel.id
     challenge = player.challenges.first
 
