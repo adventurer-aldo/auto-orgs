@@ -50,7 +50,7 @@ class Sunny
 
     matches = mention_matches if mention_matches.size == 1
 
-    break unless Potato.all.first.player.id == passer.id
+    break unless Potato.all.first.player_id == passer.id
 
     event.respond("More than a single seedling matches that...") if matches.size > 1
     break if matches.size > 1
