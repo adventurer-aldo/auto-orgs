@@ -26,7 +26,7 @@ class Sunny
     players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
 
-    target = args.join(' ').downcase
+    target = args.join('').downcase
     mapped_players = players.map(&:name)
     matches = []
     mapped_players.each_with_index do |player_name, index|
@@ -65,7 +65,44 @@ class Sunny
     event.respond("The :potato: **Hot Potato** was passed to #{BOT.user(matches.first.user_id).mention}!")
   end
 
-  BOT.command :explode do |event|
-    
+  BOT.command :explode do |event, *args|
+    players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
+    passer = Player.where(status: ALIVE).first
+
+    target = args.join('').downcase
+    mapped_players = players.map(&:name)
+    matches = []
+    mapped_players.each_with_index do |player_name, index|
+      if player_name.include?(target)
+        matches << players[index]
+      end
+    end
+
+    mention_matches = []
+    if event.message.mentions.size.positive?
+      ids = event.message.mentions.map { |user| user.id }
+      ids.each do |id|
+        if Player.where(status: ALIVE, user_id: id).exists?
+          mention_matches << Player.find_by(user_id: id, status: ALIVE)
+        end
+      end
+    end
+
+    event.respond("Several seedlings were mentioned...") if mention_matches.size > 1
+    break if mention_matches.size > 1
+
+    matches = mention_matches if mention_matches.size == 1
+
+    event.respond("More than a single seedling matches that...") if matches.size > 1
+    break if matches.size > 1
+
+    event.respond("No single seedling matches that...") if matches.size.zero?
+    break if matches.size.zero?
+
+    event.respond("That's you...") if matches.first.user_id == event.user.id
+    break if matches.first.user_id == event.user.id
+
+    Potato.all.first.update(player_id: matches.first.id)
+    event.respond("The :potato: **Hot Potato** was passed to #{BOT.user(matches.first.user_id).mention}!")
   end
 end
