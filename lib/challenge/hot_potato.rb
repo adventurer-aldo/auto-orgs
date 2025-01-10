@@ -21,7 +21,7 @@ class Sunny
   BOT.command :pass do |event, *args|
     break unless event.user.id.player?
 
-    break unless event.channel.id == 1327288820529627146
+    break unless event.channel.id == 1327032753463496855
 
     players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
