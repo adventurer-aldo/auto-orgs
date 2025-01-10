@@ -67,45 +67,45 @@ class Sunny
 
   BOT.command :explode do |event, *args|
     break unless event.user.id.host?
-  
-    players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
-    passer = Player.where(status: ALIVE).first
 
-    target = args.join('').downcase
-    mapped_players = players.map(&:name).map(&:downcase)
-    event.respond(mapped_players.to_s)
-    matches = []
-    mapped_players.each_with_index do |player_name, index|
-      if player_name.include?(target)
-        matches << players[index]
-      end
-    end
-
-    mention_matches = []
-    if event.message.mentions.size.positive?
-      ids = event.message.mentions.map { |user| user.id }
-      ids.each do |id|
-        if Player.where(status: ALIVE, user_id: id).exists?
-          mention_matches << Player.find_by(user_id: id, status: ALIVE)
-        end
-      end
-    end
-
-    event.respond("Several seedlings were mentioned...") if mention_matches.size > 1
-    break if mention_matches.size > 1
-
-    matches = mention_matches if mention_matches.size == 1
-
-    event.respond("More than a single seedling matches that...") if matches.size > 1
-    break if matches.size > 1
-
-    event.respond("No single seedling matches that...") if matches.size.zero?
-    break if matches.size.zero?
-
-    event.respond("That's you...") if matches.first.user_id == event.user.id
-    break if matches.first.user_id == event.user.id
-
-    Potato.all.first.update(player_id: matches.first.id)
-    event.respond("The :potato: **Hot Potato** was passed to #{BOT.user(matches.first.user_id).mention}!")
+    channel = BOT.channel(1327032753463496855)
+    channel.send_message("It's getting... **HOT**!\n10...")
+    channel.start_typing
+    sleep(3)
+    channel.send_message('9...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('8...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('7...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('6...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('5...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('4...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('3...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('2...')
+    channel.start_typing
+    sleep(3)
+    channel.send_message('1...')
+    channel.start_typing
+    sleep(3)
+    unlucky = Player.find_by(id: Potato.all.last.player_id)
+    channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
+    Participant.where(player_id: unlucky.id).update(status: 0)
+    sleep(2)
+    player = Player.find_by(id: Participant.where(status: 1).map(&:player_id).sample)
+    Potato.last.update(player_id: player.id)
+    channel.send_message("A new :potato: **Hot Potato** appeared in #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
+    BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
   end
 end
