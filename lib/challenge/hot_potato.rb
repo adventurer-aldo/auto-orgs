@@ -105,7 +105,7 @@ class Sunny
     sleep(2)
     player = Player.find_by(id: Participant.where(status: 1).map(&:player_id).sample)
     Potato.all.last.update(player_id: player.id)
-    channel.send_message("A new :potato: **Hot Potato** appeared in #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
+    channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
     BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
   end
 end
