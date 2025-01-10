@@ -27,7 +27,7 @@ class Sunny
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
 
     target = args.join('').downcase
-    mapped_players = players.map(&:name)
+    mapped_players = players.map(&:name).map(&:downcase)
     matches = []
     mapped_players.each_with_index do |player_name, index|
       if player_name.include?(target)
@@ -66,11 +66,14 @@ class Sunny
   end
 
   BOT.command :explode do |event, *args|
+    break unless event.user.id.host?
+  
     players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.where(status: ALIVE).first
 
     target = args.join('').downcase
-    mapped_players = players.map(&:name)
+    mapped_players = players.map(&:name).map(&:downcase)
+    event.respond(mapped_players.to_s)
     matches = []
     mapped_players.each_with_index do |player_name, index|
       if player_name.include?(target)
