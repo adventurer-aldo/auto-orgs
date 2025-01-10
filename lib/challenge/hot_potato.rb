@@ -2,6 +2,8 @@ class Sunny
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
 
+    break unless event.channel.id == 1327032751681175684
+
     event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
     event.channel.start_typing
     sleep(2)
@@ -18,6 +20,8 @@ class Sunny
 
   BOT.command :pass do |event, *args|
     break unless event.user.id.player?
+
+    break unless event.channel.id == 1327032751681175684
 
     players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
