@@ -116,9 +116,9 @@ class Sunny
       Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
       BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
-      list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")
     end
-
+    
+    list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")
     channel.send_embed do |embed|
       embed.title = "Seedlings remaining:"
       embed.description = list
