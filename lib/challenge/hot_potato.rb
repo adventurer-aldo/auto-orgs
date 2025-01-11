@@ -103,9 +103,29 @@ class Sunny
     channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
     Participant.where(player_id: unlucky.id).update(status: 0)
     sleep(2)
-    player = Player.find_by(id: Participant.where(status: 1).map(&:player_id).sample)
-    Potato.all.last.update(player_id: player.id)
-    channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
-    BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
+    participants = Participant.where(status: 1)
+
+    player = Player.find_by(id: participants.map(&:player_id).sample)
+    if participants.size < 2
+      channel.start_typing
+      sleep(2)
+      channel.send_message("There's no more :potato: **Hot Potatoes** remaining!")
+      channel.start_typing
+      sleep(2)
+    else
+      Potato.all.last.update(player_id: player.id)
+      channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
+      BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
+      list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")
+    end
+
+    channel.send_embed do |embed|
+      embed.title = "Seedlings remaining:"
+      embed.description = list
+      embed.color = event.server.role(Tribe.all.last.role_id).color
+    end
+    if participants.size < 2
+      channel.send_message("As the sole remaining seedling... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
+    end
   end
 end
