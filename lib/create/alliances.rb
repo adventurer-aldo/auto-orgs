@@ -8,6 +8,21 @@ class Sunny
     end
   end
 
+  BOT.command :disband do |event, *args|
+    break unless event.user.id.host?
+
+    if Alliance.where(channel_id: event.channel.id).exists?
+      Alliance.destroy_by(channel_id: event.channel.id)
+      event.respond(":broken_heart: **This alliance has been disbanded...**")
+      event.channel.permission_overwrites.each do |role, _perms|
+        unless role == EVERYONE || event.server.role(role).nil? == false
+          event.channel.define_overwrite(event.server.member(role), 1088, 2048)
+        end
+      end
+    else
+    end
+  end
+
   BOT.command :alliance, description: 'Make an alliance with other players on your tribe.' do |event, *args|
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
     tribe = player.tribe
