@@ -49,7 +49,7 @@ class Sunny
       event.respond('Took too long to confirm. Take your time to think about this one.') unless msger
       break unless msger
 
-      if CONFIRMATIONS.include? msger.message.content
+      if CONFIRMATIONS.include? msger.message.content.downcase
         item.update(player_id: targets.first.id)
         event.respond("**#{item.name}** now belongs to **#{targets.first.name}**")
         BOT.channel(targets.first.submissions).send_embed do |embed|

@@ -98,7 +98,7 @@ class Sunny
     all_votes.shuffle!
     majority = (Float(all_votes.size + 1) / 2.0).round
 
-    if council.stage == 2 && rank > 4
+    if council.stage == 2 && rank > 5
       event.channel.start_typing
       sleep(5)
       event.respond('Now, if anyone has a **Hidden Immunity Idol** and would like to `!play` it...')
