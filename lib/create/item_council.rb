@@ -175,7 +175,7 @@ class Sunny
       parent: FTC,
       permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072)])
       Vote.create(player_id: finalist.id, council_id: council.id, allowed: 0, votes: [])
-      channel.send_message(BOT.user(finalist.user_id).mention.to_s)
+      channel.send_message('Post your speech to win the game here, ' + BOT.user(finalist.user_id).mention.to_s + '!')
     end
 
     jury_all.each do |jury|
@@ -185,8 +185,14 @@ class Sunny
       topic: "#{jury.name} will be asking questions here, where the finalists will be able to clarify them.",
       parent: FTC,
       permission_overwrites: perms)
-      Vote.create(player_id: jury.id, council_id: council.id, allowed: 1, votes: [])
-      channel.send_message(BOT.user(jury.user_id).mention.to_s)
+      Vote.create(player_id: jury.id, council_id: council.id, allowed: 1, parchments: ['0'])
+      # channel.send_message(BOT.user(jury.user_id).mention.to_s)
+
+      BOT.channel(jury.submissions).send_embed do |embed|
+        embed.title = "As a member of the Jury, **#{jury.name}** has the power to decide the winner of Alvivor Season 1: Vegetables!"
+        embed.description = "When the time is right, use the `!vote` command to vote for who you think should win the title of Sole Survivor.\nYour decision matters greatly."
+        embed.color = 'df9322'
+      end
     end
     return
 
