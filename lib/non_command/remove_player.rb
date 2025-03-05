@@ -24,7 +24,7 @@ class Sunny
           alliance.update(players: alliance.players - [loser.id])
           channel = BOT.channel(alliance.channel_id)
           if alliance.players.size < 4 || (alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size && Setting.last.game_stage == 1)
-            channel.parent = ARCHIVE
+            channel.parent = Setting.last.archive_category
             BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
             channel.permission_overwrites.each do |role, _perms|
               unless role == EVERYONE || event.server.role(role).nil? == false
@@ -47,7 +47,7 @@ class Sunny
           end
         rescue ActiveRecord::RecordNotUnique
           channel = BOT.channel(alliance.channel_id)
-          channel.parent = ARCHIVE
+          channel.parent = Setting.last.archive_category
           BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
           channel.permission_overwrites.each do |role, _perms|
             unless role == EVERYONE || event.server.role(role).nil? == false

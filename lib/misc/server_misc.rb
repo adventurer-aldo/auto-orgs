@@ -1,4 +1,10 @@
 class Sunny
+
+  BOT.command(:set_archive) do |event, *args|
+    Setting.last.update(archive_category: args.join(''))
+    return "#{BOT.channel(args.join('').to_i).mention} has been set as the **Archive Category!**"
+  end
+
   BOT.command(:removerole, description: 'Removes mentioned role(s) from all members with the role') do |event|
     # Check if the user invoking the command has the necessary permissions
     unless event.user.permission?(:manage_roles)
