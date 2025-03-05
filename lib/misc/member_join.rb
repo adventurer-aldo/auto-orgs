@@ -4,7 +4,7 @@ class Sunny
       embed.title = "#{event.user.name} has joined Alvivor! :tada: "
       embed.description = "Welcome! We hope you enjoy your stay here.\nSeason 2 is just around the corner!"
       embed.color = '6944b9'
-      embed.image = Discordrb::Webhooks::EmbedImage.new(url: event.user.avatar_url)
+      embed.image = Discordrb::Webhooks::EmbedThumbnail.new(url: event.user.avatar_url)
     end
   end
 
