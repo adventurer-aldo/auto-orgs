@@ -34,7 +34,15 @@ class Sunny
         sleep(2)
         event.respond('**You found an item!**')
 
-        if item.player_id.nil?
+        if !item.player_id.nil?
+          event.channel.start_typing
+          sleep(2)
+          event.respond('But it was already found by someone else already...')
+        elsif item.own_restriction != 0 && item.own_restriction != player.tribe_id
+          event.channel.start_typing
+          sleep(2)
+          event.respond("But you are not able to obtain it...")
+        else
           subm = BOT.channel(player.submissions)
           subm.start_typing
           sleep(4)
@@ -46,10 +54,6 @@ class Sunny
             embed.color = event.server.role(TRIBAL_PING).color
           end
           item.update(player_id: player.id)
-        else
-          event.channel.start_typing
-          sleep(2)
-          event.respond('But it was already found by someone else already...')
         end
         return
 

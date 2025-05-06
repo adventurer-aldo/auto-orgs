@@ -40,6 +40,17 @@ class Sunny
     event.respond("**What's the description?**")
     description = event.user.await!(timeout: 80).message.content
 
+    event.respond("**To which tribe will this be restricted to?**")
+    owner_role = event.user.await!(timeout: 80).message.role_mentions.first
+    found_owner_role = Tribe.where(role_id: owner_role.id)
+    own_restriction = if found_owner_role.exists?
+                        event.respond("**This item will be restricted to #{found_owner_role.first.name} tribe.**")
+                        found_owner_role.first.id
+                      else
+                        event.respond("**This item is not restricted to any tribe.**")
+                        0
+                      end
+
     event.respond('**And lastly, what will be the code?**')
     code = event.user.await!(timeout: 50).message.content.gsub(' ', '_')
 
@@ -55,7 +66,8 @@ class Sunny
     event.channel.send_embed do |embed|
       embed.title = item.name
       embed.description = "**Code:** `#{item.code}`\n"
-      embed.description << "**Description:** #{item.description}"
+      embed.description << "**Description:** #{item.description}\n"
+      embed.description << "**Restricted To:** #{item.own_restriction == 0 ? "No One" : Tribe.find_by(id: item.own_restriction).name + ' tribe' }" 
     end
   end
 
