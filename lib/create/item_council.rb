@@ -50,6 +50,7 @@ class Sunny
                         event.respond("**This item is not restricted to any tribe.**")
                         0
                       end
+    puts own_restriction
 
     event.respond('**And lastly, what will be the code?**')
     code = event.user.await!(timeout: 50).message.content.gsub(' ', '_')
@@ -59,7 +60,7 @@ class Sunny
     event.respond('An item with this code already exists!') if condition == true
     break if condition == true
 
-    item = Item.create(code:, name:, description:, timing: type, functions:, season_id: Setting.last.season)
+    item = Item.create(code:, name:, description:, timing: type, functions:, own_restriction:, season_id: Setting.last.season)
     make_item_commands
     event.respond '**Your item has been created!**'
 
