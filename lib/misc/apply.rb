@@ -3,7 +3,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Thanks for deciding to apply!'
-      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.\nFirst things first, what will be your name, age, timezone and pronouns? Answer what you're comfortable with."
+      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.\nFirst things first, what will be your \n**Name**\n**Age**\n**Timezone**\n**Pronouns?\n\nAnswer what you're comfortable with."
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply1` when you are done.')
     end
@@ -13,7 +13,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 1'
-      embed.description = 'Are you new to ORGs or a seasoned veterans? How does your history look like?'
+      embed.description = "What's your favorite animal, and why?"
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply2` when you are done.')
     end
@@ -23,7 +23,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 2'
-      embed.description = 'Do you have a defined playstyle or do you just deal with things as they go? Tell us about your play!'
+      embed.description = 'If you had to classify yourself as either a Hero or a Villain, which would you go with?'
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply3` when you are done.')
     end
@@ -33,7 +33,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 3'
-      embed.description = 'In a game like Survivor, alliances and social dynamics play a crucial role. How would you approach forming alliances and building relationships with other players?'
+      embed.description = 'Not just in a game like Survivor, but also in real life and in the wildlife, having relationships can make improve your chances drastically. How would you go about forming relationships with other players in this season?'
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply4` when you are done.')
     end
@@ -83,7 +83,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Final Question'
-      embed.description = "Why did you choose to apply to Alvivor Season 1: Vegetables?\nThe answer won't impact anything, we're just curious!"
+      embed.description = "Why did you choose to apply to Alvivor Season 2: Animals?\nThe answer won't impact anything, we're just curious!"
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!finish` to settle things.')
     end
@@ -93,7 +93,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Your application is complete!'
-      embed.description = "Thank you for applying! We'll mention you again for check-ins, and then see you at #{BOT.channel(1125139196420563147).mention}!"
+      embed.description = "Thank you for applying! We'd be excited to have you enjoy Alvivor!\nYou'll be mentioned again for check-ins at a later date, and then see you at #{BOT.channel(1322130194726649956).mention}!"
       embed.color = 'e7df36'
     end
   end
