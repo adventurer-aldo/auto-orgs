@@ -233,9 +233,9 @@ class Sunny
         sleep(2)
         case Setting.last.game_stage
         when 0
-          event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Alvivor Season 1: Vegetables is...**")
+          event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Alvivor Season 2: Animals is...**")
         when 1
-          event.respond("**#{COUNTING[total - rank]} seedling eliminated from Alvivor Season 1: Vegetables and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
+          event.respond("**#{COUNTING[total - rank]} seedling eliminated from Alvivor Season 2: Animals and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
         end
         sleep(5)
         lame = ' (NO PARCHMENT)'

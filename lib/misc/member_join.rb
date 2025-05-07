@@ -6,6 +6,7 @@ class Sunny
       embed.color = '6944b9'
       embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: event.user.avatar_url)
     end
+    event.user.on(event.server).add_role(1113168262461673532)
   end
 
   BOT.member_leave do |event|
