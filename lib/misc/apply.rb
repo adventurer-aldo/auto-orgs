@@ -3,7 +3,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Thanks for deciding to apply!'
-      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.\nFirst things first, what will be your \n**Name**\n**Age**\n**Timezone**\n**Pronouns?\n\nAnswer what you're comfortable with."
+      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.\nFirst things first, what will be your \n**Name**\n**Age**\n**Timezone**\n**Pronouns?**\n\nAnswer what you're comfortable with."
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply1` when you are done.')
     end
@@ -96,5 +96,6 @@ class Sunny
       embed.description = "Thank you for applying! We'd be excited to have you enjoy Alvivor!\nYou'll be mentioned again for check-ins at a later date, and then see you at #{BOT.channel(1322130194726649956).mention}!"
       embed.color = 'e7df36'
     end
+    event.user.on(event.server).add_role(1369578647962521620)
   end
 end
