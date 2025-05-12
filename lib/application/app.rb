@@ -12,7 +12,6 @@ class Sunny
       event.send_message(content: "Your application has begun! Go to <##{new_application.channel_id}> for more details.", ephemeral: true)
       BOT.channel(new_application.channel_id).send_message("Welcome #{event.user.mention}!\nThis is where you'll be writing your application for Alvivor Season 2: Animals.\nOur ORG's goal is to provide an enjoyable experience for all its participants, so take the time you need with your applications, and feel free to ask any questions you'd like!\n\nWhenever you're ready to start, write `!apply`")
       event.user.on(event.server).add_role(1345656680268042261)
-      BOT.channel(1371380550165594204).name = "Applications: #{Application.all.size}"
     end
   end
 
