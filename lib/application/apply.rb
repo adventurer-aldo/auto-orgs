@@ -78,8 +78,18 @@ class Sunny
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply8` when you are done.')
     end
   end
-  
+
   BOT.command(:apply8) do |event|
+    break unless event.channel.parent == 1128056313721659423
+    event.channel.send_embed do |embed|
+      embed.title = 'Application Question 8'
+      embed.description = 'What picture would you like to be represented with?'
+      embed.color = 'e7df36'
+      embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply9` when you are done.')
+    end
+  end
+  
+  BOT.command(:apply9) do |event|
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Final Question'
@@ -96,6 +106,13 @@ class Sunny
       embed.description = "Thank you for applying! We'd be excited to have you enjoy Alvivor!\nYou'll be mentioned again for check-ins at a later date, and then see you at #{BOT.channel(1322130194726649956).mention}!"
       embed.color = 'e7df36'
     end
+    app = Application.find_by(channel_id: event.channel.id)
+    return if app.is_finished || event.user.id != app.user_id
+  
     event.user.on(event.server).add_role(1369578647962521620)
+    event.user.on(event.server).remove_role(1345656680268042261)
+    BOT.channel(app.channel_id).name = event.user.on(event.server).display_name + '-interview✅'
+    Application.where(user_id: event.user.id).update(is_finished: true)
+    return
   end
 end
