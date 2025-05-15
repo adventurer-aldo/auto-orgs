@@ -1,9 +1,10 @@
 class Sunny
   BOT.command(:apply) do |event|
     break unless event.channel.parent == 1128056313721659423
+    veteran = Player.where(user_id: event.user.id).exists?
     event.channel.send_embed do |embed|
       embed.title = 'Thanks for deciding to apply!'
-      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.\nFirst things first, what will be your \n**Name**\n**Age**\n**Timezone**\n**Pronouns?**\n\nAnswer what you're comfortable with."
+      embed.description = "You'll be asked a few questions to best understand you and decide how when you are done from where.#{veteran ? "\nSince things *might* have changed since your last time here, we will ask just to be sure." : ''}\nFirst things first, what will be your \n**Name**\n**Age**\n**Timezone**\n**Pronouns?**\n\nAnswer what you're comfortable with."
       embed.color = 'e7df36'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply1` when you are done.')
     end
