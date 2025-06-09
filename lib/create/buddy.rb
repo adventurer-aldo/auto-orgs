@@ -37,7 +37,11 @@ class Sunny
 
         acceptable_mentions.each do |buddy|
           new_buddy = Buddy.create(user_id: buddy.id, player_id: player.id)
-          BOT.channel(player.confessional).define_overwrite(event.server.member(new_buddy.id), 3072, 0)
+          allow = Discordrb::Permissions.new
+          allow.read_messages = true
+          allow.send_messages = true
+          deny = Discordrb::Permissions.new
+          BOT.channel(player.confessional).define_overwrite(new_buddy.id, allow, deny)
         end
 
         # If the number of buddies exceeds 2, delete the extras.
