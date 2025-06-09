@@ -37,9 +37,7 @@ class Sunny
 
         acceptable_mentions.each do |buddy|
           new_buddy = Buddy.create(user_id: buddy.id, player_id: player.id)
-          allow = Discordrb::Permissions.new
-          allow.read_messages = true
-          allow.send_messages = true
+          allow = Discordrb::Permissions.new [:read_messages, :send_messages ]
           deny = Discordrb::Permissions.new
           BOT.channel(player.confessional).define_overwrite(BOT.user(new_buddy.id), allow, deny)
         end
