@@ -41,7 +41,7 @@ class Sunny
           allow.read_messages = true
           allow.send_messages = true
           deny = Discordrb::Permissions.new
-          BOT.channel(player.confessional).define_overwrite(new_buddy.id, allow, deny)
+          BOT.channel(player.confessional).define_overwrite(BOT.user(new_buddy.id), allow, deny)
         end
 
         # If the number of buddies exceeds 2, delete the extras.
