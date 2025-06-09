@@ -30,6 +30,5 @@ Que.connection = ActiveRecord
 require_relative 'settings'
 require_all 'models'
 require_all 'lib'
-require_all 'uploaders'
 
 Sunny.run
