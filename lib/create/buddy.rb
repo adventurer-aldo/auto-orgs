@@ -8,7 +8,7 @@ class Sunny
 
     break unless event.channel.id == player.confessional || event.channel.id == player.submissions
 
-    acceptable_mentions = event.mentions.uniq.filter { |user| player.buddies.where(user_id: user.id).exists? }
+    acceptable_mentions = event.message.mentions.uniq.filter { |user| player.buddies.where(user_id: user.id).exists? }
     if acceptable_mentions.empty?
       event.respond("None of the people you mentioned is your confessional buddy!")
     else
