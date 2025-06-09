@@ -37,7 +37,7 @@ class Sunny
 
         acceptable_mentions.each do |buddy|
           new_buddy = Buddy.create(user_id: buddy.id, player_id: player.id)
-          BOT.channel(player.confessional).define_overwrite(new_buddy.id, 3072, 0)
+          BOT.channel(player.confessional).define_overwrite(event.server.member(new_buddy.id), 3072, 0)
         end
 
         # If the number of buddies exceeds 2, delete the extras.
