@@ -6,7 +6,7 @@ class Sunny
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
     buddies = player.buddies
 
-    break unless event.channel.id == player.confessional
+    break unless event.channel.id == player.confessional || event.channel.id == player.submissions
 
     acceptable_mentions = event.mentions.uniq.filter { |user| player.buddies.where(user_id: user.id).exists? }
     if acceptable_mentions.empty?
@@ -25,7 +25,7 @@ class Sunny
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
     buddies = player.buddies
 
-    break unless event.channel.id == player.confessional
+    break unless event.channel.id == player.confessional || event.channel.id == player.submissions
 
     # Check if you can get new buddies.
     if buddies.map(&:can_change).include?(true) || buddies.size < 2
