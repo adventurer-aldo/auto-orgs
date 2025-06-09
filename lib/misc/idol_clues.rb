@@ -13,7 +13,7 @@ class Sunny
   end
 
   BOT.command(:check_the_roles, description: 'Clue.') do |event|
-    event.respond("Name the second, first and then the second seedling to have been eliminated from Alvivor.")
+    event.respond("Name the second, first and then the second castaway to have been eliminated from Alvivor.")
   end
 
   BOT.command(:joey_sparky_joey, description: 'Clue.') do |event|
