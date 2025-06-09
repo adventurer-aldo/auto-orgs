@@ -166,7 +166,7 @@ class Sunny
 
     event.channel.start_typing
     sleep(4)
-    event.respond('Alright. Once the votes are read, the decision is final and the seedling voted off will be asked to leave the Tribal Council area immediately.')
+    event.respond('Alright. Once the votes are read, the decision is final and the castaway voted off will be asked to leave the Tribal Council area immediately.')
     event.channel.start_typing
     sleep(2)
     event.respond('...')
@@ -233,9 +233,9 @@ class Sunny
         sleep(2)
         case Setting.last.game_stage
         when 0
-          event.respond("**The #{COUNTING[total - rank]} seedling eliminated from Alvivor Season 2: Animals is...**")
+          event.respond("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 2: Animals is...**")
         when 1
-          event.respond("**#{COUNTING[total - rank]} seedling eliminated from Alvivor Season 2: Animals and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
+          event.respond("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 2: Animals and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
         end
         sleep(5)
         lame = ' (NO PARCHMENT)'
@@ -287,10 +287,10 @@ class Sunny
             case council.stage
             when 2
               council.update(stage: 3)
-              event.respond('Everyone but the tied up seedlings will enter in a revote, each with only one available vote.')
+              event.respond('Everyone but the tied up castaways will enter in a revote, each with only one available vote.')
               event.channel.start_typing
               sleep(3)
-              event.respond('You will only be able to vote the seedlings tied.')
+              event.respond('You will only be able to vote the castaways tied.')
 
               Player.where(season_id: Setting.last.season, status: 'Idoled').update(status: 'Immune')
               immunes = Player.where(status: 'Immune').map(&:id)
@@ -312,7 +312,7 @@ class Sunny
               event.respond("We'll be drawing **ROCKS**")
               event.channel.start_typing
               sleep(3)
-              event.respond('The seedling that draws the purple rock will be out of the game immediately.')
+              event.respond('The castaway that draws the purple rock will be out of the game immediately.')
               event.channel.start_typing
               sleep(3)
               Player.where(status: 'In', season_id: Setting.last.season).update(status: 'Immune')

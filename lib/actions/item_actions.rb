@@ -40,7 +40,7 @@ class Sunny
     elsif id_attempt.size == 1
       targets << Player.find_by(id: id_attempt[0])
     else
-      event.respond("There's no single seedling that matches that.") unless content == ''
+      event.respond("There's no single castaway that matches that.") unless content == ''
     end
 
     if !targets.empty?

@@ -13,7 +13,7 @@ class Sunny
     elsif id_attempt.size == 1
       target = Player.find_by(id: id_attempt[0])
     else
-      event.respond("There's no single seedling that matches that.") unless content == ''
+      event.respond("There's no single castaway that matches that.") unless content == ''
     end
 
     if target
@@ -37,7 +37,7 @@ class Sunny
     event.respond("We'll be drawing **ROCKS**")
     event.channel.start_typing
     sleep(3)
-    event.respond('The seedling that draws the purple rock will be out of the game immediately.')
+    event.respond('The castaway that draws the purple rock will be out of the game immediately.')
     event.channel.start_typing
     sleep(3)
     stat =  if args.join(' ').downcase == 'in'

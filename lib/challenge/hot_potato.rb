@@ -7,7 +7,7 @@ class Sunny
     event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
     event.channel.start_typing
     sleep(2)
-    event.respond("The seedling, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
+    event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
 
     players = Player.where(status: ALIVE)
     players.each do |player|
@@ -45,17 +45,17 @@ class Sunny
       end
     end
 
-    event.respond("Several seedlings were mentioned...") if mention_matches.size > 1
+    event.respond("Several castaways were mentioned...") if mention_matches.size > 1
     break if mention_matches.size > 1
 
     matches = mention_matches if mention_matches.size == 1
 
     break unless Potato.all.first.player_id == passer.id
 
-    event.respond("More than a single seedling matches that...") if matches.size > 1
+    event.respond("More than a single castaway matches that...") if matches.size > 1
     break if matches.size > 1
 
-    event.respond("No single seedling matches that...") if matches.size.zero?
+    event.respond("No single castaway matches that...") if matches.size.zero?
     break if matches.size.zero?
 
     event.respond("That's you...") if matches.first.user_id == event.user.id
@@ -125,7 +125,7 @@ class Sunny
     if participants.size < 2
       channel.start_typing
       sleep(2)
-      channel.send_message("As the sole remaining seedling... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
+      channel.send_message("As the sole remaining castaway... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
     end
   end
 end

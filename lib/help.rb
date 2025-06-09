@@ -5,6 +5,7 @@ class Sunny
     fields = [
         ['!alliance', 'Make an alliance with other players from your tribe.'],
         ['!rename', 'Rename an alliance to whatever you choose.'],
+        ['!buddy', 'Allow a spectator to chat with you in your confessional channel.'],
         ['!inventory', "Check your items and who you're voting during Tribal Council."],
         ['!play CODE', "Play an item from your inventory, where CODE is the item's code."],
         ['!give CODE', "Give an item from your inventory to any other player in the game, where CODE is the item's code."],
