@@ -13,4 +13,6 @@ gem 'open-uri'
 
 gem 'pg'
 
+gem 'que'
+
 gem 'require_all'
