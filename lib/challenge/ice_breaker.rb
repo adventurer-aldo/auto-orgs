@@ -38,7 +38,7 @@ class Sunny
     break if challenge.stage >= 6
 
 
-    if favorites[player.tribe.id][favorites.keys[challenge.stage]].include?(event.message.content.downcase)
+    if favorites[player.tribe.id][favorites[player.tribe.id].keys[challenge.stage]].include?(event.message.content.downcase)
       finished = (challenge.stage + 1) >= 6
       challenge.update(stage: challenge.stage + 1)
       event.respond("Correct!")
