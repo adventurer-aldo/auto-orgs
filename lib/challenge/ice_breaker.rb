@@ -25,8 +25,6 @@ class Sunny
     }
   }
 
-  stage = -1
-  time = 0
   BOT.message(in: Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id}) do |event|
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
@@ -40,7 +38,7 @@ class Sunny
     break if challenge.stage >= 6
 
 
-    if favorites[favorites.keys[stage]].include?(event.message.content.downcase)
+    if favorites[player.tribe.id][favorites.keys[challenge.stage]].include?(event.message.content.downcase)
       finished = (challenge.stage + 1) >= 6
       challenge.update(stage: challenge.stage + 1)
       event.respond("Correct!")
@@ -83,4 +81,5 @@ class Sunny
       end
     end
   end
+  
 end
