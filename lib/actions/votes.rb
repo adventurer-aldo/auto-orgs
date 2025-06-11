@@ -83,7 +83,7 @@ class Sunny
           event.respond('Time to upload a parchment!')
           file = URI.parse(PARCHMENT).open
           BOT.send_file(event.channel, file, filename: 'parchment.png')
-          image = event.user.await!(timeout: 240)
+          image = event.user.await!(timeout: 600)
         else
           image = event
         end
