@@ -118,7 +118,7 @@ class Sunny
     
     list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")
     channel.send_embed do |embed|
-      embed.title = "Seedlings remaining:"
+      embed.title = "Castaways remaining:"
       embed.description = list
       embed.color = event.server.role(Tribe.all.last.role_id).color
     end

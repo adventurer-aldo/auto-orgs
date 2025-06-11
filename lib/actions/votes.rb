@@ -19,6 +19,7 @@ class Sunny
     break unless vote.exists? && council.exists?
 
     council = council.last
+    council_votes = council.votes.map(&:votes).flatten
     updater = Vote.where(council_id: council.id).and(vote)
     vote = updater.first
 
@@ -111,6 +112,8 @@ class Sunny
         end
         updater.update(votes: voted, parchments:)
         event.respond("You're now voting **#{target.name}**.")
+        new_council_votes = council.votes.map(&:votes).flatten
+        BOT.channel(council.channel_id).send_message("#{new_council_votes.size - new_council_votes.count(0)}/#{new_council_votes.size}") unless new_council_votes.count(0) == council_votes.count(0)
       else
         'No vote was submitted...'
       end
