@@ -37,6 +37,8 @@ class Sunny
     
     break if challenge.stage >= 6
 
+    break if event.message.content[0] == '!'
+
 
     if favorites[player.tribe.id][favorites[player.tribe.id].keys[challenge.stage]].include?(event.message.content.downcase)
       finished = (challenge.stage + 1) >= 6
@@ -62,10 +64,10 @@ class Sunny
 
     break unless player.tribe.challenges.size.positive?
 
-    break unless event.channel.id == player.tribe.cchannel_id || player.tribe.challenges.first.start_time == nil
-
-    player.tribe.challenges.first.update(start_time: Time.now.to_i)
+    break unless event.channel.id == player.tribe.cchannel_id && player.tribe.challenges.first.start_time == nil
     event.respond("**#{player.tribe.name}**'s timer for the challenge has begun!\nWhich animal is #{favorites[player.tribe.id].keys[player.tribe.challenges.first.stage]}'s favorite?")
+    player.tribe.challenges.first.update(start_time: Time.now.to_i)
+    return
   end
 
   BOT.command :begin_challenge do |event|
@@ -80,6 +82,7 @@ class Sunny
 
       end
     end
+    return
   end
   
 end
