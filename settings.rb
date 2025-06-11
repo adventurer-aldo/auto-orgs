@@ -65,7 +65,7 @@ class Sunny
 
   # MISC
   CONFIRMATIONS = ['yes', 'yea', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
-  PARCHMENT = 'https://i.ibb.co/2Wck3bT/Untitled.jpg'
+  PARCHMENT = 'https://i.ibb.co/Q77cMFJs/Parchment.jpg'
 
   def self.hosts
     return HOSTS
