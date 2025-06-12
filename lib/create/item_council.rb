@@ -42,15 +42,17 @@ class Sunny
 
     event.respond("**To which tribe will this be restricted to?**")
     owner_role = event.user.await!(timeout: 80).message.role_mentions.first
-    found_owner_role = Tribe.where(role_id: owner_role.id)
-    own_restriction = if found_owner_role.exists?
-                        event.respond("**This item will be restricted to #{found_owner_role.first.name} tribe.**")
-                        found_owner_role.first.id
-                      else
-                        event.respond("**This item is not restricted to any tribe.**")
-                        0
-                      end
-    puts own_restriction
+    if !owner_role.nil?
+      found_owner_role = Tribe.where(role_id: owner_role.id)
+      own_restriction = if found_owner_role.exists?
+                          event.respond("**This item will be restricted to #{found_owner_role.first.name} tribe.**")
+                          found_owner_role.first.id
+                        else
+                          event.respond("**This item is not restricted to any tribe.**")
+                          0
+                        end
+      puts own_restriction
+    end
 
     event.respond('**And lastly, what will be the code?**')
     code = event.user.await!(timeout: 50).message.content.gsub(' ', '_')
