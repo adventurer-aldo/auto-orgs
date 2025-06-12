@@ -50,6 +50,7 @@ class Sunny
     self.run_at = proc { Time.now + 60 }
 
     def run
+      enqueue(job_options: { run_at: Time.now + 300})
       tribes = Tribe.all
       BOT.channel(1382759969044041748).load_message(1382818203901890716).edit(tribes.map { |tribe|
         players = tribe.players.where(status: ALIVE).select { |player| !['Duke', 'Jack'].include?(player.name)}
