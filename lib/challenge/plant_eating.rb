@@ -78,7 +78,7 @@ class Sunny
       event.respond("You hear dangerous footsteps behind you... carnivorous animals are approaching.")
     end
 
-    if [new_x, new_y] == [5, 6] # Example event
+    if [new_x, new_y] == [6, 5] # Example event
       event.respond("You smell a unique herb up ahead. You can turn in the other direction to save time, or you can continue onwards and be a little bit greedy...")
     end
 
