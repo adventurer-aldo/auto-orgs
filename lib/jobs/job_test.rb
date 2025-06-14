@@ -5,7 +5,7 @@ class Sunny
     
     Tribe.all.each do |tribe|
       BOT.channel(tribe.cchannel_id).send_embed do |embed|
-        embed.title = '# Immunity Challenge No. 2'
+        embed.title = '# Immunity Challenge No. 3'
         embed.description = "In your #-submissions channels, write the command `!startmaze`\nYou will be positioned in a 19x10 grid. Your goal is to escape the maze.\nUse the commands:\n\n`!up` - Move up\n`!down` - Move down\n`!left` - Move left\n`!right` - Move right\n\n:green_square: Green squares are traversable squares. \n:red_square: Red squares are walls. \n:white_large_square: Are unknown squares.\n\nFor each movement that you do, you spend a turn.\n**Have each of your team's members find the exit in the least amount of TURNS and win Immunity!**"
       end
     end
