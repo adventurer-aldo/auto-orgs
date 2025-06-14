@@ -136,12 +136,12 @@ class Sunny
     channel.start_typing
     sleep(1)
     if Setting.last.game_stage.zero?
-      BOT.send_message(channel.id, 'Tonight, one of you castaways will have their torch snuffed out. And when that happens, you will be eliminated from the game...')
+      BOT.send_message(channel.id, 'Tonight, one of you castaways will have their torch snuffed out. And when that happens, you will be eliminated from the tribe...')
       channel.start_typing
       sleep(1)
       BOT.send_message(channel.id, 'But you can decide, as a tribe, which castaway should disappear. For that, you must use the `!vote` command in your submissions channel.')
     else
-      BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you.")
+      BOT.send_message(channel.id, "Tonight, you'll decide who you want to stay in this tribe with you, and who you want to eliminate from the game.")
       channel.start_typing
       sleep(1)
       BOT.send_message(channel.id, 'It is ultimately every castaway for itself, but you can decide in unison who you want gone. For that, you must use the `!vote` command in your submissions channel.')

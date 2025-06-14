@@ -23,11 +23,18 @@ class Sunny
           other_player = players[j]
           # Connect player with other_player
           event.respond "#{player.name} connects with #{other_player.name}"
-          event.server.create_channel("#{player.name}-#{other_player.name}",
-            parent: category,
-            topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here, as long as they're on the same tribe!",
-            permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
-            Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
+          existing_match = event.server.channels.select { |channel| channel.name == "#{player.name.downcase}-#{other_player.name.downcase}" }
+          if existing_match.empty?
+            event.server.create_channel("#{player.name}-#{other_player.name}",
+              parent: category,
+              topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here, as long as they're on the same tribe!",
+              permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
+              Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
+          else
+            chan = existing_match.first
+            chan.parent = category
+            chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here, as long as they're on the same tribe!"
+          end
         end
       end
     end
