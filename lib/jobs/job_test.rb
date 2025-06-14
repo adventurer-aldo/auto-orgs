@@ -15,8 +15,10 @@ class Sunny
   BOT.command :create_dms do |event|
     break unless event.user.id.host?
 
-    Setting.last.tribes.map { |id| Tribe.find_by(id: id) }.each do |tribe|
-      category = event.server.create_channel(tribe.name + ' 1-on-1s', 4)
+    tribes = Setting.last.tribes.map { |id| Tribe.find_by(id: id) }
+    tribes.each do |tribe|
+      existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
+      category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
       players = tribe.players
       players.each_with_index do |player, i|
         ((i + 1)...players.size).each do |j|
