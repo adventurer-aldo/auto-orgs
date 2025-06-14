@@ -15,7 +15,7 @@ class Sunny
   BOT.command :create_dms do |event|
     break unless event.user.id.host?
 
-    Tribe.all.each do |tribe|
+    Setting.last.tribes.map { |id| Tribe.find_by(id: id) }.each do |tribe|
       category = event.server.create_channel(tribe.name + ' 1-on-1s', 4)
       players = tribe.players
       players.each_with_index do |player, i|
@@ -23,7 +23,7 @@ class Sunny
           other_player = players[j]
           # Connect player with other_player
           event.respond "#{player.name} connects with #{other_player.name}"
-          existing_match = event.server.channels.select { |channel| channel.name == "#{player.name.downcase}-#{other_player.name.downcase}" }
+          existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
           if existing_match.empty?
             event.server.create_channel("#{player.name}-#{other_player.name}",
               parent: category,
