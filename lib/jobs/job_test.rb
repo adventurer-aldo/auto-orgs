@@ -78,11 +78,12 @@ class Sunny
       outsiders = Player.where(status: ALIVE).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
         outsiders.each do |outsider|
-          existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
+          existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{outsider.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
           if existing_match.empty?
           else
             chan = existing_match.first
             chan.define_overwrite(event.server.member(player.user_id), 1088, 2048)
+            chan.define_overwrite(event.server.member(outsider.user_id), 1088, 2048)
             chan.send_message("**Temporarily locked** 🔒")
           end
         end
