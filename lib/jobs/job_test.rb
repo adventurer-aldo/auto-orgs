@@ -58,7 +58,7 @@ class Sunny
           chan.parent = category
           chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
           chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
-          if chan_overwrites.first.allow.can_send_messages == false
+          if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages }.include?(false)
             [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
             chan.send_message("**Temporarily unlocked** 🔓")
           end
@@ -74,17 +74,19 @@ class Sunny
     tribes.each do |tribe|
       existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
-      players = tribe.players
+      players = tribe.players.where(status: ALIVE)
       outsiders = Player.where(status: ALIVE).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
         outsiders.each do |outsider|
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{outsider.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
-          if existing_match.empty?
-          else
+          if !existing_match.empty?
             chan = existing_match.first
-            chan.define_overwrite(event.server.member(player.user_id), 1088, 2048)
-            chan.define_overwrite(event.server.member(outsider.user_id), 1088, 2048)
-            chan.send_message("**Temporarily locked** 🔒")
+            chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, outsider.user_id].include?(overwrite.id) }
+            if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages }.include?(true)
+              chan.define_overwrite(event.server.member(player.user_id), 1088, 2048)
+              chan.define_overwrite(event.server.member(outsider.user_id), 1088, 2048)
+              chan.send_message("**Temporarily locked** 🔒")
+            end
           end
         end
         #
