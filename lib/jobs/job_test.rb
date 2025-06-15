@@ -38,6 +38,8 @@ class Sunny
   end
 
   BOT.command :joint_dms do |event|
+    break unless event.user.id.host?
+
     category = event.server.create_channel('Joint Tribal 🏝️ 1-on-1s', 4)
 
     players = Council.last.tribes.map { |id| Tribe.find_by(id: id).players.where(status: ALIVE) }.flatten
