@@ -50,7 +50,7 @@ class Sunny
         if existing_match.empty?
           event.server.create_channel("#{player.name}-#{other_player.name}",
             parent: category,
-            topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
+            topic: "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
             permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
             Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
         else
