@@ -56,7 +56,7 @@ class Sunny
         else
           chan = existing_match.first
           chan.parent = category
-          chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
+          chan.topic = "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
           chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
           if chan_overwrites.map { |overwrite| overwrite.allow.defined_permissions.include?(:send_messages)  }.include?(false)
             [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
