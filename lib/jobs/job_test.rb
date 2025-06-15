@@ -27,6 +27,7 @@ class Sunny
     if player.tribe.participants.empty?
       Participant.create(tribe_id: player.tribe.id, player_id: player.id)
       BOT.channel(1383493259644506133).send_message("**#{player.name}** has taken Greed, sending <@#{player.tribe.role_id}> to participate in the Tribal Council...")
+      event.respond("#{player.name} took Greed!")
     else
       event.respond("Someone else beat you to it...")
     end
