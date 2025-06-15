@@ -13,8 +13,12 @@ class Sunny
 
   BOT.command :gogreed do |event|
     break unless event.user.id.host?
+
+    tribes = Setting.last.tribes.map { |id| Tribe.find_by(id: id) }
     
-    BOT.channel(1383493259644506133).send_message("It's time to take greed.")
+    tribes.each do |tribe|
+      BOT.channel(tribe.cchannel_id).send_message("It's time to take greed.")
+    end
   end
 
   BOT.command :greed do |event|
