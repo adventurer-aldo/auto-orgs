@@ -27,5 +27,6 @@ class Player < ActiveRecord::Base
   has_many :buddies, foreign_key: 'player_id'
   has_many :items, foreign_key: 'player_id'
   has_many :mazes, foreign_key: 'player_id'
+  has_many :participants, foreign_key: 'player_id'
   has_many :votes, foreign_key: 'player_id'
 end

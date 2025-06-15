@@ -7,5 +7,6 @@ class Tribe < ActiveRecord::Base
   has_many :challenges, foreign_key: 'tribe_id'
   # Battleships
   has_many :damages, foreign_key: 'tribe_id'
+  has_many :participants, foreign_key: 'tribe_id'
   has_many :battleships, foreign_key: 'tribe_id'
 end

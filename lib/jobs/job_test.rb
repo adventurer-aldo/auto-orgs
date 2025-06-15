@@ -6,11 +6,31 @@ class Sunny
     Tribe.all.each do |tribe|
       BOT.channel(tribe.cchannel_id).send_embed do |embed|
         embed.title = '# Immunity Challenge No. 3'
-        embed.description = "In your #-submissions channels, write the command `!startmaze`\nYou will be positioned in a 19x10 grid. Your goal is to escape the maze.\nUse the commands:\n\n`!up` - Move up\n`!down` - Move down\n`!left` - Move left\n`!right` - Move right\n\n:green_square: Green squares are traversable squares. \n:red_square: Red squares are walls. \n:white_large_square: Are unknown squares.\n\nFor each movement that you do, you spend a turn.\n**Have each of your team's members find the exit in the least amount of TURNS and win Immunity!**"
+        embed.description = "In this channel, and once I, **Sunny** send the message \"It's time to take greed.\"...\nUse the command `!greed` to send your participate in the Tribal Council, while earning **Individual Immunity** just for yourself within your tribe."
       end
     end
   end
 
+  BOT.command :gogreed do |event|
+    break unless event.user.id.host?
+    
+    BOT.channel(1383493259644506133).send_message("It's time to take greed.")
+  end
+
+  BOT.command :greed do |event|
+    break unless event.user.id.player?
+
+    player = Player.find_by(user_id: event.user.id)
+
+    break unless event.channel.id == player.tribe.cchannel_id
+
+    if player.tribe.participants.empty?
+      Participant.create(tribe_id: player.tribe.id, player_id: player.id)
+      BOT.channel(1383493259644506133).send_message("**#{player.name}** has taken Greed, sending <@#{player.tribe.role_id}> to participate in the Tribal Council...")
+    else
+      event.respond("Someone else beat you to it...")
+    end
+  end
 
   BOT.command :create_dms do |event|
     break unless event.user.id.host?
