@@ -58,7 +58,7 @@ class Sunny
           chan.parent = category
           chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
           chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
-          if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages }.include?(false)
+          if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages == true }.include?(false)
             [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
             chan.send_message("**Temporarily unlocked** 🔓")
           end
@@ -82,7 +82,7 @@ class Sunny
           if !existing_match.empty?
             chan = existing_match.first
             chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, outsider.user_id].include?(overwrite.id) }
-            if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages }.include?(true)
+            if chan_overwrites.map { |overwrite| overwrite.allow.can_send_messages == true }.include?(true)
               chan.define_overwrite(event.server.member(player.user_id), 1088, 2048)
               chan.define_overwrite(event.server.member(outsider.user_id), 1088, 2048)
               chan.send_message("**Temporarily locked** 🔒")
