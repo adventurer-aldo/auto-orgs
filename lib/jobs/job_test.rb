@@ -38,7 +38,7 @@ class Sunny
   end
 
   BOT.command :joint_dms do |event|
-    category = event.server.create_channel('Joint Tribal 1-on-1s', 4)
+    category = event.server.create_channel('Joint Tribal 🏝️ 1-on-1s', 4)
 
     players = Council.last.tribes.map { |id| Tribe.find_by(id: id).players.where(status: ALIVE) }.flatten
     players.each_with_index do |player, i|
@@ -57,6 +57,11 @@ class Sunny
           chan = existing_match.first
           chan.parent = category
           chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
+          chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
+          if chan_overwrites.first.allow.can_send_messages == false
+            [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
+            chan.send_message("**Temporarily unlocked** 🔓")
+          end
         end
       end
     end
@@ -70,7 +75,18 @@ class Sunny
       existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
       players = tribe.players
+      outsiders = Player.where(status: ALIVE).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
+        outsiders.each do |outsider|
+          existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
+          if existing_match.empty?
+          else
+            chan = existing_match.first
+            chan.define_overwrite(event.server.member(player.user_id), 1088, 2048)
+            chan.send_message("**Temporarily locked** 🔒")
+          end
+        end
+        #
         ((i + 1)...players.size).each do |j|
           other_player = players[j]
           # Connect player with other_player
