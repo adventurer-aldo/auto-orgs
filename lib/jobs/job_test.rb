@@ -37,6 +37,31 @@ class Sunny
     end
   end
 
+  BOT.command :joint_dms do |event|
+    category = event.server.create_channel('Joint Tribal 1-on-1s', 4)
+
+    players = Council.last.tribes.map { |id| Tribe.find_by(id: id).players.where(status: ALIVE) }.flatten
+    players.each_with_index do |player, i|
+      ((i + 1)...players.size).each do |j|
+        other_player = players[j]
+        # Connect player with other_player
+        event.respond "#{player.name} connects with #{other_player.name}"
+        existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
+        if existing_match.empty?
+          event.server.create_channel("#{player.name}-#{other_player.name}",
+            parent: category,
+            topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
+            permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
+            Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
+        else
+          chan = existing_match.first
+          chan.parent = category
+          chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Join Tribal Council!"
+        end
+      end
+    end
+  end
+
   BOT.command :create_dms do |event|
     break unless event.user.id.host?
 
