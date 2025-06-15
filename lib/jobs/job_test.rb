@@ -22,7 +22,7 @@ class Sunny
   end
 
   BOT.command :greed do |event|
-    break unless event.user.id.player?
+    break # unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id)
 
