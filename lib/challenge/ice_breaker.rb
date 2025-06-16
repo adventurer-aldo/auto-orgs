@@ -48,8 +48,8 @@ class Sunny
     break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time != nil && challenge.end_time == nil
     challenge.update(end_time: time)
 
-    event.respond("The timer has stopped! Your total time was **#{challenge.end_time - time} seconds.**")
-    BOT.channel(1384236373137162362).send_message("<@%#{player.tribe.role_id}> has submitted their solution with... **#{challenge.end_time - time} seconds!**")
+    event.respond("The timer has stopped! Your total time was **#{challenge.start_time - time} seconds.**")
+    BOT.channel(1384236373137162362).send_message("#{event.server.role(player.tribe.role_id).mention} has submitted their solution with... **#{challenge.start_time - time} seconds!**")
   end
 
   BOT.command :start_ice do |event|
