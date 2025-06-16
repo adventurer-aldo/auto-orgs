@@ -63,8 +63,10 @@ class Sunny
     player = Player.find_by(user_id: event.user.id)
 
     break unless player.tribe.challenges.size.positive?
-    break unless event.channel.id == player.tribe.cchannel_id && player.tribe.challenges.first.start_time == nil
+    challenge = player.tribe.challenges.first
+    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time == nil
     event.respond("The timer has begun!")
+    challenge.update(start_time: Time.now.to_i)
     file = URI.parse('https://i.ibb.co/HpRgDs79/Wild-Animals-crosswords-1-page-0001.jpg').open
     BOT.send_file(event.channel, file, filename: 'puzzle.jpg')
   end
