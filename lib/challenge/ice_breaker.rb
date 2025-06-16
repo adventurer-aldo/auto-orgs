@@ -82,6 +82,7 @@ class Sunny
     challenge.update(end_time: time)
 
     event.respond("The timer has stopped! Your total time was **#{challenge.end_time - time} seconds.**")
+    BOT.channel(1384236373137162362).send_message("<@%#{player.tribe.role_id}> has submitted their solution with... **#{challenge.end_time - time} seconds!**")
   end
 
   BOT.command :start_ice do |event|
