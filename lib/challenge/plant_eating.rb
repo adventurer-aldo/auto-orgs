@@ -101,7 +101,7 @@ class Sunny
   end
 
   BOT.command(:startmaze, description: "Start maze game.") do |event|
-    break unless event.user.id.player?
+    break #unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
     break unless player.mazes.size < 1

@@ -26,7 +26,7 @@ class Sunny
   }
 
   BOT.message(in: Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id}) do |event|
-    break unless event.user.id.player?
+    break #unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
     break unless player.tribe.challenges.size.positive?
@@ -63,6 +63,30 @@ class Sunny
     player = Player.find_by(user_id: event.user.id)
 
     break unless player.tribe.challenges.size.positive?
+    break unless event.channel.id == player.tribe.cchannel_id && player.tribe.challenges.first.start_time == nil
+    event.respond("The timer has begun!")
+    file = URI.parse('https://i.ibb.co/HpRgDs79/Wild-Animals-crosswords-1-page-0001.jpg').open
+    BOT.send_file(event.channel, file, filename: 'puzzle.jpg')
+  end
+
+  BOT.command :end do |event|
+    break unless event.user.id.player?
+    player = Player.find_by(user_id: event.user.id)
+
+    break unless player.tribe.challenges.size.positive?
+    challenge = player.tribe.challenges.first
+    time = Time.now.to_i
+    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time != nil && challenge.first.end_time == nil
+    challenge.update(end_time: time)
+
+    event.respond("The timer has stopped! Your total time was **#{challenge.end_time - time} seconds.**")
+  end
+
+  BOT.command :start_ice do |event|
+    break unless event.user.id.player?
+    player = Player.find_by(user_id: event.user.id)
+
+    break unless player.tribe.challenges.size.positive?
 
     break unless event.channel.id == player.tribe.cchannel_id && player.tribe.challenges.first.start_time == nil
     event.respond("**#{player.tribe.name}**'s timer for the challenge has begun!\nWhich animal is #{favorites[player.tribe.id].keys[player.tribe.challenges.first.stage]}'s favorite?")
@@ -76,9 +100,8 @@ class Sunny
     Setting.last.tribes.each do |tribe_id|
       Challenge.create(tribe_id: tribe_id)
       BOT.channel(Tribe.find_by(id: tribe_id).cchannel_id).send_embed do |embed|
-        embed.title = '# Immunity Challenge No. 1'
-        embed.description = "Discuss anywhere you'd like amongst yourselves about what animal is your favorite (the one you picked during your application)\n\nOnce you're all certain about what your tribemates' favorite animals are...\n\n" +
-        "Write the command `!start`\nThen, a timer will begin and you'll be asked about your tribemates' favorite animal. A name will be written, and you must respond with their favorite animal. Once you get it right, it's immediately time to guess the next one!\nBeware of wrong guesses! They add +10 seconds, on top of the timer already running...\nOnce the challenge begins, you **any further messages in this channel count as guesses!**\n\n**Guess your tribemates' favorite animals correctly, and fast, and win Immunity!**"
+        embed.title = '# Immunity Challenge No. 4'
+        embed.description = "Once you feel properly equipped to do so, use the command `!start` to begin a timer and get your Crosswords Puzzle.\n\nThis puzzle will feature animals, and your task is to match each number to the image.\nSubmit your answers in this challenges channel, preferably in a list format.\n\n**The first castaway who writes the correct answer for an image earns a point!**\nAnd the castaway who has the most points within a tribe... earns Individual Immunity.\n\nAnd, at the end... the two tribes with **the most correct answers** will win. Time will be the tiebreaker."
 
       end
     end
