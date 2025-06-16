@@ -25,39 +25,6 @@ class Sunny
     }
   }
 
-  BOT.message(in: Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id}) do |event|
-    break #unless event.user.id.player?
-    player = Player.find_by(user_id: event.user.id)
-
-    break unless player.tribe.challenges.size.positive?
-
-    challenge = player.tribe.challenges.first
-
-    break if challenge.start_time == nil
-    
-    break if challenge.stage >= 6
-
-    break if event.message.content[0] == '!'
-
-
-    if favorites[player.tribe.id][favorites[player.tribe.id].keys[challenge.stage]].include?(event.message.content.downcase)
-      finished = (challenge.stage + 1) >= 6
-      challenge.update(stage: challenge.stage + 1)
-      event.respond("Correct!")
-      if finished
-        end_time = Time.now.to_i
-        challenge.update(end_time: end_time)
-        event.respond("#{player.tribe.name} has finished the challenge with **#{end_time - challenge.start_time} seconds!**")
-      else
-        event.respond("Next up. Which animal is #{favorites[player.tribe.id].keys[player.tribe.challenges.first.stage]}'s favorite?")
-      end
-    else
-      challenge.update(start_time: challenge.start_time - 10)
-      event.respond("Incorrect! **+10 seconds penalty!**")
-
-    end
-  end
-
   BOT.command :start do |event|
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
@@ -78,7 +45,7 @@ class Sunny
     break unless player.tribe.challenges.size.positive?
     challenge = player.tribe.challenges.first
     time = Time.now.to_i
-    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time != nil && challenge.first.end_time == nil
+    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time != nil && challenge.end_time == nil
     challenge.update(end_time: time)
 
     event.respond("The timer has stopped! Your total time was **#{challenge.end_time - time} seconds.**")
