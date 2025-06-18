@@ -5,13 +5,24 @@ class Sunny
     # Once you lock, the Bot will make tribal council by itself.
     # It does not mean you can't change votes anymore. It merely means it will start early, unless
     # you need to rethink of something.
-    break unless event.user.id.player?
+    break unless event.user.id.player? || event.user.id.host?
 
-    player = if [0, 1].include? Setting.last.game_stage
-               Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-             else
-               Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: 'Jury')
-             end
+    player = nil
+
+    if event.user.id.host?
+      match = Player.where(submissions: event.channel.id, status: ALIVE)
+      break unless match.exists?
+
+      player = match.first
+
+    else
+      player = if [0, 1].include? Setting.last.game_stage
+                 Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+               else
+                 Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: 'Jury')
+               end
+    end
+
     break unless event.channel.id == player.submissions
 
     vote = Vote.where(player_id: player.id)
