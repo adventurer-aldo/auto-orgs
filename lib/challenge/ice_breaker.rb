@@ -45,27 +45,26 @@ class Sunny
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
-    break unless player.tribe.challenges.size.positive?
-    challenge = player.tribe.challenges.first
-    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time == nil
-    event.respond("The timer has begun!")
-    challenge.update(start_time: Time.now.to_i)
-    file = URI.parse('https://i.ibb.co/HpRgDs79/Wild-Animals-crosswords-1-page-0001.jpg').open
-    BOT.send_file(event.channel, file, filename: 'puzzle.jpg')
+    break unless player.individuals.size.positive?
+    individual = player.individuals.first
+    break unless event.channel.id == player.tribe.cchannel_id && individual.start_time == nil
+    event.respond("The timer for you has begun!")
+    event.respond("https://www.jigsawplanet.com/?rc=play&pid=1d7360c0eff3")
+    individual.update(start_time: Time.now.to_i)
   end
 
   BOT.command :end do |event|
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
-    break unless player.tribe.challenges.size.positive?
-    challenge = player.tribe.challenges.first
+    break unless player.individuals.size.positive?
+    individual = player.individuals.first
     time = Time.now.to_i
-    break unless event.channel.id == player.tribe.cchannel_id && challenge.start_time != nil && challenge.end_time == nil
-    challenge.update(end_time: time)
+    break unless event.channel.id == player.submissions && individual.start_time != nil && individual.end_time == nil
+    individual.update(end_time: time)
 
-    event.respond("The timer has stopped! Your total time was **#{time - challenge.start_time} seconds.**")
-    BOT.channel(1384236373137162362).send_message("#{event.server.role(player.tribe.role_id).mention} has submitted their solution with... **#{time - challenge.start_time } seconds!**")
+    event.respond("The timer has stopped! Your total time was **#{time - individual.start_time} seconds.**")
+    BOT.channel(player.tribe.cchannel_id).send_message("#{player.name}} has solved the puzzle with... **#{time - individual.start_time } seconds!**")
   end
 
   BOT.command :start_ice do |event|
