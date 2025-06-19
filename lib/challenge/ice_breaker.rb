@@ -45,9 +45,9 @@ class Sunny
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
-    break unless player.individuals.size.positive?
-    individual = player.individuals.first
-    break unless event.channel.id == player.tribe.cchannel_id && individual.start_time == nil
+    break if player.individuals.size > 0
+    individual = player.individuals.create()
+    break unless event.channel.id == player.submissions && individual.start_time == nil
     event.respond("The timer for you has begun!")
     event.respond("https://www.jigsawplanet.com/?rc=play&pid=1d7360c0eff3")
     individual.update(start_time: Time.now.to_i)
