@@ -51,6 +51,7 @@ class Sunny
     event.respond("The timer for you has begun!")
     event.respond("https://www.jigsawplanet.com/?rc=play&pid=1d7360c0eff3")
     individual.update(start_time: Time.now.to_i)
+    return
   end
 
   BOT.command :end do |event|
