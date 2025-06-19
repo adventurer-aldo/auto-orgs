@@ -1,12 +1,12 @@
 class Sunny
   # Hardcoded events mapping names to list of coordinates
   EVENTS = {
-    treasure: [
-      [2, 3], [3, 3], [4, 3],  # B3–D3
+    hidden_immunity_idol: [
+      [5, 7],  # E7
     ],
-    monster_den: [
-      [7, 5], [7, 6], [8, 5], [8, 6],  # G5–H6
-    ],
+    extra_vote: [
+      [7, 1],  # G1
+    ]
   }
 
   NUM_EMOJIS = %w[1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣]
@@ -67,10 +67,10 @@ class Sunny
     # outcome
     if found
       case key
-      when :treasure
-        event.respond("You uncovered the hidden treasure at #{letter.upcase}#{y}! 🏆")
-      when :monster_den
-        event.respond("You found the monster den at #{letter.upcase}#{y}! 🐉")
+      when :hidden_immunity_idol
+        event.respond("You found **the** clue! Answer this with a command to earn the item.\n\nHerbivores eat plants to gain energy. But which process do plants use to get that energy?")
+      when :extra_vote
+        event.respond("Use `jungle` and `king` together to earn your item.")
       end
     else
       event.respond("Nothing at #{letter.upcase}#{y}.")
