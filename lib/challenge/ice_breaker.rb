@@ -66,6 +66,7 @@ class Sunny
 
     event.respond("The timer has stopped! Your total time was **#{time - individual.start_time} seconds.**")
     BOT.channel(player.tribe.cchannel_id).send_message("#{player.name}} has solved the puzzle with... **#{time - individual.start_time } seconds!**")
+    event.respond("You solved the puzzle with... **#{time - individual.start_time } seconds!**")
   end
 
   BOT.command :start_ice do |event|
