@@ -45,9 +45,9 @@ class Sunny
     break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
-    break if player.individuals.size > 0
+    break if player.individuals.size > 0 && event.channel.id != player.submissions
     individual = player.individuals.create()
-    break unless event.channel.id == player.submissions && individual.start_time == nil
+    break unless individual.start_time == nil
     event.respond("The timer for you has begun!")
     event.respond("https://www.jigsawplanet.com/?rc=play&pid=1d7360c0eff3")
     individual.update(start_time: Time.now.to_i)
@@ -64,8 +64,7 @@ class Sunny
     break unless event.channel.id == player.submissions && individual.start_time != nil && individual.end_time == nil
     individual.update(end_time: time)
 
-    event.respond("The timer has stopped! Your total time was **#{time - individual.start_time} seconds.**")
-    BOT.channel(player.tribe.cchannel_id).send_message("#{player.name}} has solved the puzzle with... **#{time - individual.start_time } seconds!**")
+    BOT.channel(player.tribe.cchannel_id).send_message("#{player.name} has solved the puzzle with... **#{time - individual.start_time } seconds!**")
     event.respond("You solved the puzzle with... **#{time - individual.start_time } seconds!**")
   end
 
