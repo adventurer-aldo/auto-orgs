@@ -2,10 +2,10 @@ class Sunny
   # Hardcoded events mapping names to list of coordinates
   EVENTS = {
     hidden_immunity_idol: [
-      [7, 1],  # E7
+      [7, 1],  # G1
     ],
     extra_vote: [
-      [1, 2],  # G1
+      [1, 2],  # A2
     ]
   }
 
