@@ -176,5 +176,7 @@ class Sunny
     channel.send_embed("", embed)
     living = Individual.where.not(stage: 0).map { |individual| BOT.user(individual.player.user_id).mention }
     channel.send_message(living.join(" "))
+    Que.clear!
+    TestJob.enqueue
   end
 end

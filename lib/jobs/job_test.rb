@@ -125,22 +125,16 @@ class Sunny
       "**#{tribe.name}**\nTurns taken: #{turns}\nCastaways within the maze: #{mazes.size}/#{players.size}\nCastaways who reached the end: #{mazes.select { |maze| maze.finished }.size}/#{players.size}"
     }.join("\n\n"))
   end
-  
+
   class TestJob < Que::Job
-    self.run_at = proc { Time.now + 60 }
+    self.run_at = proc { Time.now + 6 * 3600 } # 6 hours from now
 
     def run
-      TestJob.enqueue(job_options: { run_at: Time.now + 300})
-      tribes = Tribe.all
-      BOT.channel(1382759969044041748).load_message(1382818203901890716).edit(tribes.map { |tribe|
-        players = tribe.players.where(status: ALIVE).select { |player| !['Duke', 'Jack'].include?(player.name)}
-        mazes = players.map(&:mazes).map(&:first)
-        mazes.delete(nil)
-        turns = 0
-        mazes.each { |maze| turns += maze.tiles.size }
-        "**#{tribe.name}**\nTurns taken: #{turns}\nCastaways within the maze: #{mazes.size}/#{players.size}\nCastaways who reached the end: #{mazes.select { |maze| maze.finished }.size}/#{players.size}"
-      }.join("\n\n"))
+      # Call your results reveal/update method
+      Sunny.reveal_results_and_update if Individual.where(start_time: nil).exists?
+
       destroy
     end
   end
+
 end
