@@ -7,6 +7,7 @@ class Sunny
 
     indiv = Individual.find_by(player_id: player.id)
     break unless indiv
+    break if indiv.stage == 0
 
     nil_count_before = Individual.where.not(start_time: nil).size
 
@@ -17,7 +18,7 @@ class Sunny
     break unless channels.include?(event.channel.id)
 
     # Don't process if all have chosen actions (start_time NOT nil)
-    all_actions_chosen = Individual.where(start_time: nil).exists?
+    all_actions_chosen = Individual.where(start_time: nil).where.not(stage: 0).exists?
     break unless all_actions_chosen
 
     content = event.message.content.downcase
@@ -47,10 +48,10 @@ class Sunny
     nil_count_after = Individual.where.not(start_time: nil).reload.size
 
     if nil_count_after != nil_count_before
-      BOT.channel(RESULT_CHANNEL_ID).send_message("#{nil_count_after}/#{Individual.all.size}")
+      BOT.channel(RESULT_CHANNEL_ID).send_message("#{nil_count_after}/#{Individual.where.not(stage: 0).size}")
     end
     # After each update, check if all actions are in to reveal results
-    unless Individual.where(start_time: nil).exists?
+    unless Individual.where(start_time: nil).where.not(stage: 0).exists?
       reveal_results_and_update
     end
   end

@@ -131,7 +131,7 @@ class Sunny
 
     def run
       # Call your results reveal/update method
-      Sunny.reveal_results_and_update if Individual.where(start_time: nil).exists?
+      Sunny.reveal_results_and_update if Individual.where(start_time: nil).where.not(stage: 0).exists?
 
       destroy
     end
