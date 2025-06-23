@@ -8,7 +8,7 @@ class Sunny
     indiv = Individual.find_by(player_id: player.id)
     break unless indiv
 
-    nil_count_before = Individual.where.not(stage: 0).size
+    nil_count_before = Individual.where.not(start_time: nil).size
 
     # Allowed channels for participation
     channels = Player.where(id: Individual.all.pluck(:player_id))
@@ -44,7 +44,7 @@ class Sunny
       event.respond "You're now **#{action}ing** #{target_name}"
     end
 
-    nil_count_after = Individual.where.not(stage: 0).reload.size
+    nil_count_after = Individual.where.not(start_time: nil).reload.size
 
     if nil_count_after != nil_count_before
       BOT.channel(RESULT_CHANNEL_ID).send_message("#{nil_count_after}/#{Individual.all.size}")
