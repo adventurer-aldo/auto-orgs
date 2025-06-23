@@ -140,14 +140,18 @@ class Sunny
       indiv.update(stage: new_hp, start_time: nil, end_time: nil)
     end
 
-    # Check for eliminated tribes
-    tribes = individuals.group_by { |i| i.player.tribe }
-    tribes.each do |tribe, members|
-      if members.all? { |m| m.stage == 0 }
-        channel.start_typing
-        sleep 2
-        channel.send_message("**#{tribe.name.upcase}** has had both its members fall...")
-      end
+    tribes = Setting.last.tribes
+    alive_tribes = Individual.where.not(stage: 0).reload.map(&:player).map(&:tribe_id).uniq
+    if alive_tribes.size < 3
+      channel.start_typing
+      sleep 2
+      channel.send_message("**#{(tribes - alive_tribes).map { |tribe_id| Tribe.find_by(id: tribe_id).name }.join("** and **")}** has both of their members fall...")
+      channel.start_typing
+      sleep 2
+      channel.send_message('...')
+      channel.start_typing
+      sleep 2
+      channel.send_message("**#{(alive_tribes).map { |tribe_id| Tribe.find_by(id: tribe_id).name }.join(" and ")} WIN!!!**")
     end
 
     # Heart emojis by tribe name
@@ -178,7 +182,7 @@ class Sunny
     living = Individual.where.not(stage: 0).map { |individual| BOT.user(individual.player.user_id).mention }
     channel.send_message(living.join(" "))
     Que.clear!
-    TestJob.enqueue
-    channel.send_message("Results at <t:#{(Time.now.utc + 3 * 3600).to_i}:t>")
+    TestJob.enqueue if alive_tribes.size > 2
+    channel.send_message("Results at <t:#{(Time.now.utc + 3 * 3600).to_i}:t>") if alive_tribes.size > 2
   end
 end
