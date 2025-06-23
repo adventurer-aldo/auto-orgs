@@ -8,6 +8,8 @@ class Sunny
     indiv = Individual.find_by(player_id: player.id)
     break unless indiv
 
+    nil_count_before = Individual.where.not(stage: 0).size
+
     # Allowed channels for participation
     channels = Player.where(id: Individual.all.pluck(:player_id))
                      .map { |p| [p.confessional, p.submissions] }
@@ -42,6 +44,11 @@ class Sunny
       event.respond "You're now **#{action}ing** #{target_name}"
     end
 
+    nil_count_after = Individual.where.not(stage: 0).size
+
+    if nil_count_after != nil_count_before
+      BOT.channel(RESULT_CHANNEL_ID).send_message("#{nil_count_after}/#{Individual.all.size}")
+    end
     # After each update, check if all actions are in to reveal results
     unless Individual.where(start_time: nil).exists?
       reveal_results_and_update
@@ -167,5 +174,7 @@ class Sunny
     )
 
     channel.send_embed("", embed)
+    living = Individual.where.not(stage: 0).map { |individual| BOT.user(individual.player.user_id).mention }
+    channel.send_message(living.join(" "))
   end
 end
