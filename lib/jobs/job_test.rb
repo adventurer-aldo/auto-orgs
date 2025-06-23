@@ -127,7 +127,7 @@ class Sunny
   end
 
   class TestJob < Que::Job
-    self.run_at = proc { Time.now + 6 * 3600 } # 6 hours from now
+    self.run_at = proc { Time.now + 3 * 3600 } # 6 hours from now
 
     def run
       # Call your results reveal/update method
