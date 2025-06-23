@@ -178,6 +178,6 @@ class Sunny
     channel.send_message(living.join(" "))
     Que.clear!
     TestJob.enqueue
-    channel.send_message("Results at #{(Time.now.utc + 6 * 3600).to_i}")
+    channel.send_message("Results at <t:#{(Time.now.utc + 6 * 3600).to_i}:t>")
   end
 end
