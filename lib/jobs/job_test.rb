@@ -100,13 +100,18 @@ class Sunny
           if existing_match.empty?
             event.server.create_channel("#{player.name}-#{other_player.name}",
               parent: category,
-              topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here, as long as they're on the same tribe!",
+              topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here!",
               permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
               Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
           else
             chan = existing_match.first
             chan.parent = category
-            chan.topic = tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here, as long as they're on the same tribe!"
+            chan.topic = tribe.name + " - #{player.name} and #{other_player.name} will be chatting privately here!"
+            chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
+            if chan_overwrites.map { |overwrite| overwrite.allow.defined_permissions.include?(:send_messages)  }.include?(false)
+              [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
+              chan.send_message("**Permanently unlocked** 🔓")
+            end
           end
         end
       end
