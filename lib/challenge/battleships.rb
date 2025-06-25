@@ -1,5 +1,5 @@
 class Sunny
-  BATTLESHIP_CHANNEL = 1324340468934512694
+  BATTLESHIP_CHANNEL = 1387327632861040680
 
   GRID_SIZE = 7
   SHIP_SIZES = [1, 2, 3, 4, 5]
@@ -9,13 +9,13 @@ class Sunny
 
   def self.graphics(id, destroy = false)
     # 1125134304545091584 = Amaranth's role ID
-    # 9 = Amaranth's DB ID
-    # 10 = Sunchoke's DB ID
-    if id == 9 && destroy == false
+    # 9 = Amaranth's DB ID 23
+    # 10 = Sunchoke's DB ID 22
+    if id == 23 && destroy == false
       'https://i.ibb.co/SXGbKsb/Amaranth-Hit.gif'
-    elsif id == 9 && destroy == true
+    elsif id == 23 && destroy == true
       'https://i.ibb.co/FHTb61C/Amaranths-Destroy.gif'
-    elsif id == 10 && destroy == false
+    elsif id == 22 && destroy == false
       'https://i.ibb.co/XSM0032/Sunchokes-Hit.gif'
     else
       'https://i.ibb.co/W6mLVGs/Sunchokes-Destroy.gif'
