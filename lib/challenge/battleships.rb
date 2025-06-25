@@ -9,8 +9,8 @@ class Sunny
 
   def self.graphics(id, destroy = false)
     # 1125134304545091584 = Amaranth's role ID
-    # 9 = Amaranth's DB ID 23
-    # 10 = Sunchoke's DB ID 22
+    # 9 = Canis's DB ID 23
+    # 10 = Felis's DB ID 22
     if id == 23 && destroy == false
       'https://i.ibb.co/SXGbKsb/Amaranth-Hit.gif'
     elsif id == 23 && destroy == true
@@ -182,7 +182,7 @@ class Sunny
       BOT.channel(BATTLESHIP_CHANNEL).send_message("And as such...")
       BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
-      BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(enemy.role_id).mention} HAVE WON IMMUNITY!**")
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(player.role_id).mention} HAVE WON IMMUNITY!**")
       BOT.channel(BATTLESHIP_CHANNEL).send_message("The other hosts will take it from here.")
       return
     end
