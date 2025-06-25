@@ -170,9 +170,9 @@ class Sunny
     attacks.push(position)
     enemy.damages.create(square: position)
     if (ships.flatten - attacks).empty?
-      Battleship.destroy_all
-      Damage.destroy_all
-      Turn.destroy_all
+      # Battleship.destroy_all
+      # Damage.destroy_all
+      # Turn.destroy_all
       BOT.channel(BATTLESHIP_CHANNEL).send_message("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
       BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
