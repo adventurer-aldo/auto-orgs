@@ -141,7 +141,7 @@ class Sunny
 
     return unless event.channel.id == player.cchannel_id
 
-    event.respond("It's not your turn yet!") unless turn.current_tribe == player.id
+    event.respond("Wait! It's not your turn yet!") unless turn.current_tribe == player.id
     return unless turn.current_tribe == player.id
 
     turn.update(current_tribe: enemy.id)
@@ -153,15 +153,15 @@ class Sunny
     if (ships.flatten - attacks).include? position
       if ((ships.select { |ship| ship.include? position }[0] - [position]) - attacks).empty?
         BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, true))
-        BOT.channel(BATTLESHIP_CHANNEL).send_message("**DECISIVE STRIKE!**\n**#{event.server.role(enemy.role_id).name}** had one of their Ships **SINK**!")
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("**CRITICAL HIT!**\n**#{event.server.role(enemy.role_id).name}** had one of their Ships **SINK**!")
       else
         BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
-        BOT.channel(BATTLESHIP_CHANNEL).send_message("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit!")
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("A Ship that belongs to **#{event.server.role(enemy.role_id).name}** was hit!")
       end
     elsif (ships.map { |ship| ship.include?(position) && !(ship - attacks).empty? }.include?(true))
       # Hit and it was hit before but not completely gone yet
       BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
-      BOT.channel(BATTLESHIP_CHANNEL).send_message("One of **#{event.server.role(enemy.role_id).name}**'s Ships was hit, but the attack didn't do much damage...")
+      BOT.channel(BATTLESHIP_CHANNEL).send_message("A Ship that belongs to **#{event.server.role(enemy.role_id).name}** was hit, but the attack was ineffective...")
     else
       # Miss!
       BOT.channel(BATTLESHIP_CHANNEL).send_message('It was a miss...')
