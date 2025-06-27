@@ -97,6 +97,7 @@ class Sunny
           other_player = players[j]
           # Connect player with other_player
           category = event.server.create_channel(tribe.name + ' 1-on-1s (Part 2)', 4) if index > 30
+          index = 0 if index > 30
           event.respond "#{player.name} connects with #{other_player.name}"
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
           if existing_match.empty?
