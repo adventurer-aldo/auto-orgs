@@ -76,6 +76,7 @@ class Sunny
     tribes.each do |tribe|
       existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
+      index = 0
       players = tribe.players.where(status: ALIVE)
       outsiders = Player.where(status: ALIVE).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
@@ -95,7 +96,7 @@ class Sunny
         ((i + 1)...players.size).each do |j|
           other_player = players[j]
           # Connect player with other_player
-          category = event.server.create_channel(tribe.name + ' 1-on-1s (Part 2)', 4) if category.children.size > 49
+          category = event.server.create_channel(tribe.name + ' 1-on-1s (Part 2)', 4) if index > 30
           event.respond "#{player.name} connects with #{other_player.name}"
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
           if existing_match.empty?
@@ -114,6 +115,7 @@ class Sunny
               chan.send_message("**Permanently unlocked** 🔓")
             end
           end
+          index += 1
         end
       end
     end
