@@ -79,6 +79,7 @@ class Sunny
       players = tribe.players.where(status: ALIVE)
       outsiders = Player.where(status: ALIVE).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
+        category = event.server.create_channel(tribe.name + ' 1-on-1s (Part 2)', 4) if category.children.size > 49
         outsiders.each do |outsider|
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{outsider.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
           if !existing_match.empty?
