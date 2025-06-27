@@ -1,4 +1,9 @@
 class Sunny
+  BOT.channel(1113177058173005864).children.each do |channel|
+    BOT.message_deleted(in: channel) do |event|
+      channel.send_message(event.drain.content)
+    end
+  end
 
   BOT.command(:set_archive) do |event, *args|
     Setting.last.update(archive_category: args.join(''))
