@@ -1,8 +1,8 @@
 class Sunny
-  RESULT_CHANNEL_ID = 13_863_891_883_870_126_68
+  RESULT_CHANNEL_ID = 1382465046692761800
 
   BOT.message do |event|
-    break # unless event.user.id.player?
+    break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
     indiv = Individual.find_by(player_id: player.id)
