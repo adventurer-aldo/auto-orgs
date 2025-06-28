@@ -6,6 +6,9 @@ class Sunny
     ],
     extra_vote: [
       [1, 2],  # A2
+    ],
+    merge_idol: [
+      [8, 8],  # H8
     ]
   }
 
@@ -71,6 +74,8 @@ class Sunny
         event.respond("You found **the** clue! Answer this with a command to earn the item.\n\nHerbivores eat plants to gain energy. But which process do plants use to get that energy?")
       when :extra_vote
         event.respond("Use `jungle` and `king` together to earn your item.")
+      when :merge_idol
+        event.respond("Use `rich_gambler` to earn your item.")
       end
     else
       event.respond("Nothing at #{letter.upcase}#{y}.")
