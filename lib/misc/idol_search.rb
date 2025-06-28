@@ -76,4 +76,35 @@ class Sunny
       event.respond("Nothing at #{letter.upcase}#{y}.")
     end
   end
+
+  BOT.command :heatmap do |event|
+  player_searches = Search.all.group(:x, :y).count
+
+  # Generate a 2D array representing frequency
+  heatmap = Array.new(9) { Array.new(12, 0) }
+  player_searches.each { |(x, y), count| heatmap[y - 1][x - 1] = count }
+
+  max_count = heatmap.flatten.max
+  shades = %w[⬜ 🟦 🟩 🟨 🟧 🟥]  # White to red
+
+  color_for = ->(count) {
+    return '⬜' if count == 0
+    index = [(count * (shades.size - 1) / max_count), shades.size - 1].min
+    shades[index]
+  }
+
+  header = "⬛" + LETTER_EMOJIS.join
+  grid = [header]
+  (1..9).each do |row|
+    line = NUM_EMOJIS[row - 1]
+    (1..12).each do |col|
+      line += color_for.call(heatmap[row - 1][col - 1])
+    end
+    grid << line
+  end
+
+  event.respond(grid.join("\n"))
+  event.respond("⬜ = 0 searches, 🟦–🟧 = low–medium, 🟥 = most searched")
+end
+
 end
