@@ -6,6 +6,21 @@ class Sunny
         council = Council.where(stage: [0, 1], season_id: Setting.last.season).last
         player = item.player
         case function
+        when 'pet_food'
+          event.respond('Are you sure?')
+          confirmation = event.user.await!(timeout: 50)
+
+          event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
+          break if confirmation.nil?
+
+          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+
+          vote = Vote.find_by(council_id: council.id, player_id: player.id)
+
+          vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last])
+          item.update(targets: [player.id], player_id: nil)
+          event.respond("You successfuly played #{item.name}.")
         when 'extra_vote'
           event.respond('Are you sure? Everyone will be informed of your advantage being used.')
           confirmation = event.user.await!(timeout: 50)

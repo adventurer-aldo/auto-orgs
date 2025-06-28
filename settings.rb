@@ -59,6 +59,7 @@ class Sunny
       idol_nullifier
       steal_vote
       block_vote
+      pet_food
       extra_vote
       swap_idol
   ]
