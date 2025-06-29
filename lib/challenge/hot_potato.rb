@@ -100,7 +100,7 @@ class Sunny
     channel.start_typing
     sleep(3)
     unlucky = Player.find_by(id: Potato.all.last.player_id)
-    unlucky.participants.update(status: 0)
+    unlucky.participants.update!(status: 0)
     channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
     sleep(2)
     participants = Participant.where(status: 1)
