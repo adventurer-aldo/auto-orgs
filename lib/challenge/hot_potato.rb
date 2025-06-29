@@ -1,5 +1,6 @@
 class Sunny
   POTATO_CHANNEL = 1388190864571895849
+  BURNED_ROLE_ID = 1385667902816125018
 
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
@@ -112,7 +113,7 @@ class Sunny
     else
       Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
-      BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
+      BOT.user(unlucky.user_id).on(channel.server.id).add_role(BURNED_ROLE_ID)
       Que.clear!
       PotatoJob.enqueue
     end
@@ -121,7 +122,7 @@ class Sunny
     channel.send_embed do |embed|
       embed.title = "Castaways remaining:"
       embed.description = list
-      embed.color = event.server.role(Tribe.all.last.role_id).color
+      embed.color = channel.server.role(Tribe.all.last.role_id).color
     end
     if participants.size < 2
       channel.start_typing
