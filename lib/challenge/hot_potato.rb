@@ -1,8 +1,8 @@
 class Sunny
+  POTATO_CHANNEL = 1388190864571895849
+
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
-
-    break unless event.channel.id == 1327288820529627146
 
     event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
     event.channel.start_typing
@@ -16,12 +16,13 @@ class Sunny
     target = players.sample()
     event.respond("#{BOT.user(target.user_id).mention()}!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
     Potato.all.first.update(player_id: target.id)
+    PotatoJob.enqueue
   end
 
   BOT.command :pass do |event, *args|
     break unless event.user.id.player?
 
-    break unless event.channel.id == 1327032753463496855
+    break unless event.channel.id == POTATO_CHANNEL
 
     players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
@@ -65,10 +66,8 @@ class Sunny
     event.respond("The :potato: **Hot Potato** was passed to #{BOT.user(matches.first.user_id).mention}!")
   end
 
-  BOT.command :explode do |event, *args|
-    break unless event.user.id.host?
-
-    channel = BOT.channel(1327032753463496855)
+  def self.explode_potato
+    channel = BOT.channel(POTATO_CHANNEL)
     channel.send_message("It's getting... **HOT**!\n10...")
     channel.start_typing
     sleep(3)
@@ -100,8 +99,8 @@ class Sunny
     channel.start_typing
     sleep(3)
     unlucky = Player.find_by(id: Potato.all.last.player_id)
-    channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
     Participant.where(player_id: unlucky.id).update(status: 0)
+    channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
     sleep(2)
     participants = Participant.where(status: 1)
 
@@ -114,6 +113,8 @@ class Sunny
       Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
       BOT.user(unlucky.user_id).on(event.server.id).add_role(1327318368507789465)
+      Que.clear!
+      PotatoJob.enqueue
     end
     
     list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")
@@ -127,5 +128,11 @@ class Sunny
       sleep(2)
       channel.send_message("As the sole remaining castaway... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
     end
+  end
+
+  BOT.command :explode do |event, *args|
+    break unless event.user.id.host?
+
+    explode_potato
   end
 end
