@@ -113,6 +113,11 @@ class Sunny
     permission_overwrites: perms)
 
     council = Council.create(tribes: tribe, channel_id: channel.id, season_id: sets.season, stage: 1)
+    VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 22)})
+    VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 23)})
+    VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 30) + (60 * 60 * 23)})
+    VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 45) + (60 * 60 * 23)})
+    VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 55) + (60 * 60 * 23)})
     channel.start_typing
     sleep(2)
     BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
