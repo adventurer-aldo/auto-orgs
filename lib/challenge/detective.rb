@@ -1,0 +1,3 @@
+class Sunny
+
+end

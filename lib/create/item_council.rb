@@ -88,6 +88,12 @@ class Sunny
     cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.last.season).size
     tribes.each do |tribed|
       if Tribe.where(role_id: tribed.id, season_id: Setting.last.season).exists?
+        # Close camps and challenges
+        BOT.channel(tribed.channel_id).define_overwrite(event.server.role(tribed.role_id), 1088, 2048)
+        BOT.channel(tribed.channel_id).send_message("**Closed for Tribal Council.")
+        BOT.channel(tribed.cchannel_id).define_overwrite(event.server.role(tribed.role_id), 1088, 2048)
+        BOT.channel(tribed.cchannel_id).send_message("**Closed for Tribal Council.")
+
         tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first&.id
         if Setting.last.tribes.include? tribe_query
           tribe += [tribe_query]
@@ -100,7 +106,7 @@ class Sunny
       end
     end
 
-    # perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
+    perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
 
     event.respond('One or more of those tribes do not exist in the database.') if confirm.intersect? [false, nil]
     break if confirm.intersect? [false, nil]
@@ -113,6 +119,9 @@ class Sunny
     permission_overwrites: perms)
 
     council = Council.create(tribes: tribe, channel_id: channel.id, season_id: sets.season, stage: 1)
+
+
+
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 22)})
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 23)})
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 30) + (60 * 60 * 23)})

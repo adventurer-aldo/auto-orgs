@@ -362,6 +362,15 @@ class Sunny
           event.respond("**#{loser.name}...The tribe has spoken.**")
           file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
           BOT.send_file(event.channel, file, filename: 'spoken.gif')
+
+          # Open camps and stuff.
+          tribe_roles = council.tribes.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
+          tribe_roles.each do |t_role|
+            BOT.channel(tribed.channel_id).define_overwrite(t_role, 3072, 0)
+            BOT.channel(tribed.channel_id).send_message("**Open!**")
+            BOT.channel(tribed.cchannel_id).define_overwrite(t_role, 3072, 0)
+            BOT.channel(tribed.cchannel_id).send_message("**Open!**")
+          end
         end
       end
       break if vote_count.values.max == majority || all_votes.size.zero?
