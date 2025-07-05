@@ -364,11 +364,11 @@ class Sunny
           BOT.send_file(event.channel, file, filename: 'spoken.gif')
 
           # Open camps and stuff.
-          tribe_roles = council.tribes.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
-          tribe_roles.each do |t_role|
-            BOT.channel(tribed.channel_id).define_overwrite(t_role, 3072, 0)
+          council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
+          council_tribes.each do |tribed|
+            BOT.channel(tribed.channel_id).define_overwrite(event.server.role(tribed.role_id), 3072, 0)
             BOT.channel(tribed.channel_id).send_message("**Open!**")
-            BOT.channel(tribed.cchannel_id).define_overwrite(t_role, 3072, 0)
+            BOT.channel(tribed.cchannel_id).define_overwrite(event.server.role(tribed.role_id), 3072, 0)
             BOT.channel(tribed.cchannel_id).send_message("**Open!**")
           end
         end
