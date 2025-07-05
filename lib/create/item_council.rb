@@ -91,9 +91,9 @@ class Sunny
         # Close camps and challenges
         closing_tribe = Tribe.find_by(role_id: tribed.id, season_id: Setting.last.season)
         BOT.channel(closing_tribe.channel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
-        BOT.channel(closing_tribe.channel_id).send_message("**Closed for Tribal Council.")
+        BOT.channel(closing_tribe.channel_id).send_message("**Closed for Tribal Council.**")
         BOT.channel(closing_tribe.cchannel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
-        BOT.channel(closing_tribe.cchannel_id).send_message("**Closed for Tribal Council.")
+        BOT.channel(closing_tribe.cchannel_id).send_message("**Closed for Tribal Council.**")
         # Yeah End
         tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first&.id
         if Setting.last.tribes.include? tribe_query
