@@ -206,6 +206,23 @@ class Sunny
     BOT.send_file(event.channel, file, filename: 'mystery_animal.mp3')
   end
 
+  BOT.command :fly do |event|
+    break unless event.user.id.player?
+
+    player = Player.find_by(user_id: event.user.id)
+
+    break unless event.channel.id == player.submissions
+    break if player.individuals.empty?
+
+    individual = player.individuals.first
+
+    break unless individual.stage == 9
+    individual.update(stage: 10)
+    event.respond("Correct! Next up...")
+    file = URI.parse("https://freeanimalsounds.org/wp-content/uploads/2017/07/rattlesnake.mp3").open
+    BOT.send_file(event.channel, file, filename: 'mystery_animal.mp3')
+  end
+
   BOT.command :snake do |event|
     break unless event.user.id.player?
 
