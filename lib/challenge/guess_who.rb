@@ -235,7 +235,7 @@ class Sunny
 
     break unless individual.stage == 10
     individual.update(stage: 11)
-    event.respond("Correct! Next up...")
+    event.respond("Correct! Next up... Respond with the plural of this one.")
     file = URI.parse("https://freeanimalsounds.org/wp-content/uploads/2017/07/wolf.mp3").open
     BOT.send_file(event.channel, file, filename: 'mystery_animal.mp3')
   end
