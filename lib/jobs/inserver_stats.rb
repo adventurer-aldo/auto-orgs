@@ -7,7 +7,7 @@ class Sunny
       player_size = Player.where(status: ALIVE, season: Setting.last.season).size
       BOT.channel(1388974050717732895).name = "Day #{((Time.now.to_i - BOT.channel(1322130194726649956).load_message(1381717169812803704).timestamp.to_i) / 60 / 60 / 24)} - F#{player_size}"
 
-      enqueue if player_size > 3
+      self.enqueue if player_size > 3
       destroy
     end
 
