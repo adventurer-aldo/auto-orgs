@@ -57,6 +57,9 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0603)
+    mini_magick (5.2.0)
+      benchmark
+      logger
     minitest (5.25.5)
     mutex_m (0.3.0)
     netrc (0.11.0)
@@ -97,6 +100,7 @@ DEPENDENCIES
   activerecord
   discordrb!
   dotenv
+  mini_magick
   open-uri
   pg
   que
