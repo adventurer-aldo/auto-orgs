@@ -9,8 +9,6 @@ gem 'discordrb', github: 'shardlab/discordrb', branch: 'main'
 
 gem 'dotenv'
 
-gem "mini_magick"
-
 gem 'open-uri'
 
 gem 'pg'
