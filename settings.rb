@@ -68,6 +68,10 @@ class Sunny
   CONFIRMATIONS = ['yes', 'yea', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
   PARCHMENT = 'https://i.ibb.co/Q77cMFJs/Parchment.jpg'
 
+  FONTS = Dir.glob(File.join(__dir__, "fonts", "*")).select { |f| File.file?(f) }
+
+  PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
+
   def self.hosts
     return HOSTS
   end

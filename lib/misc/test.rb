@@ -3,20 +3,29 @@ class Sunny
     parch = Tempfile.new(["parchment", ".jpg"])
     parch.write URI.parse(PARCHMENT).read
     parch.rewind
+
+    color = PARCHMENT_COLORS.sample
+
+    angle = rand(-30..30)
     
     base = MiniMagick::Image.open(parch.path)
-    image_file = Tempfile.new(["output", ".png"])
+    image_file = Tempfile.new(["text", ".png"])
     
     MiniMagick::Tool.new("convert") do |convert|
-      convert.size "500x500"
+      convert.size "2000x2000"
       convert.xc "none"
-      convert.fill "black"
+      convert.fill color
+      convert.stroke color
+      convert.strokewidth 5
       convert.gravity "center"
-      convert.pointsize 100
-      convert.annotate "0", "Hayden"
+      convert.pointsize 220
+      convert.font FONTS.sample
+      convert.weight 'bold'
+      convert.annotate "0", 'Castaway'
       convert << image_file.path
     end
-    gamma = MiniMagick::Image.open(image_file.path).rotate(30).combine_options do |c|
+
+    gamma = MiniMagick::Image.open(image_file.path).rotate(angle).combine_options do |c|
       c.fuzz "80%"
       c.transparent "white"
     end

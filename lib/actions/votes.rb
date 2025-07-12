@@ -106,7 +106,7 @@ class Sunny
               parchments[number] = parch
               event.respond('**Got your parchment!**')
             else
-              event.respond "I couldn't find a parchment there..."
+              event.respond "I couldn't find a parchment there... Guess I'll make one for you."
             end
           else
             parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
@@ -115,11 +115,11 @@ class Sunny
               parchments[number] = parch
               event.respond('**Got your parchment!**')
             else
-              event.respond "I couldn't find a parchment there..."
+              event.respond "I couldn't find a parchment there... Guess I'll make one for you."
             end
           end
         else
-          event.respond "I couldn't find a parchment there..."
+          event.respond "I couldn't find a parchment there... Guess I'll make one for you."
         end
         updater.update(votes: voted, parchments:)
         event.respond("You're now voting **#{target.name}**.")
