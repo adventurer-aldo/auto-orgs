@@ -25,11 +25,6 @@ class Sunny
       convert << image_file.path
     end
 
-    gamma = MiniMagick::Image.open(image_file.path).rotate(angle).combine_options do |c|
-      c.fuzz "80%"
-      c.transparent "white"
-    end
-
     result = base.composite(gamma) do |c|
       c.gravity "center"
     end
