@@ -1,5 +1,5 @@
 class Sunny
-  BOT.command :test do |event, *args|
+  def self.generate_parchment(text)
     parch = Tempfile.new(["parchment", ".jpg"])
     parch.write URI.parse(PARCHMENT).read
     parch.rewind
@@ -21,7 +21,7 @@ class Sunny
       convert.pointsize 220
       convert.font FONTS.sample
       convert.weight 'bold'
-      convert.annotate "0", args.join('')
+      convert.annotate "0", text
       convert << image_file.path
     end
 
@@ -46,7 +46,7 @@ class Sunny
 
     tmp = Tempfile.new(["output", ".png"])
     result.write(tmp.path)
-    BOT.channel(HOST_CHAT).send_file(tmp)
+    return tmp
   end
 
 end
