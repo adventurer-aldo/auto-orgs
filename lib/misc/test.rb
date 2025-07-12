@@ -8,7 +8,7 @@ class Sunny
     image_file = Tempfile.new(["output", ".png"])
     
     MiniMagick::Tool.new("convert") do |convert|
-      convert.size "300x100"
+      convert.size "500x500"
       convert.xc "none"
       convert.fill "black"
       convert.gravity "center"
