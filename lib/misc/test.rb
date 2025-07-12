@@ -1,5 +1,3 @@
-=begin
-
 class Sunny
   BOT.command :test do |event|
     image_file = Tempfile.new(["output", ".png"])
@@ -16,5 +14,3 @@ class Sunny
   end
 
 end
-
-=end

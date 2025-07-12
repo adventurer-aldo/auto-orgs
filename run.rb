@@ -1,7 +1,7 @@
 require 'active_record'
 require 'discordrb'
 require 'dotenv'
-# require "mini_magick"
+require "mini_magick"
 require 'open-uri'
 require 'pg'
 require 'que'
