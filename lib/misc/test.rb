@@ -25,6 +25,8 @@ class Sunny
       convert << image_file.path
     end
 
+    gamma = MiniMagick::Image.open(image_file.path)
+
     result = base.composite(gamma) do |c|
       c.gravity "center"
     end
