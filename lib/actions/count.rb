@@ -312,7 +312,13 @@ class Sunny
               event.respond("We'll be drawing **ROCKS**")
               event.channel.start_typing
               sleep(3)
-              event.respond('The castaway that draws the purple rock will be out of the game immediately.')
+              event.respond("The castaways who earned Immunity or are protected by a Hidden Immunity Idol are exempt from drawing rocks.")
+              event.channel.start_typing
+              sleep(3)
+              event.respond("Inside a :moneybag: are **white rocks** and **purple rocks**, which each castaway must blindly draw from it.")
+              event.channel.start_typing
+              sleep(3)
+              event.respond('The castaway that draws the purple rock will be out of the game **immediately**.')
               event.channel.start_typing
               sleep(3)
               Player.where(status: 'In', season_id: Setting.last.season).update(status: 'Immune')
