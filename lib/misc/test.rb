@@ -1,7 +1,7 @@
 class Sunny
   BOT.command :test do |event|
     image_file = Tempfile.new(["output", ".png"])
-    MiniMagick::Tool::Convert.new do |convert|
+    MiniMagick::Tool.new("convert") do |convert|
       convert.size "300x100"
       convert.xc "white"
       convert.fill "black"
