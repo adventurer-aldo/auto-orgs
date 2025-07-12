@@ -171,18 +171,26 @@ class Sunny
     end
     players.each do |player|
       Vote.create(council_id: council.id, player_id: player.id, parchments: ['0'])
+      BOT.channel(player.submissions).send_embed do |embed|
+        embed.title = "You're participating in the F#{Player.where(status: ALIVE).size} Tribal Council in #{player.tribe.name}"
+        embed.description = "The castaways participating are:\n\n#{players.map(&:name).sort.join("\n")}"
+        embed.color = tribes.map(&:color).sample
+      end
     end
-    channel.start_typing
-    sleep(1)
     voters = Vote.where(council_id: council.id).map(&:player)
     immunes = []
     voters.each do |player|
       immunes << player if player.status == 'Immune'
     end
     if immunes.size.positive?
+      channel.start_typing
+      sleep(1)
       BOT.send_message(channel.id, "Everyone but **#{immunes.map(&:name).join(', ')}** is fair game since they have earned immunity.")
     end
-    BOT.send_message(channel.id, 'Good luck!')
+    channel.start_typing
+    sleep(1)
+    channel.send_message("Votes are due at around <t:#{(Time.now + (60 * 60 * 24)).to_i}:t> tomorrow, but it might be earlier *if* all votes are in before then and everyone agrees.")
+    channel.send_message('Good luck!')
   end
 
   BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
