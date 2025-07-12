@@ -12,7 +12,7 @@ class Sunny
     image_file = Tempfile.new(["text", ".png"])
     
     MiniMagick::Tool.new("convert") do |convert|
-      convert.size "2000x2000"
+      convert.size "4000x4000"
       convert.xc "none"
       convert.fill color
       convert.stroke color
@@ -43,7 +43,7 @@ class Sunny
     result = base.composite(gamma) do |c|
       c.gravity "center"
     end
-    
+
     tmp = Tempfile.new(["output", ".png"])
     result.write(tmp.path)
     BOT.channel(HOST_CHAT).send_file(tmp)
