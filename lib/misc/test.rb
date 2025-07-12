@@ -1,5 +1,5 @@
 class Sunny
-  BOT.command :test do |event|
+  BOT.command :test do |event, *args|
     parch = Tempfile.new(["parchment", ".jpg"])
     parch.write URI.parse(PARCHMENT).read
     parch.rewind
@@ -21,7 +21,7 @@ class Sunny
       convert.pointsize 220
       convert.font FONTS.sample
       convert.weight 'bold'
-      convert.annotate "0", 'Castaway'
+      convert.annotate "0", args.join('')
       convert << image_file.path
     end
 
