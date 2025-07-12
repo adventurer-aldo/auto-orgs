@@ -91,7 +91,7 @@ class Sunny
       if voted == vote.votes && content != ''
         image = nil
         if event.message.attachments.empty?
-          event.respond('Time to upload a parchment!')
+          event.respond('Time to upload a parchment! Right in your next message!')
           file = URI.parse(PARCHMENT).open
           BOT.send_file(event.channel, file, filename: 'parchment.png')
           image = event.user.await!(timeout: 600)
@@ -107,6 +107,8 @@ class Sunny
               event.respond('**Got your parchment!**')
             else
               event.respond "I couldn't find a parchment there... Guess I'll make one for you."
+              source_message = event.channel.send_file generate_parchment(target.name)
+              parchments[number] = source_message.attachments.first.url unless source_message.attachments.empty?
             end
           else
             parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
@@ -116,10 +118,14 @@ class Sunny
               event.respond('**Got your parchment!**')
             else
               event.respond "I couldn't find a parchment there... Guess I'll make one for you."
+              source_message = event.channel.send_file generate_parchment(target.name)
+              parchments[number] = source_message.attachments.first.url unless source_message.attachments.empty?
             end
           end
         else
           event.respond "I couldn't find a parchment there... Guess I'll make one for you."
+          source_message = event.channel.send_file generate_parchment(target.name)
+          parchments[number] = source_message.attachments.first.url unless source_message.attachments.empty?
         end
         updater.update(votes: voted, parchments:)
         event.respond("You're now voting **#{target.name}**.")
