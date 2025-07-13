@@ -16,7 +16,7 @@ class Sunny
           </tr>
         </thead>
         <tbody class=\"table-group-divider\">
-        #{Player.where(status: ALIVE, season: Setting.last.season).map { |player| "<tr><td>#{player.name}</td><td>Yes</td><td>Leo</td><td>Mira</td><td>Jude</td></tr>" } }
+        #{Player.where(status: ALIVE, season: Setting.last.season).map { |player| "<tr><td>#{player.name}</td><td>Yes</td><td>Leo</td><td>Mira</td><td>Jude</td></tr>" }.join('') }
         </tbody>
       </table>
     ",
