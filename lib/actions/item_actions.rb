@@ -57,7 +57,7 @@ class Sunny
           embed.description = "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
         end
       else
-        event.respond 'Okay!'
+        event.respond 'I guess not...'
       end
     else
       event.respond('Giving an item failed.')

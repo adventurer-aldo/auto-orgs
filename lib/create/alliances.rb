@@ -114,7 +114,7 @@ class Sunny
           event.respond('**This alliance already exists!**')
         end
       when 'no', 'nah', 'nop', 'nay', 'noo', 'nope', 'nuh uh', 'nuh', 'nuh-uh'
-        event.respond('Okay!')
+        event.respond('I guess not...')
       else
         event.respond("Sorry, I didn't quite understand what you said. Can you start all over?")
       end

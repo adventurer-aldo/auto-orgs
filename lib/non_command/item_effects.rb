@@ -13,7 +13,7 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
@@ -28,7 +28,7 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
@@ -83,7 +83,7 @@ class Sunny
           event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
@@ -149,7 +149,7 @@ class Sunny
           event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('Okay!') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
           break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")

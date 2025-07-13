@@ -1,42 +1,5 @@
 class Sunny
 
-  BOT.command :tetest do |event|
-    break unless event.user.id.host?
-    
-    Tribe.all.each do |tribe|
-      BOT.channel(tribe.cchannel_id).send_embed do |embed|
-        embed.title = '# Immunity Challenge No. 3'
-        embed.description = "In this channel, and once I, **Sunny** send the message \"It's time to take greed.\"...\nUse the command `!greed` to send your participate in the Tribal Council, while earning **Individual Immunity** just for yourself within your tribe."
-      end
-    end
-  end
-
-  BOT.command :gogreed do |event|
-    break unless event.user.id.host?
-
-    tribes = Setting.last.tribes.map { |id| Tribe.find_by(id: id) }
-    
-    tribes.each do |tribe|
-      BOT.channel(tribe.cchannel_id).send_message("It's time to take greed.")
-    end
-  end
-
-  BOT.command :greed do |event|
-    break # unless event.user.id.player?
-
-    player = Player.find_by(user_id: event.user.id)
-
-    break unless event.channel.id == player.tribe.cchannel_id
-
-    if player.tribe.participants.empty?
-      Participant.create(tribe_id: player.tribe.id, player_id: player.id)
-      BOT.channel(1383493259644506133).send_message("**#{player.name}** has taken Greed, sending <@#{player.tribe.role_id}> to participate in the Tribal Council...")
-      event.respond("#{player.name} took Greed!")
-    else
-      event.respond("Someone else beat you to it...")
-    end
-  end
-
   BOT.command :joint_dms do |event|
     break unless event.user.id.host?
 
@@ -119,30 +82,6 @@ class Sunny
           index += 1
         end
       end
-    end
-  end
-  
-  BOT.command :misc do |event|
-    break #unless event.user.id.host?
-    tribes = Tribe.all
-    BOT.channel(1382759969044041748).send_message(tribes.map { |tribe|
-      players = tribe.players.where(status: ALIVE).select { |player| !['Duke', 'Jack'].include?(player.name)}
-      mazes = players.map(&:mazes).map(&:first)
-      mazes.delete(nil)
-      turns = 0
-      mazes.each { |maze| turns += maze.tiles.size }
-      "**#{tribe.name}**\nTurns taken: #{turns}\nCastaways within the maze: #{mazes.size}/#{players.size}\nCastaways who reached the end: #{mazes.select { |maze| maze.finished }.size}/#{players.size}"
-    }.join("\n\n"))
-  end
-
-  class TestJob < Que::Job
-    self.run_at = proc { Time.now + 1 * 60 } # 10 minutes from now
-
-    def run
-      # Call your results reveal/update method
-      Sunny.reveal_results_and_update if Individual.where(start_time: nil).where.not(stage: 0).exists?
-
-      destroy
     end
   end
 
