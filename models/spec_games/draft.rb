@@ -1,2 +1,2 @@
-class Draft::SpectatorGames < ActiveRecord::Base
+class SpectatorGames::Draft < ActiveRecord::Base
 end
