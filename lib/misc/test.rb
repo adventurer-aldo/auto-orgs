@@ -2,7 +2,7 @@ class Sunny
   def self.html_to_image(string)
     https = Net::HTTP.new(HTML_TO_PNG.host, HTML_TO_PNG.port)
     https.use_ssl = true
-    request = Net::HTTP::Post.new(url)
+    request = Net::HTTP::Post.new(HTML_TO_PNG)
     request["Authorization"] = "Bearer 81b432014c9e61d77b33daae"
     request["Content-Type"] = "application/json"
     base_meta = "<head>
