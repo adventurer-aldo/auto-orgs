@@ -18,8 +18,4 @@ class Sunny
       BOT.channel(player.confessional).send_message(args.join(' '))
     end
   end
-
-  BOT.command :test do |event, *args|
-    event.channel.send_file generate_parchment(args.join(''))
-  end
 end
