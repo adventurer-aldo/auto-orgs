@@ -1,11 +1,13 @@
 require 'active_record'
+require 'base64'
 require 'discordrb'
 require 'dotenv'
-require "htmlcsstoimage"
 require "mini_magick"
 require 'open-uri'
 require 'pg'
 require 'que'
+require "json"
+require "net/http"
 require 'require_all'
 
 Dotenv.load
@@ -13,7 +15,7 @@ Dotenv.load
 class Sunny
   BOT = Discordrb::Commands::CommandBot.new token: ENV['TOKEN'], prefix: '!'
 
-  HTML_TO_JPG_CLIENT = HTMLCSSToImage.new
+  HTML_TO_PNG = URI("https://api.doppio.sh/v1/render/screenshot/sync")
   #S3 = Shrine::Storage::S3.new(
   #  bucket: ENV['B2_BUCKET'], # required
   #  region: ENV['B2_REGION'], # required
