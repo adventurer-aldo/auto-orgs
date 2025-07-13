@@ -70,8 +70,6 @@ class Sunny
 
   FONTS = Dir.glob(File.join(__dir__, "fonts", "*")).select { |f| File.file?(f) }
 
-  HTML_TO_JPG_CLIENT = HTMLCSSToImage.new
-
   PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
 
   def self.hosts
