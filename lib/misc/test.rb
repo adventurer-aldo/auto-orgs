@@ -10,6 +10,7 @@ class Sunny
       <th scope="col">Pick 1</th>
       <th scope="col">Pick 2</th>
       <th scope="col">Pick 3</th>
+      <th scope="col">Score</th>
     </tr>
   </thead>
   <tbody>
@@ -21,6 +22,7 @@ class Sunny
       <td class="#{ALIVE.include? Player.find_by(id: draft.pick_1).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_1).name}</td>
       <td class="#{ALIVE.include? Player.find_by(id: draft.pick_2).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_2).name}</td>
       <td class="#{ALIVE.include? Player.find_by(id: draft.pick_3).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_3).name}</td>
+      <td>#{draft.score}</td>
     </tr>)
   end.join('')}
   </tbody>
