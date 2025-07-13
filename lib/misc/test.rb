@@ -3,7 +3,7 @@ class Sunny
   BOT.command :draft do |event|
     base = %Q(
   <table class="table table-secondary table-striped">
-  <thead>
+  <thead class="table-dark">
     <tr>
       <th scope="col">Spectator</th>
       <th scope="col">Winner Pick</th>
@@ -17,10 +17,10 @@ class Sunny
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
-      <td>#{Player.find_by(id: draft.winner_pick)}</td>
-      <td>#{Player.find_by(id: draft.pick_1)}</td>
-      <td>#{Player.find_by(id: draft.pick_2)}</td>
-      <td>#{Player.find_by(id: draft.pick_3)}</td>
+      <td class="#{ALIVE.include? Player.find_by(id: draft.winner_pick).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.winner_pick).name}</td>
+      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_1).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_1).name}</td>
+      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_2).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_2).name}</td>
+      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_3).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_3).name}</td>
     </tr>)
   end.join('')}
   </tbody>
