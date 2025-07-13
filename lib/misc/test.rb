@@ -1,6 +1,8 @@
 class Sunny
 
   BOT.command :draft do |event|
+    dead_color = '#551c1c'
+    dead_background = 'red'
     base = %Q(
   <table class="table table-warning">
   <thead class="table-dark">
@@ -18,10 +20,10 @@ class Sunny
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
-      <td style="#{ALIVE.include?(Player.find_by(id: draft.winner_pick).status) ? '' : 'background-color: red; color: white;'}">#{Player.find_by(id: draft.winner_pick).name}</td>
-      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_1).status) ? '' : 'background-color: red; color: white;'}">#{Player.find_by(id: draft.pick_1).name}</td>
-      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_2).status) ? '' : 'background-color: red; color: white;'}">#{Player.find_by(id: draft.pick_2).name}</td>
-      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_3).status) ? '' : 'background-color: red; color: white;'}">#{Player.find_by(id: draft.pick_3).name}</td>
+      <td style="#{ALIVE.include?(Player.find_by(id: draft.winner_pick).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.winner_pick).name}</td>
+      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_1).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.pick_1).name}</td>
+      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_2).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.pick_2).name}</td>
+      <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_3).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.pick_3).name}</td>
       <td>#{draft.score}</td>
     </tr>)
   end.join('')}
