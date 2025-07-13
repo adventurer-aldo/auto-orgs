@@ -1,4 +1,4 @@
-module Challenge
+module Challenges
   def self.table_name_prefix
     "challenges_"
   end
