@@ -27,7 +27,7 @@ class Sunny
     })
 
     response = https.request(request)
-    a = Tempfile.new(['html', 'png'])
+    a = Tempfile.new(['html', '.png'])
     MiniMagick::Image.open(JSON.parse(response.read_body)['documentUrl']).transparent('#39FF14').trim().write(a.path)
     a
   end
