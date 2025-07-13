@@ -227,7 +227,7 @@ class Sunny
       # channel.send_message(BOT.user(jury.user_id).mention.to_s)
 
       BOT.channel(jury.submissions).send_embed do |embed|
-        embed.title = "As a member of the Jury, **#{jury.name}** has the power to decide the winner of Alvivor Season 2: Animals!"
+        embed.title = "As a member of the Jury, **#{jury.name}** has the power to decide the winner of Alvivor Season 2 Animals!"
         embed.description = "When the time is right, use the `!vote` command to vote for who you think should win the title of Sole Survivor.\nYour decision matters greatly."
         embed.color = 'df9322'
       end
