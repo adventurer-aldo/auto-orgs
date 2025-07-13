@@ -9,7 +9,7 @@ gem 'discordrb', github: 'shardlab/discordrb', branch: 'main'
 
 gem 'dotenv'
 
-gem "htmlcsstoimage"
+gem "htmlcsstoimage-api"
 
 gem 'mini_magick'
 
