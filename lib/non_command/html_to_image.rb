@@ -34,6 +34,26 @@ class Sunny
   }
     </style>
   #{string}")
+  BOT.channel(HOST_CHAT).send_message("<head>
+    <meta charset=\"utf-8\">
+    <title>Bootstrap demo</title>
+    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr\" crossorigin=\"anonymous\">
+</head>
+<style>
+  body {
+      background-color: #39FF14
+  }
+  table {
+    table-layout: auto !important;
+    width: auto !important;
+    text-align: center;
+  }
+  th, td {
+    padding: 0.3rem !important;
+    white-space: nowrap;
+  }
+    </style>
+  #{string}")
     request.body = JSON.dump({
       "page": {
         "screenshot": {
