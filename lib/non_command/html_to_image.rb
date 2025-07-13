@@ -34,26 +34,6 @@ class Sunny
   }
     </style>
   <table class=\"container table table-striped table-sm table-secondary table-bordered border-dark \"> <thead class=\"table-dark\"> <tr> <th scope=\"col\">Spectators</th><th>Winner Pick</th><th>Pick 1</th><th>Pick 2</th><th>Pick 3</th> </tr> </thead> <tbody class=\"table-group-divider\"> <tr><td>Ana</td><td>Yes</td><td>Leo</td><td>Mira</td><td>Jude</td></tr> <tr><td>Ben</td><td>No</td><td>Ken</td><td>Aria</td><td>Leo</td></tr> </tbody> </table>")
-  BOT.channel(HOST_CHAT).send_message("<head>
-    <meta charset=\"utf-8\">
-    <title>Bootstrap demo</title>
-    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr\" crossorigin=\"anonymous\">
-</head>
-<style>
-  body {
-      background-color: #39FF14
-  }
-  table {
-    table-layout: auto !important;
-    width: auto !important;
-    text-align: center;
-  }
-  th, td {
-    padding: 0.3rem !important;
-    white-space: nowrap;
-  }
-    </style>
-  <table class=\"container table table-striped table-sm table-secondary table-bordered border-dark \"> <thead class=\"table-dark\"> <tr> <th scope=\"col\">Spectators</th><th>Winner Pick</th><th>Pick 1</th><th>Pick 2</th><th>Pick 3</th> </tr> </thead> <tbody class=\"table-group-divider\"> <tr><td>Ana</td><td>Yes</td><td>Leo</td><td>Mira</td><td>Jude</td></tr> <tr><td>Ben</td><td>No</td><td>Ken</td><td>Aria</td><td>Leo</td></tr> </tbody> </table>")
     request.body = JSON.dump({
       "page": {
         "screenshot": {
