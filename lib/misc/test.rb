@@ -18,10 +18,10 @@ class Sunny
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
-      <td class="#{ALIVE.include? Player.find_by(id: draft.winner_pick).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.winner_pick).name}</td>
-      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_1).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_1).name}</td>
-      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_2).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_2).name}</td>
-      <td class="#{ALIVE.include? Player.find_by(id: draft.pick_3).status ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_3).name}</td>
+      <td class="#{ALIVE.include?(Player.find_by(id: draft.winner_pick).status) ? '' : 'table-danger'}">#{Player.find_by(id: draft.winner_pick).name}</td>
+      <td class="#{ALIVE.include?(Player.find_by(id: draft.pick_1).status) ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_1).name}</td>
+      <td class="#{ALIVE.include?(Player.find_by(id: draft.pick_2).status) ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_2).name}</td>
+      <td class="#{ALIVE.include?(Player.find_by(id: draft.pick_3).status) ? '' : 'table-danger'}">#{Player.find_by(id: draft.pick_3).name}</td>
       <td>#{draft.score}</td>
     </tr>)
   end.join('')}
