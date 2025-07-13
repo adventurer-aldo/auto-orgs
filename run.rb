@@ -1,6 +1,7 @@
 require 'active_record'
 require 'discordrb'
 require 'dotenv'
+require "htmlcsstoimage"
 require "mini_magick"
 require 'open-uri'
 require 'pg'

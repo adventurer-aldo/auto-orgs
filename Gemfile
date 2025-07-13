@@ -9,6 +9,8 @@ gem 'discordrb', github: 'shardlab/discordrb', branch: 'main'
 
 gem 'dotenv'
 
+gem "htmlcsstoimage"
+
 gem 'mini_magick'
 
 gem 'open-uri'
