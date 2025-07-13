@@ -1,2 +1,2 @@
-class SpectatorGames::Bootlist < ActiveRecord::Base
+class SpectatorGame::Bootlist < ActiveRecord::Base
 end

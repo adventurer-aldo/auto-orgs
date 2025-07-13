@@ -1,2 +1,2 @@
-class SpectatorGames::Elimination < ActiveRecord::Base
+class SpectatorGame::Elimination < ActiveRecord::Base
 end

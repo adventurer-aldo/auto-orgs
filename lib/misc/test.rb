@@ -1,5 +1,30 @@
 class Sunny
 
+  def self.get_user_circular_avatar(user_id)
+    a = Tempfile.new(['hey', 'png'])
+    base = MiniMagick::Image.open(BOT.user(user_id).avatar_url)
+    size = [base.width, base.height].min
+    circle = Tempfile.new(['circle', '.png'])
+    MiniMagick::Tool.new('convert') do |c|
+      c.size "#{size}x#{size}"
+      c.xc "none"
+      c.draw("circle #{size/2},#{size/2} #{size/2},0")
+      c.crop "#{size}x#{size}+0+0"
+      c << circle.path
+    end
+    base.composite(circle) do |c|
+      c.background "none"
+      c.compose "DstIn"
+      c.alpha "set"
+      c.gravity "center"
+    end.write(a.path)
+    return a
+  end
+
+  BOT.command :test do |event|
+    event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
+  end
+
   BOT.command :draft do |event|
     dead_color = '#551c1c'
     dead_background = 'red'
@@ -16,7 +41,7 @@ class Sunny
     </tr>
   </thead>
   <tbody>
-  #{SpectatorGames::Draft.where(season_id: Setting.last.season).sort_by { |draft| draft.score }.map do |draft|
+  #{SpectatorGame::Draft.where(season_id: Setting.last.season).sort_by { |draft| draft.score }.map do |draft|
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>

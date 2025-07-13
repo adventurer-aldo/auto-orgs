@@ -1,5 +1,11 @@
-module SpectatorGames
+module Challenge
   def self.table_name_prefix
-    "spectator_games_"
+    "challenges_"
+  end
+end
+
+module SpectatorGame
+  def self.table_name_prefix
+    "spectator_game_"
   end
 end

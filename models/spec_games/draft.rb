@@ -1,4 +1,4 @@
-class SpectatorGames::Draft < ActiveRecord::Base
+class SpectatorGame::Draft < ActiveRecord::Base
   def score
     winner_pick_score = Player.find_by(id: winner_pick).rank || 0
     pick_1_score = Player.find_by(id: pick_1).rank || 0
