@@ -14,7 +14,7 @@ class Sunny
 
     break unless individual.stage == 0
     individual.update(start_time: Time.now.to_i, stage: 1)
-    event.respond("Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{puzzles[0]}")
+    event.respond("Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{PUZZLES[0]}")
   end
 
   BOT.command :friendly_orca do |event|
@@ -24,7 +24,7 @@ class Sunny
 
     break unless individual.stage == 1
     individual.update(stage: 2)
-    event.respond("Part 2: Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{puzzles[1]}")
+    event.respond("Part 2: Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{PUZZLES[1]}")
   end
 
   BOT.command :stealthy_snake do |event|
@@ -34,7 +34,7 @@ class Sunny
 
     break unless individual.stage == 2
     individual.update(stage: 3)
-    event.respond("Part 3: Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{puzzles[2]}")
+    event.respond("Part 3: Solve the puzzle, then send a screenshot of the completed piece! Afterwards, **write a command with the words within the completed image.**\n#{PUZZLES[2]}")
   end
 
   BOT.command :proud_falcon do |event|
