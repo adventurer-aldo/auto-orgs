@@ -2,7 +2,7 @@ class Sunny
   PUZZLES = ['https://www.jigsawplanet.com/?rc=play&pid=1e8376c586dc', 'https://www.jigsawplanet.com/?rc=play&pid=1610911652d4', 'https://www.jigsawplanet.com/?rc=play&pid=3674208c81e1']
 
   BOT.command :show_scores do |event|
-    event.channel.send_file(html_to_image(%Q(<style>
+    event.channel.send_file(URI.parse(html_to_image(%Q(<style>
     .orange-table td, .orange-table th {
       padding: 0.25rem; /* Smaller cells */
       background-color: #ffa726; /* Base orange */
@@ -28,7 +28,7 @@ class Sunny
           <td class="score">#{individual.end_time ? individual.end_time - individual.start_time : ''}</td>
         </tr>)}.join('')}
       </tbody>
-    </table>)), 'scores.png')
+    </table>))).open, 'scores.png')
   end
 
   BOT.command :prepare_stuff do |event|
