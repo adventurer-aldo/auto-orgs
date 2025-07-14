@@ -10,7 +10,10 @@ class Sunny
   BOT.command :gauntlet do |event|
     break unless event.user.id.player?
 
-    individual = Player.find_by(user_id: event.user.id, season: Setting.last.season).individuals.first
+    player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+
+    break unless event.channel.id == player.submissions
+    individual = player.individuals.first
 
     break unless individual.stage == 0
     individual.update(start_time: Time.now.to_i, stage: 1)
@@ -20,7 +23,10 @@ class Sunny
   BOT.command :friendly_orca do |event|
     break unless event.user.id.player?
 
-    individual = Player.find_by(user_id: event.user.id, season: Setting.last.season).individuals.first
+    player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+
+    break unless event.channel.id == player.submissions
+    individual = player.individuals.first
 
     break unless individual.stage == 1
     individual.update(stage: 2)
@@ -30,7 +36,10 @@ class Sunny
   BOT.command :stealthy_snake do |event|
     break unless event.user.id.player?
 
-    individual = Player.find_by(user_id: event.user.id, season: Setting.last.season).individuals.first
+    player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+
+    break unless event.channel.id == player.submissions
+    individual = player.individuals.first
 
     break unless individual.stage == 2
     individual.update(stage: 3)
@@ -40,7 +49,10 @@ class Sunny
   BOT.command :proud_falcon do |event|
     break unless event.user.id.player?
 
-    individual = Player.find_by(user_id: event.user.id, season: Setting.last.season).individuals.first
+    player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+
+    break unless event.channel.id == player.submissions
+    individual = player.individuals.first
 
     break unless individual.stage == 3
 
