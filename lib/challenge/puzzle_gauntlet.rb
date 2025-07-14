@@ -6,7 +6,8 @@ class Sunny
     .orange-table td, .orange-table th {
       padding: 0.25rem; /* Smaller cells */
       background-color: #ffa726; /* Base orange */
-      color: white;
+      color: black;
+      border: solid 2px black;
     }
     .orange-table .score {
       background-color: #ffcc80; /* Lighter orange */
