@@ -19,8 +19,8 @@ class Sunny
     <table class="table-primary table-sm orange-table text-center">
       <thead>
         <tr>
-          <th>Player</th>
-          <th>Score</th>
+          <th>Castaway</th>
+          <th>Time(seconds)</th>
         </tr>
       </thead>
       <tbody>
