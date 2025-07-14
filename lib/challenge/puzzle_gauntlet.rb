@@ -1,6 +1,36 @@
 class Sunny
   PUZZLES = ['https://www.jigsawplanet.com/?rc=play&pid=1e8376c586dc', 'https://www.jigsawplanet.com/?rc=play&pid=1610911652d4', 'https://www.jigsawplanet.com/?rc=play&pid=3674208c81e1']
 
+  BOT.command :show_scores do |event|
+    html_to_image(%Q(<style>
+    .orange-table td, .orange-table th {
+      padding: 0.25rem; /* Smaller cells */
+      background-color: #ffa726; /* Base orange */
+      color: white;
+    }
+    .orange-table .score {
+      background-color: #ffcc80; /* Lighter orange */
+      color: black;
+    }
+  </style>
+</head>
+<body>
+    <table class="table-primary table-sm orange-table text-center">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+      #{Individual.all.map { |individual| %Q(<tr>
+          <td>#{individual.player.name}</td>
+          <td class="score">#{individual.end_time ? individual.end_time - individual.start_time : ''}</td>
+        </tr>)}.join('')}
+      </tbody>
+    </table>))
+  end
+
   BOT.command :prepare_stuff do |event|
     break unless event.user.id.host?
 
