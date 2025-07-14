@@ -4,7 +4,7 @@ class Sunny
   BOT.command :prepare_stuff do |event|
     break unless event.user.id.host?
 
-    Player.where(status: ALIVE).each { |player| player.individuals.create(stage: 0)}
+    Player.where(status: ALIVE).each { |player| player.individuals.create(stage: 0, challenge_id: 0) }
   end
 
   BOT.command :gauntlet do |event|
