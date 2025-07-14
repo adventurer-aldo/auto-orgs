@@ -29,7 +29,7 @@ class Sunny
         </tr>)}.join('')}
       </tbody>
     </table>)
-    event.channel.send_file(html_to_image(str), 'scores.png')
+    event.channel.send_file(html_to_image(str), filename: 'scores.png')
   end
 
   BOT.command :prepare_stuff do |event|
