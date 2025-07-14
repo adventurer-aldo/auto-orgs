@@ -101,7 +101,7 @@ class Sunny
     if council.stage == 2 && rank > 5
       event.channel.start_typing
       sleep(5)
-      event.respond('Now, if anyone has a **Hidden Immunity Idol** and would like to `!play` it...')
+      event.respond(rank == 5 ?  'Now, for the last time... If anyone has a **Hidden Immunity Idol** and would like to `!play` it...' : 'Now, if anyone has a **Hidden Immunity Idol** and would like to `!play` it...')
       event.channel.start_typing
       sleep(3)
       event.respond('This is the time to do it in your submissions channel.')
