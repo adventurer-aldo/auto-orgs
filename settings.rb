@@ -70,6 +70,14 @@ class Sunny
 
   FONTS = Dir.glob(File.join(__dir__, "fonts", "*")).select { |f| File.file?(f) }
 
+  STORAGE = Shrine::Storage::B2Native.new(
+  bucket_id: ENV['AWS_BUCKET_ID'],
+  auth_token: ENV['AWS_TOKEN'],
+  api_url: ENV['AWS_API_URL'],
+  bucket_name: ENV['AWS_BUCKET_NAME'],
+  region: ENV['AWS_REGION']
+)
+
   PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
 
   def self.hosts

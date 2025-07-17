@@ -37,4 +37,12 @@ require_relative 'settings'
 require_all 'models'
 require_all 'lib'
 
+Shrine.plugin :determine_mime_type, analyzer: :file
+
+Shrine.storages = {
+  store: Shrine::Storage::B2Native.new(
+    bucket_id: ENV['AWS_BUCKET_ID'], auth_token: ENV['AWS_TOKEN'], api_url: ENV['AWS_API_URL'], bucket_name: ENV['AWS_BUCKET_NAME'], region: ENV['AWS_REGION']
+  )
+}
+
 Sunny.run

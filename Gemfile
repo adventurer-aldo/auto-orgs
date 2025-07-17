@@ -18,3 +18,5 @@ gem 'pg'
 gem 'que'
 
 gem 'require_all'
+
+gem 'shrine'

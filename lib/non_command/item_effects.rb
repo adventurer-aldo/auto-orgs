@@ -13,8 +13,8 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
-          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
@@ -28,8 +28,8 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
-          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
@@ -83,8 +83,8 @@ class Sunny
           event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
-          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**")
           Vote.where(council_id: council.id, player_id: targets.map(&:id)).each do |vote_block|
@@ -149,8 +149,8 @@ class Sunny
           event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
-          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")
           Vote.where(council_id: council.id, player_id: targets.map(&:id)).each do |vote_block|
