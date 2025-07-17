@@ -7,6 +7,7 @@ require 'open-uri'
 require 'pg'
 require 'que'
 require "json"
+require 'shrine'
 require "net/http"
 require 'require_all'
 
