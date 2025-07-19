@@ -1,11 +1,11 @@
 class Sunny
 
   BOT.command :test_retrieve do |event|
-    return Shrine.storages[:store].url('parchmento.jpg')
+    return Shrine.storages[:store].url('parchmentoa.jpg')
   end
 
   BOT.command :test_store do |event|
-    return Shrine.storages[:store].upload(URI.parse(PARCHMENT), "parchmento.jpg")
+    return Shrine.storages[:store].upload(URI.parse(PARCHMENT), "parchmentoa.jpg")
   end
 
   BOT.command :trivia do |event|
