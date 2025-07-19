@@ -60,6 +60,11 @@ class Sunny
     event.respond("**Which tribe does this animal belong to?**")
   end
 
+  BOT.command :testesttest do |event|
+    event.channel.send_file(URI.parse('https://seaworld.org/-/media/migrated-media/seaworld-dotorg/audio-files/sound-library/elephant.wav?version=1_201811134825').open, 'sound.wav')
+    event.respond("**Which tribe does this animal belong to?**")
+  end
+
   BOT.command :elephas do |event|
     return unless event.user.id.player?
 
