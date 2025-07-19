@@ -1,7 +1,7 @@
 class Sunny
 
   BOT.command :test_retrieve do |event|
-    return Shrine.storages[:store].url('parchmentoa.jpg')
+    return event.channel.send_file Shrine.storages[:store].open('parchmentoa.jpg'), filename: "parchmento.jpg"
   end
 
   BOT.command :test_store do |event|
