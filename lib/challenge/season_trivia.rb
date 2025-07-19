@@ -56,12 +56,12 @@ class Sunny
 
     return unless individual.stage == 4
     individual.update(stage: 5)
-    event.channel.send_file(URI.parse('https://seaworld.org/-/media/migrated-media/seaworld-dotorg/audio-files/sound-library/elephant.wav?version=1_201811134825').open, 'sound.wav')
+    event.channel.send_file(URI.parse('https://seaworld.org/-/media/migrated-media/seaworld-dotorg/audio-files/sound-library/elephant.wav?version=1_201811134825').open, filename: 'sound.wav')
     event.respond("**Which tribe does this animal belong to?**")
   end
 
-  BOT.command :testesttest do |event|
-    event.channel.send_file(URI.parse('https://seaworld.org/-/media/migrated-media/seaworld-dotorg/audio-files/sound-library/elephant.wav?version=1_201811134825').open, 'sound.wav')
+  BOT.command :testtesttest do |event|
+    event.channel.send_file(URI.parse('https://seaworld.org/-/media/migrated-media/seaworld-dotorg/audio-files/sound-library/elephant.wav?version=1_201811134825').open, filename: 'sound.wav')
     event.respond("**Which tribe does this animal belong to?**")
   end
 
