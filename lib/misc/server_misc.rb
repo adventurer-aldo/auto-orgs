@@ -3,6 +3,21 @@ class Sunny
     Setting.last.update(archive_category: args.join(''))
     return "#{BOT.channel(args.join('').to_i).mention} has been set as the **Archive Category!**"
   end
+  
+BOT.command :snowflake do |event, *args|
+    event.respond "Please provide exactly two message IDs." if args.size != 2
+    break if args.size != 2
+
+    id1, id2 = args.map(&:to_i)
+    begin
+      m1 = event.channel.load_message(id1)
+      m2 = event.channel.load_message(id2)
+      diff = (m1.timestamp - m2.timestamp).abs.to_i
+      event.respond "There are #{diff} seconds between the messages."
+    rescue
+      event.respond "I couldn't find one or both messages. Make sure the IDs are from this channel."
+    end
+  end
 
   BOT.command(:removerole, description: 'Removes mentioned role(s) from all members with the role') do |event|
     # Check if the user invoking the command has the necessary permissions
