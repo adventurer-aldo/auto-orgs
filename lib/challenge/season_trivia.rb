@@ -15,7 +15,7 @@ class Sunny
     individual = player.individuals.first
 
     return unless individual.stage == 0
-    individual.update(stage: 1)
+    individual.update(start_time: Time.now.to_i, stage: 1)
     event.respond("**Who's the first castaway eliminated from the season?**")
   end
 
