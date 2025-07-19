@@ -1,7 +1,11 @@
 class Sunny
 
-  BOT.command :prepare_stuff do |event|
-    Player.where(status: ALIVE).each { |player| player.individuals.create(start_time: Time.now.to_i, challenge_id: 0) if player.individuals.size.zero? }
+  BOT.command :test_retrieve do |event|
+    return Shrine.storages[:store].url('parchmento.jpg')
+  end
+
+  BOT.command :test_store do |event|
+    return Shrine.storages[:store].upload(URI.parse(PARCHMENT), "parchmento.jpg")
   end
 
   BOT.command :trivia do |event|
