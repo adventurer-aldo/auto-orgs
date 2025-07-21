@@ -10,7 +10,7 @@ class Sunny
     player = nil
 
     if event.user.id.host?
-      match = Player.where(submissions: event.channel.id, status: ALIVE)
+      match = Player.where(submissions: event.channel.id, status: ALIVE + ['Jury'])
       break unless match.exists?
 
       player = match.first
