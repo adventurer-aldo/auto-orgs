@@ -213,7 +213,7 @@ class Sunny
       parent: FTC,
       permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072)])
       Vote.create(player_id: finalist.id, council_id: council.id, allowed: 0, votes: [])
-      channel.send_message('Post your speech to win the game here, ' + BOT.user(finalist.user_id).mention.to_s + '!')
+      # channel.send_message('Post your speech to win the game here, ' + BOT.user(finalist.user_id).mention.to_s + '!')
     end
 
     jury_all.each do |jury|
