@@ -10,8 +10,8 @@ class Sunny
 
       loser = nil
       seed = nil
-      roles = council.tribes.map { |r| event.server.role(Tribe.find_by(id: r).role_id) }
-      roles << event.server.role(TRIBAL_PING)
+      roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).server.role(Tribe.find_by(id: r).role_id) }
+      roles << BOT.server(ALVIVOR_ID).role(TRIBAL_PING)
       channel = BOT.channel(HOST_CHAT)
       channel.send_message(roles.map(&:mention).join(' ').to_s)
       channel.start_typing
@@ -110,7 +110,7 @@ class Sunny
               channel.send_embed do |embed|
                 embed.title = item.name
                 embed.description = item.description
-                embed.color = event.server.role(TRIBAL_PING).color
+                embed.color = BOT.server(ALVIVOR_ID).role(TRIBAL_PING).color
               end
               item.functions.each do |function|
                 case function
@@ -354,9 +354,9 @@ class Sunny
             # Open camps and stuff.
             council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
             council_tribes.each do |tribed|
-              BOT.channel(tribed.channel_id).define_overwrite(event.server.role(tribed.role_id), 3072, 0)
+              BOT.channel(tribed.channel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
               BOT.channel(tribed.channel_id).send_message("**Open!**")
-              BOT.channel(tribed.cchannel_id).define_overwrite(event.server.role(tribed.role_id), 3072, 0)
+              BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
               BOT.channel(tribed.cchannel_id).send_message("**Open!**")
             end
           end
@@ -366,7 +366,7 @@ class Sunny
       # break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
       # loser ||= seed
-      # channel.define_overwrite(event.server.member(loser.user_id), 3072, 0)
+      # channel.define_overwrite(BOT.server(ALVIVOR_ID).member(loser.user_id), 3072, 0)
       # eliminate(loser, event)
       council.update(stage: 5)
       destroy
