@@ -2,6 +2,12 @@ module Challenges
   def self.table_name_prefix
     "challenges_"
   end
+
+  module Battleships
+    def self.table_name_prefix
+      "battleships_"
+    end
+  end
 end
 
 module SpectatorGame

@@ -1,2 +1,4 @@
-class SpectatorGame::Elimination < ActiveRecord::Base
+module SpectatorGame
+  class Elimination < ActiveRecord::Base
+  end
 end

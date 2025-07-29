@@ -24,6 +24,8 @@ class Player < ActiveRecord::Base
   # Is In, but does not participate in anything other than challenges.
   belongs_to :season, foreign_key: 'season_id'
   belongs_to :tribe, foreign_key: 'tribe_id'
+  has_many :alliance_associatons, class_name: 'Alliances::Association'
+  has_many :alliances, through: :alliance_associatons
   has_many :buddies, foreign_key: 'player_id'
   has_many :searches, foreign_key: 'player_id'
   has_many :individuals, foreign_key: 'player_id'

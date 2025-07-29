@@ -1,2 +1,4 @@
-class SpectatorGame::Bootlist < ActiveRecord::Base
+module SpectatorGame
+  class Bootlist < ActiveRecord::Base
+  end
 end

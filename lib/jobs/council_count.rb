@@ -215,9 +215,9 @@ class Sunny
           sleep(2)
           case Setting.last.game_stage
           when 0
-            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 2: Animals is...**")
+            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls is...**")
           when 1
-            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 2: Animals and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
+            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
           end
           sleep(5)
           lame = ' (NO PARCHMENT)'
@@ -350,7 +350,6 @@ class Sunny
             channel.send_message("**#{loser.name}...The tribe has spoken.**")
             file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
             BOT.send_file(channel, file, filename: 'spoken.gif')
-            return
             # Open camps and stuff.
             council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
             council_tribes.each do |tribed|
@@ -363,11 +362,11 @@ class Sunny
         end
         return if vote_count.values.max == majority || all_votes.size.zero?
       end
-      # return if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
+      return if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
-      # loser ||= seed
-      # channel.define_overwrite(BOT.server(ALVIVOR_ID).member(loser.user_id), 3072, 0)
-      # eliminate(loser, event)
+      loser ||= seed
+      channel.define_overwrite(BOT.server(ALVIVOR_ID).member(loser.user_id), 3072, 0)
+      eliminate(loser, event)
       council.update(stage: 5)
       destroy
     end
