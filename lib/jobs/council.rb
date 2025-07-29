@@ -5,8 +5,8 @@ class Sunny
     def run(id)
       council = Council.find_by(id:)
       council.update(stage: 1)
-      break if council.nil?
-      break unless [1, 3].include? council.stage
+      return if council.nil?
+      return unless [1, 3].include? council.stage
 
       loser = nil
       seed = nil
@@ -333,7 +333,7 @@ class Sunny
                     channel.send_message("Unfortunately, **#{seedy.name}** is now out of the game.")
                     seed = seedy
                   end
-                  break unless rocks[seeds.index(seedy)].zero?
+                  return unless rocks[seeds.index(seedy)].zero?
                 end
               end
             end
@@ -361,9 +361,9 @@ class Sunny
             end
           end
         end
-        break if vote_count.values.max == majority || all_votes.size.zero?
+        return if vote_count.values.max == majority || all_votes.size.zero?
       end
-      # break if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
+      # return if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
       # loser ||= seed
       # channel.define_overwrite(BOT.server(ALVIVOR_ID).member(loser.user_id), 3072, 0)
