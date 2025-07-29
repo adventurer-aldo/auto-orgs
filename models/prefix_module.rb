@@ -9,3 +9,9 @@ module SpectatorGame
     "spectator_game_"
   end
 end
+
+module Alliances
+  def self.table_name_prefix
+    "alliances_"
+  end
+end
