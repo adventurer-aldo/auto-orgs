@@ -10,7 +10,7 @@ class Sunny
 
       loser = nil
       seed = nil
-      roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).server.role(Tribe.find_by(id: r).role_id) }
+      roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).role(Tribe.find_by(id: r).role_id) }
       roles << BOT.server(ALVIVOR_ID).role(TRIBAL_PING)
       channel = BOT.channel(HOST_CHAT)
       channel.send_message(roles.map(&:mention).join(' ').to_s)
