@@ -6,4 +6,10 @@ class Sunny
     view.row { |row| row.string_select(custom_id: "WinnerPick", options: Player.all.map { |player| { label: player.name, value: player.id }})}
     BOT.channel(HOST_CHAT).send_message("Choose your Winner Pick!", false, nil, nil, nil, nil, view)
   end
+
+  BOT.string_select(custom_id: "WinnerPick") do |event|
+    event.defer_update
+
+    event.channel.send_message("You chose **#{Player.find_by(id: event.values.first.to_i).name}**")
+  end
 end
