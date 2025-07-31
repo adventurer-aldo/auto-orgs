@@ -4,7 +4,11 @@ class Sunny
     BOT.game = 'Season 3: Spirits & Souls!'
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.button(custom_id: "application_start_button", label: "Start Application", style: 3) }
-    BOT.channel(HOST_CHAT).send_message("**Applications for Alvivor Season 3: Spirits & Souls are up!**\n\nAlumni (for a maximum of 6) and newbies are allowed to apply. \nClick the button below to begin your application!", false, nil, nil, nil, nil, view)
+    embed = Discordrb::Webhooks::Embed.new
+    embed.title = "Applications for Alvivor Season 3: Spirits & Souls"
+    embed.description = "Alumni (for a maximum of 6) and newbies are allowed to apply. \nClick the button below to begin your application!"
+    embed.color = "cc79c4"
+    BOT.channel(HOST_CHAT).send_message("", false, embed, nil, nil, nil, view)
   end
 
   BOT.string_select(custom_id: "WinnerPick") do |event|
