@@ -11,7 +11,7 @@ class Sunny
     event.defer_update
 
     event.channel.send_message("You chose **#{Player.find_by(id: event.values.first.to_i).name}**")
-    draft = SpectatorGame::Draft.create_or_find_by(user_id: event.user.id, season_id: 2)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: 2)
     draft.update(winner_pick: event.values.first.to_i)
   end
 end
