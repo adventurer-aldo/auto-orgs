@@ -1,4 +1,14 @@
 class Sunny
+  def application_thing
+    view = Discordrb::Webhooks::View.new
+    view.row { |row| row.button(custom_id: "application_start_button", label: "Start Application", style: 3) }
+    embed = Discordrb::Webhooks::Embed.new
+    embed.title = "Applications for Alvivor Season 3: Spirits & Souls"
+    embed.description = "Alumni (for a maximum of 6) and newbies are allowed to apply. \nClick the button below to begin your application!"
+    embed.color = "cc79c4"
+    BOT.channel(1128055783519686756).send_message("", false, embed, nil, nil, nil, view)
+  end
+
   BOT.button(custom_id: 'application_start_button') do |event|
     event.defer_update
     if Application.where(user_id: event.user.id).exists?
