@@ -7,7 +7,7 @@ class Sunny
     embed = Discordrb::Webhooks::Embed.new
     embed.title = "Applications for Alvivor Season 3: Spirits & Souls"
     embed.description = "Alumni (for a maximum of 6) and newbies are allowed to apply. \nClick the button below to begin your application!"
-    embed.color = "1cc79c4"
+    embed.color = "cc79c4"
     BOT.channel(1128055783519686756).send_message("", false, embed, nil, nil, nil, view)
   end
 
