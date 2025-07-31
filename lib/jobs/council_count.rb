@@ -4,7 +4,6 @@ class Sunny
 
     def run(id)
       council = Council.find_by(id:)
-      council.update(stage: 1)
       return if council.nil?
       return unless [1, 3].include? council.stage
 
@@ -13,7 +12,7 @@ class Sunny
       roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).role(Tribe.find_by(id: r).role_id) }
       roles << BOT.server(ALVIVOR_ID).role(TRIBAL_PING)
       channel = BOT.channel(HOST_CHAT)
-      channel.send_message(roles.map(&:mention).join(' ').to_s)
+      channel.send_message("**Welcome #{roles.map(&:mention).join(' ').to_s}**")
       channel.start_typing
       sleep(2)
       rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
@@ -23,18 +22,18 @@ class Sunny
         channel.start_typing
         council.update(stage: 4)
       else
-        channel.send_message("**It is time for the F#{rank} read-off!**")
+        channel.send_message("**It is now time for the F#{rank} read-off!**")
         council.update(stage: 2)
         channel.start_typing
       end
       sleep(2)
-      channel.send_message('Your votes can no longer be changed.')
+      channel.send_message('Your votes are now locked in and unable to be changed.')
       channel.start_typing
       sleep(1)
       channel.send_message('...')
       channel.start_typing
       sleep(2)
-      channel.send_message("I'll go tally the votes.")
+      channel.send_message("...I'll go tally the votes.")
       sleep(10)
       channel.start_typing
       sleep(3)
@@ -339,25 +338,13 @@ class Sunny
             end
           else
             loser = Player.find_by(id: vote_count.keys[vote_count.values.index(vote_count.values.max)])
-            #channel.send_message("**#{loser.name}**")
             channel.start_typing
             sleep(3)
             channel.send_message("It's time to go.")
             channel.start_typing
             sleep(3)
             channel.send_message('Any final words?')
-            sleep(300)
-            channel.send_message("**#{loser.name}...The tribe has spoken.**")
-            file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
-            BOT.send_file(channel, file, filename: 'spoken.gif')
-            # Open camps and stuff.
-            council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
-            council_tribes.each do |tribed|
-              BOT.channel(tribed.channel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
-              BOT.channel(tribed.channel_id).send_message("**Open!**")
-              BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
-              BOT.channel(tribed.cchannel_id).send_message("**Open!**")
-            end
+            TribalLastWordsTimer.enqueue(loser.id, council.id)
           end
         end
         return if vote_count.values.max == majority || all_votes.size.zero?
@@ -365,7 +352,6 @@ class Sunny
       return if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
       loser ||= seed
-      channel.define_overwrite(BOT.server(ALVIVOR_ID).member(loser.user_id), 3072, 0)
       eliminate(loser, event)
       council.update(stage: 5)
       destroy
