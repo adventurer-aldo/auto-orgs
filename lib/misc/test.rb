@@ -41,7 +41,7 @@ class Sunny
     </tr>
   </thead>
   <tbody>
-  #{SpectatorGame::Draft.where(season_id: Setting.last.season).sort_by { |draft| draft.score }.map do |draft|
+  #{SpectatorGame::Draft.where(season_id: 2).sort_by { |draft| draft.score }.map do |draft|
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
