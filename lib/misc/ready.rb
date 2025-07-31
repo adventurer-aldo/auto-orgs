@@ -1,6 +1,6 @@
 class Sunny
   BOT.ready do
-    BOT.send_message(HOST_CHAT, ':torch: Hello, new world! :torch:')
+    BOT.send_message(HOST_CHAT, '<a:torch:1400359863393062952> Hello, new world! <a:torch:1400359863393062952>')
     BOT.game = 'with preparations for a new season!'
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.string_select(custom_id: "WinnerPick", options: Player.all.map { |player| { label: player.name, value: player.id }})}
