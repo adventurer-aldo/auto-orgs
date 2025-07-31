@@ -1,4 +1,5 @@
 /.env
 /.vscode/
+/.idea
 /golden_experience.cmd
 /lib/challenge/the_hunt.rb
