@@ -32,9 +32,10 @@ class Sunny
   
   BOT.command(:apply3) do |event|
     break unless event.channel.parent == 1128056313721659423
+    veteran = Player.where(user_id: event.user.id).exists?
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 3'
-      embed.description = 'Is this your first time playing a Survivor ORG?'
+      embed.description = "Is this your #{veteran ? 'second' : 'first'} time playing a Survivor ORG?"
       embed.color = '9a5cd8'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply4` when you are done.')
     end
