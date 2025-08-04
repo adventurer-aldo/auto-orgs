@@ -12,6 +12,4 @@ class Sunny
     make_item_commands
     event.respond('The items list has been updated!')
   end
-
-  make_item_commands
 end
