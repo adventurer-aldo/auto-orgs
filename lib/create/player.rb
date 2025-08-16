@@ -16,7 +16,7 @@ class Sunny
       confessional: event.server.create_channel(
           "#{person.display_name}-confessional",
           parent: CONFESSIONALS,
-          topic: "#{person.display_name}'s Confessional. Talk to the spectators about your game here!",
+          topic: "#{person.display_name}'s Confessional. This is where you'll talk to the spectators about your game!",
           permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
           TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
       submissions: event.server.create_channel("#{person.display_name}-submissions",
