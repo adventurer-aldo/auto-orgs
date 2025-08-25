@@ -116,5 +116,6 @@ class Sunny
     sleep(1)
     channel.send_message("Votes are due at around <t:#{(Time.now + (60 * 60 * 24)).to_i}:t> tomorrow, but it might be earlier *if* all votes are in before then and everyone agrees.")
     channel.send_message('Good luck!')
+    CouncilCountJob.enqueue(council.id)
   end
 end
