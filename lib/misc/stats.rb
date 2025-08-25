@@ -1,5 +1,10 @@
 class Sunny
 
+  BOT.command :season_timer do |event|
+    break unless event.user.id.host?
+    InServerStats.enqueue(job_options: {run_at: Time.now.to_i})
+  end
+
   BOT.command :stats do |event|
     return "You haven't played in Alvivor yet..." unless Player.where(user_id: event.user.id).exists?
 
