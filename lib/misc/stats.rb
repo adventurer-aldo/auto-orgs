@@ -2,7 +2,7 @@ class Sunny
 
   BOT.command :season_timer do |event|
     break unless event.user.id.host?
-    InServerStats.enqueue(job_options: {run_at: Time.now.to_i})
+    InServerStats.enqueue(job_options: {run_at: Time.now})
   end
 
   BOT.command :stats do |event|
