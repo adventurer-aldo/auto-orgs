@@ -25,7 +25,7 @@ class Sunny
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end
 
-  def get_draft_image
+  def self.get_draft_image
     dead_color = '#551c1c'
     dead_background = 'red'
     base = %Q(
