@@ -30,6 +30,10 @@ class Sunny
 
   BOT.string_select(custom_id: 'DraftWinnerPick') do |event|
     event.defer_update
+    break if Council.where(season_id: Setting.last.season).exists?
+
+    channel = BOT.channel(1125132585882898462)
+
     draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
 
     new_pick = event.values.first.to_i
@@ -41,7 +45,18 @@ class Sunny
     if picks.include? new_pick
       event.send_message("Invalid choice! **#{player.name}** is already your #{['Winner Pick', 'Pick 1', 'Pick 2', 'Pick 3'][picks.index(new_pick)]}", ephemeral: true)
     else
+      is_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+      
       draft.update(winner_pick: new_pick)
+      draft = draft.reload
+      is_still_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+
+      event.send_message("**#{player.name}** is now your new **Winner Pick**!", ephemeral: true)
+
+      if is_completed_draft != is_still_completed_draft
+        channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
+        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+      end
     end
   end
 end

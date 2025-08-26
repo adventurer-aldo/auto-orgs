@@ -25,11 +25,11 @@ class Sunny
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end
 
-  BOT.command :draft do |event|
+  def get_draft_image
     dead_color = '#551c1c'
     dead_background = 'red'
     base = %Q(
-  <table class="table table-warning">
+  <table class="table table-primary">
   <thead class="table-dark">
     <tr>
       <th scope="col">Spectator</th>
@@ -41,7 +41,7 @@ class Sunny
     </tr>
   </thead>
   <tbody>
-  #{SpectatorGame::Draft.where(season_id: 2).sort_by { |draft| draft.score }.map do |draft|
+  #{SpectatorGame::Draft.where(season_id: Setting.last.season).sort_by { |draft| draft.score }.map do |draft|
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
@@ -54,6 +54,10 @@ class Sunny
   end.join('')}
   </tbody>
 </table>)
-    event.channel.send_file(html_to_image(base), filename: 'image.png')
+    html_to_image(base)
+  end
+
+  BOT.command :draft do |event|
+    event.channel.send_file(Sunny.get_draft_image, filename: 'image.png')
   end
 end
