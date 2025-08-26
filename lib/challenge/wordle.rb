@@ -2,28 +2,38 @@ class Sunny
   @wordles = File.readlines('./lib/challenge/wordles.txt', chomp: true)
   @guessles = File.readlines('./lib/challenge/guessles.txt', chomp: true)
 
-  # Pick a random target word at start
   @target = @wordles.sample
 
   BOT.message(in: 1378044547287879731) do |event|
-    guess = event.message.content
+    guess = event.message.content.downcase
 
-    # validate
     unless (@wordles + @guessles).include?(guess)
       event.respond "Not a valid word!"
       next
     end
 
-    # compare guess vs target
-    result = []
+    result = Array.new(guess.length, ":white_large_square:")
     target_chars = @target.chars
-    guess.chars.each_with_index do |char, i|
+    guess_chars  = guess.chars
+
+    # count available letters in target
+    letter_count = Hash.new(0)
+    target_chars.each { |c| letter_count[c] += 1 }
+
+    # first pass: greens
+    guess_chars.each_with_index do |char, i|
       if char == target_chars[i]
-        result << ":green_square:"
-      elsif target_chars.include?(char)
-        result << ":yellow_square:"
-      else
-        result << ":white_large_square:"
+        result[i] = ":green_square:"
+        letter_count[char] -= 1
+      end
+    end
+
+    # second pass: yellows
+    guess_chars.each_with_index do |char, i|
+      next if result[i] == ":green_square:"
+      if letter_count[char] > 0
+        result[i] = ":yellow_square:"
+        letter_count[char] -= 1
       end
     end
 
