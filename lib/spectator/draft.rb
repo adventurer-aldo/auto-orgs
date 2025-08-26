@@ -34,7 +34,7 @@ class Sunny
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
 
     new_pick = event.values.first.to_i
 
@@ -66,7 +66,7 @@ class Sunny
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
 
     new_pick = event.values.first.to_i
 
@@ -98,7 +98,7 @@ class Sunny
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
 
     new_pick = event.values.first.to_i
 
@@ -130,7 +130,7 @@ class Sunny
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
 
     new_pick = event.values.first.to_i
 
