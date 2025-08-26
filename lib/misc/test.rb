@@ -20,35 +20,33 @@ class Sunny
     end.write(a.path)
     return a
   end
-  class Sunny
 
   BOT.command :eliminator do |event|
     event.channel.send_file(Sunny.get_eliminator_image, filename: 'eliminator.png')
   end
 
   def self.get_eliminator_image
-    base = %Q(
-  <table class="table table-primary">
-  <thead class="table-dark">
-    <tr>
-      <th scope="col">Spectator</th>
-      <th scope="col">Episode 1</th>
-    </tr>
-  </thead>
-  <tbody>
-  #{SpectatorGame::Elimination.where(season_id: Setting.last.season).map do |elim|
-      player = Player.find_by(id: elim.player_id)
-      %Q(
+        base = %Q(
+      <table class="table table-primary">
+      <thead class="table-dark">
         <tr>
-          <th scope="row">#{BOT.user(elim.user_id).on(ALVIVOR_ID).display_name}</th>
-          <td>#{player&.name}</td>
-        </tr>)
-    end.join('')}
-  </tbody>
-</table>)
-    html_to_image(base)
+          <th scope="col">Spectator</th>
+          <th scope="col">Episode 1</th>
+        </tr>
+      </thead>
+      <tbody>
+      #{SpectatorGame::Elimination.where(season_id: Setting.last.season).map do |elim|
+          player = Player.find_by(id: elim.player_id)
+          %Q(
+            <tr>
+              <th scope="row">#{BOT.user(elim.user_id).on(ALVIVOR_ID).display_name}</th>
+              <td>#{player&.name}</td>
+            </tr>)
+        end.join('')}
+      </tbody>
+    </table>)
+        html_to_image(base)
   end
-end
 
 
   BOT.command :test do |event|
