@@ -1,15 +1,33 @@
 class Sunny
+  @wordles = File.readlines('./lib/challenge/wordles.txt', chomp: true)
+  @guessles = File.readlines('./lib/challenge/guessles.txt', chomp: true)
 
-  @wordle = File.open('./lib/challenge/wordles.txt', 'r').readlines(chomp: true)
+  # Pick a random target word at start
+  @target = @wordles.sample
 
   BOT.command :word do |event, *args|
-    word = args.join('').downcase
-    if @wordle.include? word
-      event.respond "Yeah that word exists in wordle"
-    else
-      event.respond "Nah, that word ain't exist in wordle"
-      event.respond [word, @wordle[3]].to_s
-      event.respond @wordle[3] == word
+    guess = args.join('').downcase
+
+    # validate
+    unless (@wordles + @guessles).include?(guess)
+      event.respond "Not a valid word!"
+      next
     end
+
+    # compare guess vs target
+    result = []
+    target_chars = @target.chars
+    guess.chars.each_with_index do |char, i|
+      if char == target_chars[i]
+        result << ":green_square:"
+      elsif target_chars.include?(char)
+        result << ":yellow_square:"
+      else
+        result << ":white_large_square:"
+      end
+    end
+
+    event.respond result.join
+    event.respond "Target: #{@target}" if guess == @target
   end
 end
