@@ -29,6 +29,7 @@ class Sunny
   end
 
   BOT.string_select(custom_id: 'DraftWinnerPick') do |event|
+    event.defer_update
     draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
 
     new_pick = event.values.first.to_i
