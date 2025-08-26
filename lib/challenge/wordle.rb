@@ -9,7 +9,7 @@ class Sunny
     else
       event.respond "Nah, that word ain't exist in wordle"
       event.respond word
-      event.respond @wordle[3]
+      event.respond @wordle[3] == word
     end
   end
 end
