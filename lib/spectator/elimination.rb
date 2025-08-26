@@ -33,5 +33,6 @@ class Sunny
 
     if SpectatorGame::Elimination.all.reload.size == size
       channel.send_file(get_eliminator_image, filename: "Eliminator.png")
+    end
   end
 end
