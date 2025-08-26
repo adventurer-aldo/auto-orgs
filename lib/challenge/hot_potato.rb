@@ -10,7 +10,7 @@ class Sunny
     sleep(2)
     event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
 
-    players = Player.where(status: ALIVE)
+    players = Player.where(status: ALIVE, season_id: Setting.last.season)
     players.each do |player|
       Participant.create(player_id: player.id)
     end
@@ -41,7 +41,7 @@ class Sunny
     if event.message.mentions.size.positive?
       ids = event.message.mentions.map { |user| user.id }
       ids.each do |id|
-        if Player.where(status: ALIVE, user_id: id).exists?
+        if Player.where(status: ALIVE, user_id: id, season_id: Setting.last.season).exists?
           mention_matches << Player.find_by(user_id: id, status: ALIVE)
         end
       end

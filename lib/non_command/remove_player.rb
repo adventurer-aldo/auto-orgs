@@ -79,7 +79,7 @@ class Sunny
     subm = BOT.channel(loser.submissions)
     subm.name = "#{rank}#{addendum}-" + subm.name
     subm.sort_after(conf)
-    Player.where(status: ALIVE).update(status: 'In')
+    Player.where(status: ALIVE, season_id: Setting.last.season).update(status: 'In')
     event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }
   end
 end

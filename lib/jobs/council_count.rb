@@ -140,7 +140,7 @@ class Sunny
         end
       end
       precounted_votes = all_votes
-      precounted_votes -= Player.where(status: 'Idoled').map(&:id)
+      precounted_votes -= Player.where(status: 'Idoled', season_id: Setting.last.season).map(&:id)
       unless precounted_votes == []
         all_votes.insert((all_votes.size - 1), all_votes.delete_at(all_votes.index(precounted_votes.max_by { |i| precounted_votes.count(i)})))
       end
@@ -274,10 +274,10 @@ class Sunny
                 channel.send_message('You will only be able to vote the castaways tied.')
 
                 Player.where(season_id: Setting.last.season, status: 'Idoled').update(status: 'Immune')
-                immunes = Player.where(status: 'Immune').map(&:id)
+                immunes = Player.where(status: 'Immune', season_id: Setting.last.season).map(&:id)
 
                 vote_count.each do |k,v|
-                  if v == vote_count.values.max && Player.where(id: k, status: ['Idoled', 'Immune']).exists? == false
+                  if v == vote_count.values.max && Player.where(id: k, status: ['Idoled', 'Immune'], season_id: Setting.last.season).exists? == false
                     Vote.find_by(player_id: k, council_id: council.id).update(allowed: 0, votes: [])
                   else
                     Vote.find_by(player_id: k, council_id: council.id).update(allowed: 1, votes: [0])

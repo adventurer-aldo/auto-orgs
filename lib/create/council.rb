@@ -97,7 +97,7 @@ class Sunny
     players.each do |player|
       Vote.create(council_id: council.id, player_id: player.id, parchments: ['0'])
       BOT.channel(player.submissions).send_embed do |embed|
-        embed.title = "You're participating in the F#{Player.where(status: ALIVE).size} Tribal Council in #{player.tribe.name}"
+        embed.title = "You're participating in the F#{Player.where(status: ALIVE, season_id: Setting.last.season).size} Tribal Council in #{player.tribe.name}"
         embed.description = "The castaways participating are:\n\n#{players.map(&:name).sort.join("\n")}\n\nUse the `!vote` command to cast your vote!"
         embed.color = tribes.map(&:color).sample
       end
