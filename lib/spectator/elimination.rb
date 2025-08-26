@@ -19,7 +19,7 @@ class Sunny
   BOT.string_select(custom_id: "EliminationPick") do |event|
     event.defer_update
 
-    break if Council.where(season_id: Setting.last.season, stage: 0..4).exists?
+    break if Council.where(season_id: Setting.last.season, stage: Array(0..4)).exists?
     channel = BOT.channel(1393731026882269398)
 
     size = SpectatorGame::Elimination.all.size
