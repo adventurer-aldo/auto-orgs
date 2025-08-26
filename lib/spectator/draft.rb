@@ -55,7 +55,7 @@ class Sunny
 
       if is_completed_draft != is_still_completed_draft
         channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
-        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+        channel.send_file(get_draft_image, filename: 'Draft.png')
       end
     end
   end
@@ -87,7 +87,7 @@ class Sunny
 
       if is_completed_draft != is_still_completed_draft
         channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
-        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+        channel.send_file(get_draft_image, filename: 'Draft.png')
       end
     end
   end
@@ -119,7 +119,7 @@ class Sunny
 
       if is_completed_draft != is_still_completed_draft
         channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
-        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+        channel.send_file(get_draft_image, filename: 'Draft.png')
       end
     end
   end
