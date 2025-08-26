@@ -24,7 +24,7 @@ class Sunny
 
     size = SpectatorGame::Elimination.all.size
 
-    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
+    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season, episode_id: 1)
 
     player = Player.find_by(id: event.values.first.to_i)
 
