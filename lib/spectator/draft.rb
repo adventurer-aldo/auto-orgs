@@ -59,4 +59,101 @@ class Sunny
       end
     end
   end
+
+  BOT.string_select(custom_id: 'DraftFirstPick') do |event|
+    event.defer_update
+    break if Council.where(season_id: Setting.last.season).exists?
+
+    channel = BOT.channel(1125132585882898462)
+
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+
+    new_pick = event.values.first.to_i
+
+    player = Player.find_by(id: new_pick)
+
+    picks = [draft.winner_pick, draft.pick_1, draft.pick_2, draft.pick_3]
+
+    if picks.include? new_pick
+      event.send_message(content: "Invalid choice! **#{player.name}** is already your #{['Winner Pick', 'Pick 1', 'Pick 2', 'Pick 3'][picks.index(new_pick)]}", ephemeral: true)
+    else
+      is_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+      
+      draft.update(pick_1: new_pick)
+      draft = draft.reload
+      is_still_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+
+      event.send_message(content: "**#{player.name}** is now your new **Pick 1**!", ephemeral: true)
+
+      if is_completed_draft != is_still_completed_draft
+        channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
+        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+      end
+    end
+  end
+
+  BOT.string_select(custom_id: 'DraftSecondPick') do |event|
+    event.defer_update
+    break if Council.where(season_id: Setting.last.season).exists?
+
+    channel = BOT.channel(1125132585882898462)
+
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+
+    new_pick = event.values.first.to_i
+
+    player = Player.find_by(id: new_pick)
+
+    picks = [draft.winner_pick, draft.pick_1, draft.pick_2, draft.pick_3]
+
+    if picks.include? new_pick
+      event.send_message(content: "Invalid choice! **#{player.name}** is already your #{['Winner Pick', 'Pick 1', 'Pick 2', 'Pick 3'][picks.index(new_pick)]}", ephemeral: true)
+    else
+      is_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+      
+      draft.update(pick_2: new_pick)
+      draft = draft.reload
+      is_still_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+
+      event.send_message(content: "**#{player.name}** is now your new **Pick 2**!", ephemeral: true)
+
+      if is_completed_draft != is_still_completed_draft
+        channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
+        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+      end
+    end
+  end
+
+  BOT.string_select(custom_id: 'DraftThirdPick') do |event|
+    event.defer_update
+    break if Council.where(season_id: Setting.last.season).exists?
+
+    channel = BOT.channel(1125132585882898462)
+
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id)
+
+    new_pick = event.values.first.to_i
+
+    player = Player.find_by(id: new_pick)
+
+    picks = [draft.winner_pick, draft.pick_1, draft.pick_2, draft.pick_3]
+
+    if picks.include? new_pick
+      event.send_message(content: "Invalid choice! **#{player.name}** is already your #{['Winner Pick', 'Pick 1', 'Pick 2', 'Pick 3'][picks.index(new_pick)]}", ephemeral: true)
+    else
+      is_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+      
+      draft.update(pick_3: new_pick)
+      draft = draft.reload
+      is_still_completed_draft = !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?
+
+      event.send_message(content: "**#{player.name}** is now your new **Pick 3**!", ephemeral: true)
+
+      if is_completed_draft != is_still_completed_draft
+        channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
+        channel.send_file(Sunny.get_draft_image, filename: 'Draft.png')
+      end
+    end
+  end
+  
 end
