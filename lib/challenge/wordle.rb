@@ -1,6 +1,6 @@
 class Sunny
 
-  @wordle = File.open('./lib/create/merge_cheers.txt', 'r').readlines
+  @wordle = File.open('./lib/challenge/wordles.txt', 'r').readlines
 
   BOT.command :word do |event, *args|
     word = args.join('').downcase
