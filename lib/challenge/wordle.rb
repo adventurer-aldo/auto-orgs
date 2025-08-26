@@ -5,8 +5,8 @@ class Sunny
   # Pick a random target word at start
   @target = @wordles.sample
 
-  BOT.command :word do |event, *args|
-    guess = args.join('').downcase
+  BOT.message(in: 1378044547287879731) do |event|
+    guess = event.message.content
 
     # validate
     unless (@wordles + @guessles).include?(guess)
