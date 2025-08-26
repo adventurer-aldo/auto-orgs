@@ -31,7 +31,7 @@ class Sunny
     eliminator.update(player_id: player.id)
     event.send_message(content: "You have decided to bet on **#{player.name}** not being eliminated this round.", ephemeral: true)
 
-    if SpectatorGame::Elimination.all.reload.size == size
+    if SpectatorGame::Elimination.all.reload.size != size
       channel.send_file(get_eliminator_image, filename: "Eliminator.png")
     end
   end
