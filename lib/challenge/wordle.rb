@@ -1,10 +1,17 @@
 class Sunny
   @wordles = File.readlines('./lib/challenge/wordles.txt', chomp: true)
   @guessles = File.readlines('./lib/challenge/guessles.txt', chomp: true)
+  @stage = 0
+  @uada_id = 25
+  @habiti_id = 26
+  
+  @uada_words = ['epoch', 'trite', 'quoth', 'wooer', 'mango', 'buxom']
 
-  @target = @wordles.sample
-
+  
   BOT.message(in: 1378044547287879731) do |event|
+    return if @stage > 5
+    target = @uada_words[@stage]
+    
     guess = event.message.content.downcase
 
     unless (@wordles + @guessles).include?(guess)
@@ -13,7 +20,7 @@ class Sunny
     end
 
     result = Array.new(guess.length, ":white_large_square:")
-    target_chars = @target.chars
+    target_chars = target.chars
     guess_chars  = guess.chars
 
     # count available letters in target
@@ -38,6 +45,11 @@ class Sunny
     end
 
     event.respond result.join
-    event.respond "Target: #{@target}" if guess == @target
+    if guess == target
+      event.respond "The word was #{target}. You correctly guessed it!\n\nA new word is up for guessing..."
+      @stage += 1
+      event.respond "You're done." if @stage > 5
+    end
+
   end
 end
