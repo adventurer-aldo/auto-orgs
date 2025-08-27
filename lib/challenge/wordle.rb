@@ -56,7 +56,7 @@ class Sunny
       end
     end
 
-    event.respond result.join
+    event.respond(result.join, false, nil, nil, nil, event.message)
     if guess == target.downcase
       BOT.channel(1409959696349139025).send_message("#{['After', 'With about', 'With', 'Using'].sample} #{challenge.end_time} guesses, **#{tribe.name}** guessed a word correctly! #{(challenge.stage + 1)}/6")
       event.respond "The word was **#{target.capitalize}**. Your team guessed it correctly!"
