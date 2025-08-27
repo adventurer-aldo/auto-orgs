@@ -8,7 +8,7 @@ class Sunny
     guess = event.message.content.downcase
 
     unless (@wordles + @guessles).include?(guess)
-      event.respond "Not a valid word!"
+      puts "Someone guessed wordle incorrectly...."
       next
     end
 
