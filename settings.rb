@@ -66,7 +66,7 @@ class Sunny
 
   # MISC
   CONFIRMATIONS = ['yes', 'yea', 'yeah', 'yeh', 'yuh', 'yup', 'y','ye','heck yeah','yep','yessir','indeed','yessey','yess']
-  PARCHMENT = 'https://i.ibb.co/Q77cMFJs/Parchment.jpg'
+  PARCHMENT = 'https://i.ibb.co/rfsv42HB/parchmentbig.jpg'
 
   FONTS = Dir.glob(File.join(__dir__, "fonts", "*")).select { |f| File.file?(f) }
 
