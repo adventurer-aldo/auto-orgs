@@ -1,7 +1,7 @@
 class Sunny
 
   BOT.command :haram do |event|
-    Player.where(name: 'Iromi').alliances.to_s
+    Player.find_by(name: 'Iromi').alliances.to_s
   end
 
   def self.get_user_circular_avatar(user_id)
