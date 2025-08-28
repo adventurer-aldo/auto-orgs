@@ -1,5 +1,9 @@
 class Sunny
 
+  BOT.command :haram do |event|
+    Player.where(name: 'Iromi').alliances.to_s
+  end
+
   def self.get_user_circular_avatar(user_id)
     a = Tempfile.new(['hey', 'png'])
     base = MiniMagick::Image.open(BOT.user(user_id).avatar_url)
