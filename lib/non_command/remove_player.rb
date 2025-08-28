@@ -81,5 +81,7 @@ class Sunny
     subm.sort_after(conf)
     Player.where(status: ALIVE, season_id: Setting.last.season).update(status: 'In')
     event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }
+    BOT.channel(1125132585882898462).send_file(get_draft_image, filename: 'Draft.png')
+    BOT.channel(1393731026882269398).send_file(get_eliminator_image, filename: "Eliminator.png")
   end
 end

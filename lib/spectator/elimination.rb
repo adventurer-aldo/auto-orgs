@@ -24,12 +24,17 @@ class Sunny
 
     size = SpectatorGame::Elimination.all.size
 
-    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season, episode_id: 1)
+    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season, episode_id: 2)
 
     player = Player.find_by(id: event.values.first.to_i)
 
-    eliminator.update(player_id: player.id)
-    event.send_message(content: "You have decided to bet on **#{player.name}** not being eliminated this round.", ephemeral: true)
+    if ALIVE.include? player.status
+      eliminator.update(player_id: player.id)
+      event.send_message(content: "You have decided to bet on **#{player.name}** not being eliminated this round.", ephemeral: true)
+    else
+      event.send_message(content: "**#{player.name}** is long gone...", ephemeral: true)
+    end
+
 
     if SpectatorGame::Elimination.all.reload.size != size
       channel.send_file(get_eliminator_image, filename: "Eliminator.png")
