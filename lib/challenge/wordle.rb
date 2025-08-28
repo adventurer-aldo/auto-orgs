@@ -4,8 +4,8 @@ class Sunny
   @uada_id = 25
   @habiti_id = 26
   
-  @uada_words = ['epoch', 'trite', 'quoth', 'wooer', 'mango', 'buxom']
-  @habiti_words = ['query', 'crypt', 'foyer', 'plumb', 'squib', 'modal']
+  @uada_words = ['epoch', 'trite', 'quoth', 'wooer', 'mango', 'buxom', 'wryly']
+  @habiti_words = ['query', 'crypt', 'foyer', 'plumb', 'squib', 'modal', 'myrrh']
 
   
   BOT.message(in: Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id }) do |event|
@@ -17,7 +17,7 @@ class Sunny
 
     challenge = Challenges::Tribal.find_by(tribe_id: tribe.id)
 
-    return if challenge.stage > 5
+    return if challenge.stage > 6
 
     target_words = tribe.id == @uada_id ? @habiti_words : @uada_words
     target = target_words[challenge.stage]
@@ -60,8 +60,8 @@ class Sunny
     if guess == target.downcase
       BOT.channel(1409959696349139025).send_message("#{['After', 'With about', 'With', 'Using'].sample} #{challenge.reload.end_time} guesses, **#{tribe.name}** guessed a word correctly! #{(challenge.stage + 1)}/6")
       event.respond "The word was **#{target.capitalize}**. Your team guessed it correctly!"
-      if (challenge.stage + 1) > 5 
-        event.respond "Congratulations! Your tribe has guessed all the words chosen by the other tribe!" 
+      if (challenge.stage + 1) > 6 
+        event.respond "Congratulations! Your tribe has guessed the final word chosen by the other tribe!" 
       else
         event.respond "You can now attempt to guess the next word..."
       end
