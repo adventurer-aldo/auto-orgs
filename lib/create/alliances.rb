@@ -61,7 +61,8 @@ class Sunny
         options.find { |n| n == option.to_i }
       end
     end
-    choices.compact!.uniq!
+    choices.compact!
+    choices.uniq!
 
     event.respond('There were no matches.') if choices.empty?
     break if choices.empty?
@@ -93,7 +94,7 @@ class Sunny
           )
 
           choices.each do |p|
-            Alliances::Association.create!(alliance_id: alliance.id, player_id: p.id)
+            Alliances::Association.create(alliance_id: alliance.id, player_id: p.id)
           end
 
           BOT.send_message(alliance.channel_id, event.server.role(tribe.role_id).mention.to_s)
