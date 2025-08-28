@@ -18,13 +18,13 @@ class Sunny
       user.add_role(PREJURY)
     end
 
-    alliances = Alliance.where("#{loser.id} = ANY (players)")
-    if alliances.exists?
+    alliances = loser.alliances
+    if !alliances.empty?
       alliances.each do |alliance|
         begin
-          alliance.update(players: alliance.players - [loser.id])
+          alliance.associations.destroy_by(player_id: loser.id)
           channel = BOT.channel(alliance.channel_id)
-          if alliance.players.size < 4 || (alliance.players.size == event.server.role(Tribe.find_by(id: loser.tribe).role_id).members.size && Setting.last.game_stage == 1)
+          if alliance.reload.associations.size < 4 || (alliance.reload.associations.size == loser.tribe.players.size && Setting.last.game_stage == 1)
             channel.parent = Setting.last.archive_category
             BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
             channel.permission_overwrites.each do |role, _perms|
