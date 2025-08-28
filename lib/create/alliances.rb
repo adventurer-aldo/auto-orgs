@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :rename, description: 'Renames an alliance' do |event, *args|
-    break unless event.user.id.player?
+    break unless event.user.id.player? || event.user.id.host?
 
     if Alliances::Group.where(channel_id: event.channel.id).exists?
       event.channel.name = args.join(' ')
@@ -107,7 +107,7 @@ class Sunny
       else
         event.respond("Sorry, I didn't quite understand what you said. Can you start all over?")
       end
-      true
     end
+    return
   end
 end
