@@ -1,7 +1,7 @@
 class Sunny
 
   BOT.command :haram do |event|
-    Player.find_by(name: 'Iromi').alliances.map { |alliance| BOT.channel(alliance.channel_id).mention }.join(' ')
+    Player.find_by(name: 'Hayden').alliances.map { |alliance| BOT.channel(alliance.channel_id).mention }.join(' ')
   end
 
   def self.get_user_circular_avatar(user_id)
