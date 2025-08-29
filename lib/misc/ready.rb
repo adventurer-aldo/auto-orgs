@@ -15,7 +15,7 @@ class Sunny
     txt.send_message("**Isaiah...**")
     txt.send_message("**The tribe has spoken.**")
     file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
-    BOT.send_file(channel, file, filename: 'spoken.gif')
+    BOT.send_file(txt, file, filename: 'spoken.gif')
   end
 
   BOT.message(in: HOST_CHAT, from: 460766095188688903) do |event|
