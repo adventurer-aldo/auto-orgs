@@ -6,8 +6,6 @@ class Sunny
   end
 
   BOT.message(in: HOST_CHAT, from: 460766095188688903) do |event|
-    event.respond event.message.attachments.to_s
-    event.respond event.message.attachments.map(&:url).to_s
-    BOT.channel(HOST_CHAT).send_message(event.message.content, false, nil, event.message.attachments.map { |attachment| URI.parse(attachment.url)})
+    BOT.channel(HOST_CHAT).send_message(event.message.content, false, nil, event.message.attachments.map { |attachment| URI.parse(attachment.url).open})
   end
 end
