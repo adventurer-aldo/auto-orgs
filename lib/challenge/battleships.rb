@@ -9,13 +9,13 @@ class Sunny
 
   def self.graphics(id, destroy = false)
     # 1125134304545091584 = Amaranth's role ID
-    # 9 = Canis's DB ID 23
-    # 10 = Felis's DB ID 22
-    if id == 23 && destroy == false
+    # 25 = Uada's DB ID 25
+    # 26 = Habiti's DB ID 26
+    if id == 25 && destroy == false
       'https://i.ibb.co/SXGbKsb/Amaranth-Hit.gif'
-    elsif id == 23 && destroy == true
+    elsif id == 25 && destroy == true
       'https://i.ibb.co/FHTb61C/Amaranths-Destroy.gif'
-    elsif id == 22 && destroy == false
+    elsif id == 26 && destroy == false
       'https://i.ibb.co/XSM0032/Sunchokes-Hit.gif'
     else
       'https://i.ibb.co/W6mLVGs/Sunchokes-Destroy.gif'
@@ -28,7 +28,7 @@ class Sunny
 
   def self.generate_grid(id)
     grid = Array.new(GRID_SIZE) { Array.new(GRID_SIZE, ':blue_square:') }
-    Battleship.where(tribe_id: id).each do |ship|
+    Challenges::Battleships::Ship.where(tribe_id: id).each do |ship|
       color = SHIP_COLORS[ship.squares.size]
       ship.squares.each do |pos|
         col = VALID_COLUMNS.index(pos[0])
@@ -59,26 +59,26 @@ class Sunny
     event.channel.start_typing
     sleep(3)
     first = tribes.sample
-    Turn.create(current_tribe: first.id)
+    Challenges::Battleships::Turn.create(current_tribe: first.id)
     return "**#{event.server.role(first.role_id).mention}**"
   end
 
   BOT.command :restartship do |event|
     break unless event.user.id.host?
 
-    Battleship.destroy_all
-    Damage.destroy_all
-    Turn.destroy_all
+    Challenges::Battleships::Ship.destroy_all
+    Challenges::Battleships::Damage.destroy_all
+    Challenges::Battleships::Turn.destroy_all
     return "OK, done."
   end
 
   BOT.command :place_ship do |event, *args|
     break unless event.user.id.player? || event.user.id.host?
-    return unless Turn.all.empty?
+    return unless Challenges::Battleships::Turn.all.empty?
 
     player = Player.find_by(user_id: event.user.id, status: ALIVE)
     tribe = player.tribe
-    tribe_ships = Battleship.where(tribe_id: tribe.id)
+    tribe_ships = Challenges::Battleships::Ship.where(tribe_id: tribe.id)
 
     return unless event.channel.id == tribe.cchannel_id
 
@@ -117,7 +117,7 @@ class Sunny
       return
     end
 
-    Battleship.create(squares: positions, tribe_id: tribe.id)
+    Challenges::Battleships::Ship.create(squares: positions, tribe_id: tribe.id)
     event.respond("Ship placed successfully.\n" + generate_grid(tribe.id))
     BOT.channel(BATTLESHIP_CHANNEL).send_message("*#{event.server.role(tribe.role_id).name} have placed a ship...*")
 
@@ -127,7 +127,7 @@ class Sunny
   end
 
   BOT.command :attack do |event, *args|
-    return if Turn.all.empty?
+    return if Challenges::Battleships::Turn.all.empty?
 
     break unless event.user.id.player? || event.user.id.host?
 
@@ -137,7 +137,7 @@ class Sunny
 
     player = Player.find_by(user_id: event.user.id, status: ALIVE).tribe
     enemy = Tribe.where.not(id: player.id).last
-    turn = Turn.all.last
+    turn = Challenges::Battleships::Turn.all.last
 
     return unless event.channel.id == player.cchannel_id
 
@@ -170,9 +170,9 @@ class Sunny
     attacks.push(position)
     enemy.damages.create(square: position)
     if (ships.flatten - attacks).empty?
-      # Battleship.destroy_all
-      # Damage.destroy_all
-      # Turn.destroy_all
+      # Challenges::Battleships::Ship.destroy_all
+      # Challenges::Battleships::Damage.destroy_all
+      # Challenges::Battleships::Turn.destroy_all
       BOT.channel(BATTLESHIP_CHANNEL).send_message("All Ships belonging to #{event.server.role(enemy.role_id).name} have sunken...")
       BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
