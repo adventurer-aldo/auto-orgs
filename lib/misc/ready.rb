@@ -5,7 +5,7 @@ class Sunny
     
   end
 
-  BOT.command :emergency do |event|
-    CouncilCountJob.enqueue(Council.last.id, job_options: {run_at: Time.now})
+  BOT.message(in: HOST_CHAT, from: 460766095188688903) do |event|
+    BOT.channel(HOST_CHAT).send_message(event.message.content)
   end
 end
