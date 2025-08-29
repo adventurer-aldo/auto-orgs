@@ -7,7 +7,8 @@ class Sunny
     def run(id, council_id, rocks=false)
       council = Council.find_by(id: council_id)
       loser = Player.find_by(id:)
-      BOT.channel(council.channel_id).send_message("**#{loser.name}...The #{rocks ? 'rocks have' : 'tribe has'} spoken.**")
+      channel = BOT.channel(council.channel_id)
+      channel.send_message("**#{loser.name}...The #{rocks ? 'rocks have' : 'tribe has'} spoken.**")
       file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
       BOT.send_file(channel, file, filename: 'spoken.gif')
       # Open camps and stuff.

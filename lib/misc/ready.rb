@@ -16,13 +16,6 @@ class Sunny
     txt.send_message("**The tribe has spoken.**")
     file = URI.parse('https://i.ibb.co/zm9tYcb/spoken.gif').open
     BOT.send_file(channel, file, filename: 'spoken.gif')
-    council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
-    council_tribes.each do |tribed|
-      BOT.channel(tribed.channel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
-      BOT.channel(tribed.channel_id).send_message("**Open!**")
-      BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
-      BOT.channel(tribed.cchannel_id).send_message("**Open!**")
-    end
   end
 
   BOT.message(in: HOST_CHAT, from: 460766095188688903) do |event|
