@@ -11,7 +11,7 @@ class Sunny
       seed = nil
       roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).role(Tribe.find_by(id: r).role_id) }
       roles << BOT.server(ALVIVOR_ID).role(TRIBAL_PING)
-      channel = BOT.channel(HOST_CHAT)
+      channel = BOT.channel(council.channel_id)
       channel.send_message("**Welcome #{roles.map(&:mention).join(' ').to_s}**")
       channel.start_typing
       sleep(2)
