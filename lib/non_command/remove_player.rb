@@ -24,7 +24,7 @@ class Sunny
         begin
           alliance.associations.destroy_by(player_id: loser.id)
           channel = BOT.channel(alliance.channel_id)
-          if alliance.reload.associations.size < 4 || (alliance.reload.associations.size == loser.tribe.players.size && Setting.last.game_stage == 1)
+          if alliance.reload.associations.size < 3 || (alliance.reload.associations.size == loser.tribe.players.size && Setting.last.game_stage == 1)
             channel.parent = Setting.last.archive_category
             BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
             channel.permission_overwrites.each do |role, _perms|
