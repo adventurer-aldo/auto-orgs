@@ -5,13 +5,13 @@ module Challenges
   
   module Wordle
     def self.table_name_prefix
-      "challenges_wordle_"
+      "wordle_"
     end
   end
 
   module Battleships
     def self.table_name_prefix
-      "challenges_battleships_"
+      "battleships_"
     end
   end
 end
