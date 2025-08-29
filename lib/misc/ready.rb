@@ -6,6 +6,6 @@ class Sunny
   end
 
   BOT.command :emergency do |event|
-    CouncilCountJob.enqueue(Council.last.id, job_options: {run_at: Time.now})
+    CouncilCountJob.enqueue(Council.last.id)
   end
 end
