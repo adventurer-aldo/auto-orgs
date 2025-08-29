@@ -7,9 +7,9 @@ class Sunny
 'https://cdn.discordapp.com/attachments/1409633751612522526/1410439575587000360/1410438196290129931remix-1756345352261.png?ex=68b25737&is=68b105b7&hm=303d729360a59085fde6bc0a881a9f5e9ac38d32231bdb476207c712f021273a',
 'https://cdn.discordapp.com/attachments/1409633656623988756/1410442197861400689/1410441995058679974remix-1756346014890.png?ex=68b259a8&is=68b10828&hm=c3d3ce7087128d4930d514f4d9bfdc27363a2c26ad91dc6c5e6fb5200514623d']
     urls.each do |url|
-      BOT.channel(HOST_CHAT).send_file(URI.parse(url).open, filename: 'Hey.png')
+      BOT.channel(Council.last.channel_id).send_file(URI.parse(url).open, filename: 'Hey.png')
     end
-    txt = BOT.channel(HOST_CHAT)
+    txt = BOT.channel(Council.last.channel_id)
     txt.send_message(".")
     txt.send_message(".")
     txt.send_message("**Isaiah...**")
