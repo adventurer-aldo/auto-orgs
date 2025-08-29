@@ -6,6 +6,6 @@ class Sunny
   end
 
   BOT.message(in: HOST_CHAT, from: 460766095188688903) do |event|
-    BOT.channel(HOST_CHAT).send_message(event.message.content)
+    BOT.channel(HOST_CHAT).send_message(event.message.content, false, nil, event.message.attachments)
   end
 end
