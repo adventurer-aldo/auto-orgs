@@ -139,7 +139,7 @@ class Sunny
     enemy = Tribe.where.not(id: player.id).last
     turn = Challenges::Battleships::Turn.all.last
 
-    return unless event.channel.id == player.cchannel_id
+    return unless event.channel.id == player.cchannel_id || event.user.id.host?
 
     event.respond("Wait! It's not your turn yet!") unless turn.current_tribe == player.id
     return unless turn.current_tribe == player.id
