@@ -4,7 +4,7 @@ class Tribe < ActiveRecord::Base
   has_many :votes, through: :councils
   belongs_to :season, foreign_key: 'season_id'
   
-  has_many :challenges, foreign_key: 'tribe_id'
+  has_many :challenges, class_name: 'Challenges::Tribal', foreign_key: 'tribe_id'
   # Battleships
   has_many :damages, class_name: 'Challenges::Battleships::Damage', foreign_key: 'tribe_id'
   has_many :participants, foreign_key: 'tribe_id'

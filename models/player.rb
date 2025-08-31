@@ -28,7 +28,7 @@ class Player < ActiveRecord::Base
   has_many :alliances, through: :alliance_associatons
   has_many :buddies, foreign_key: 'player_id'
   has_many :searches, foreign_key: 'player_id'
-  has_many :individuals, foreign_key: 'player_id'
+  has_many :challenges, class_name: 'Challenges::Individual', foreign_key: 'player_id'
   has_many :items, foreign_key: 'player_id'
   has_many :mazes, foreign_key: 'player_id'
   has_many :participants, foreign_key: 'player_id'
