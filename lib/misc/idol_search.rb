@@ -1,14 +1,11 @@
 class Sunny
   # Hardcoded events mapping names to list of coordinates
   EVENTS = {
-    hidden_immunity_idol: [
-      [7, 1],  # G1
+    idan_vote: [
+      [9, 4],  # I4
     ],
-    extra_vote: [
-      [1, 2],  # A2
-    ],
-    merge_idol: [
-      [8, 8],  # H8
+    isaiah_vote: [
+      [9, 6],  # I6
     ]
   }
 
@@ -70,12 +67,10 @@ class Sunny
     # outcome
     if found
       case key
-      when :hidden_immunity_idol
-        event.respond("You found **the** clue! Answer this with a command to earn the item.\n\nHerbivores eat plants to gain energy. But which process do plants use to get that energy?")
-      when :extra_vote
-        event.respond("Use `jungle` and `king` together to earn your item.")
-      when :merge_idol
-        event.respond("Use `rich_gambler` to earn your item.")
+      when :idan_vote
+        event.respond("Idan was still among us. You can claim his remaining legacy with the command `!idan_among_us`")
+      when :isaiah_vote
+        event.respond("Isaiah hasn't left us. He was reborn anew. You can see him once again with the command `!new_isaiah`")
       end
     else
       event.respond("Nothing at #{letter.upcase}#{y}.")
