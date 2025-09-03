@@ -19,6 +19,7 @@ class Sunny
         BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
         BOT.channel(tribed.cchannel_id).send_message("**Open!**")
       end
+      eliminate(loser)
       destroy
     end
   end
