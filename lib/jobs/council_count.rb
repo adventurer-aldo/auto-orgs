@@ -352,7 +352,7 @@ class Sunny
       return if (vote_count.values.count(vote_count.values.max) > 1) && council.stage < 4
 
       loser ||= seed
-      eliminate(loser, event)
+      eliminate(loser)
       council.update(stage: 5)
       destroy
     end

@@ -1,17 +1,18 @@
 class Sunny
-  def self.eliminate(loser, event)
+  def self.eliminate(loser)
     Buddy.all.update(can_change: true)
     rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
     tribe = loser.tribe
+    alvivor_server = BOT.server(ALVIVOR_ID)
     if Setting.last.game_stage == 1
       loser.update(status: 'Jury', rank:)
-      user = BOT.user(loser.user_id).on(event.server)
+      user = BOT.user(loser.user_id).on(alvivor_server)
       user.remove_role(tribe.role_id) if tribe
       user.remove_role(CASTAWAY)
       user.add_role(JURY)
     else
       loser.update(status: 'Out', rank:)
-      user = BOT.user(loser.user_id).on(event.server)
+      user = BOT.user(loser.user_id).on(alvivor_server)
 
       user.remove_role(tribe.role_id) if tribe
       user.remove_role(CASTAWAY)
@@ -26,21 +27,21 @@ class Sunny
           channel = BOT.channel(alliance.channel_id)
           if alliance.reload.associations.size < 3 || (alliance.reload.associations.size == loser.tribe.players.size && Setting.last.game_stage == 1)
             channel.parent = Setting.last.archive_category
-            BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
+            BOT.send_message(channel.id, ':ballot_box_with_check: **This alliance no longer serves a purpose. This channel has been archived!**')
             channel.permission_overwrites.each do |role, _perms|
-              unless role == EVERYONE || event.server.role(role).nil? == false
-                channel.define_overwrite(event.server.member(role), 1088, 2048)
+              unless role == EVERYONE || alvivor_server.role(role).nil? == false
+                channel.define_overwrite(alvivor_server.member(role), 1088, 2048)
               end
             end
             alliance.destroy
           else
             BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
             channel.permission_overwrites.each do |role, _perms|
-              unless role == EVERYONE || event.server.role(role).nil? == false
+              unless role == EVERYONE || alvivor_server.role(role).nil? == false
                 unless role == loser.user_id
-                  channel.define_overwrite(event.server.member(role), 3072, 0)
+                  channel.define_overwrite(alvivor_server.member(role), 3072, 0)
                 else
-                  channel.define_overwrite(event.server.member(loser.user_id), 0, 3072)
+                  channel.define_overwrite(alvivor_server.member(loser.user_id), 0, 3072)
                 end
               end
 
@@ -51,8 +52,8 @@ class Sunny
           channel.parent = Setting.last.archive_category
           BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
           channel.permission_overwrites.each do |role, _perms|
-            unless role == EVERYONE || event.server.role(role).nil? == false
-              channel.define_overwrite(event.server.member(role), 1088, 2048)
+            unless role == EVERYONE || alvivor_server.role(role).nil? == false
+              channel.define_overwrite(alvivor_server.member(role), 1088, 2048)
             end
           end
           alliance.destroy
@@ -80,7 +81,7 @@ class Sunny
     subm.name = "#{rank}#{addendum}-" + subm.name
     subm.sort_after(conf)
     Player.where(status: ALIVE, season_id: Setting.last.season).update(status: 'In')
-    event.server.role(IMMUNITY).members.each { |immune| immune.on(event.server).remove_role(IMMUNITY) }
+    alvivor_server.role(IMMUNITY).members.each { |immune| immune.on(alvivor_server).remove_role(IMMUNITY) }
     BOT.channel(1125132585882898462).send_file(get_draft_image, filename: 'Draft.png')
     # BOT.channel(1393731026882269398).send_file(get_eliminator_image, filename: "Eliminator.png")
   end

@@ -154,17 +154,21 @@ class Sunny
       if ((ships.select { |ship| ship.include? position }[0] - [position]) - attacks).empty?
         BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, true))
         BOT.channel(BATTLESHIP_CHANNEL).send_message("**CRITICAL HIT!**\n**#{event.server.role(enemy.role_id).name}** had one of their Ships **SINK**!")
+        event.respond("You made one of **#{event.server.role(enemy.role_id).name}**'s ships **sink!**")
       else
         BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
         BOT.channel(BATTLESHIP_CHANNEL).send_message("A Ship that belongs to **#{event.server.role(enemy.role_id).name}** was hit!")
+        event.respond("You hit a ship!")
       end
     elsif (ships.map { |ship| ship.include?(position) && !(ship - attacks).empty? }.include?(true))
       # Hit and it was hit before but not completely gone yet
       BOT.channel(BATTLESHIP_CHANNEL).send_message(graphics(player.id, false))
       BOT.channel(BATTLESHIP_CHANNEL).send_message("A Ship that belongs to **#{event.server.role(enemy.role_id).name}** was hit, but the attack was ineffective...")
+      event.respond("You hit a ship, but didn't cause any damage...")
     else
       # Miss!
       BOT.channel(BATTLESHIP_CHANNEL).send_message('It was a miss...')
+      event.respond("You hit nothing.")
     end
 
     attacks.push(position)
