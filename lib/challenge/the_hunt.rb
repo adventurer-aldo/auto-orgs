@@ -181,7 +181,7 @@ class Sunny
     living = Challenges::Individual.where.not(stage: 0).map { |individual| BOT.user(individual.player.user_id).mention }
     channel.send_message(living.join(" "))
     Que.clear!
-    TestJob.enqueue if alive.size > 1
+    HuntJob.enqueue if alive.size > 1
     channel.send_message("Results at <t:#{(Time.now.utc + 1 * 60).to_i}:t>") if alive.size > 1
   end
 end
