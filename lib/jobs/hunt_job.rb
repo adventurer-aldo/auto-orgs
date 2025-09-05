@@ -1,6 +1,6 @@
 class Sunny
   class HuntJob < Que::Job
-    self.run_at = proc { Time.now + 3 * 60 * 60 } # 10 minutes from now
+    self.run_at = proc { Time.now + 1 * 60 * 60 } # 10 minutes from now
 
     def run
       # Call your results reveal/update method
