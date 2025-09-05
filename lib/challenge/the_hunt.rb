@@ -182,6 +182,6 @@ class Sunny
     channel.send_message(living.join(" "))
     Que.clear!
     HuntJob.enqueue if alive.size > 1
-    channel.send_message("Results at <t:#{(Time.now.utc + 1 * 60).to_i}:t>") if alive.size > 1
+    channel.send_message("Results at <t:#{(Time.now.utc + 3 * 60 * 60).to_i}:t>") if alive.size > 1
   end
 end
