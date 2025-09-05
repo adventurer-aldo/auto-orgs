@@ -155,10 +155,10 @@ class Sunny
 
     # Heart emojis by tribe name
     hearts_by_tribe = {
-      "orca" => "💙",
+      "maga" => "💙",
       "panthera" => "💛",
-      "serpentes" => "💜",
-      "falco" => "❤️"
+      "venassor" => "💚",
+      "iterum" => "❤️"
     }
 
     # Send HP embed
