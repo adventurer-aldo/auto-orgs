@@ -4,7 +4,7 @@ class Sunny
 
     def run
       # Call your results reveal/update method
-      Sunny.reveal_results_and_update if Sunny::Challenges::Individual.where(start_time: nil).where.not(stage: 0).exists?
+      Sunny.reveal_results_and_update if Challenges::Individual.where(start_time: nil).where.not(stage: 0).exists?
 
       destroy
     end
