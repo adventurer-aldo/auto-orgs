@@ -17,12 +17,12 @@ class Beowulf
 end
 
 @tokens = {
-  stew: ENV['1'],
-  lynn: ENV['2'],
-  isaiah: ENV['3'],
-  idan: ENV['4'],
-  emerald: ENV['5'],
-  tabi: ENV['6']
+  stew: ENV['ONE'],
+  lynn: ENV['TWO'],
+  isaiah: ENV['THREE'],
+  idan: ENV['FOUR'],
+  emerald: ENV['FIVE'],
+  tabi: ENV['SIX']
 }
 
 @tokens.keys.each do |key|
