@@ -1,6 +1,7 @@
 class Sunny
 
   BOT.command :eraserhead do |event|
+    next unless event.user.id.host?
     event.channel.delete
   end
 
