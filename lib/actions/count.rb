@@ -24,5 +24,6 @@ class Sunny
 
     event.message.delete
     CouncilCountJob.enqueue(Council.find_by(channel_id: event.channel.id), job_options: { run_at: Time.now })
+    return
   end
 end
