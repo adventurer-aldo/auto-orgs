@@ -23,7 +23,7 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     event.message.delete
-    CouncilCountJob.enqueue(Council.find_by(channel_id: event.channel.id), job_options: { run_at: Time.now })
+    CouncilCountJob.enqueue(Council.find_by(channel_id: event.channel.id).id, job_options: { run_at: Time.now })
     return
   end
 end
