@@ -2,7 +2,7 @@ class Sunny
 
   BOT.command :eraserhead do |event|
     next unless event.user.id.host?
-    event.channel.delete
+    Search.all.update(last_search_time: 1)
   end
 
   def self.get_user_circular_avatar(user_id)
