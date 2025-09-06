@@ -25,14 +25,14 @@ end
   tabi: ENV['SIX']
 }
 
-@tokens.keys.each do |key|
-  bot = Discordrb::Commands::CommandBot.new token: @tokens[key], prefix: '?'
-  
-  bot.ready do |event|
-    bot.game = "Alvivor S3: Spirits & Souls"
-  end
+bot = Discordrb::Commands::CommandBot.new token: @tokens[ENV['CHOSEN']], prefix: '?'
 
-  bot.run true
+bot.ready do |event|
+  bot.dnd
 end
 
+bot.dm do |event|
+end
+
+bot.run false
 # Beowulf.run
