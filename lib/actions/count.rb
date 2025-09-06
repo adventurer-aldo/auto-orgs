@@ -22,6 +22,7 @@ class Sunny
   BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
     break unless HOSTS.include? event.user.id
 
+    event.message.delete
     CouncilCountJob.enqueue(Council.find_by(channel_id: event.channel.id), job_options: { run_at: Time.now })
   end
 end
