@@ -1,0 +1,12 @@
+class Sunny
+  class HuntJob < Que::Job
+    self.run_at = proc { Time.now + 1 * 60 * 60 } # 10 minutes from now
+
+    def run
+      # Call your results reveal/update method
+      Sunny.reveal_results_and_update if Challenges::Individual.where(start_time: nil).where.not(stage: 0).exists?
+
+      destroy
+    end
+  end
+end

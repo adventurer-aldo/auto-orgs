@@ -1,8 +1,8 @@
 class Sunny
-  RESULT_CHANNEL_ID = 1382465046692761800
+  RESULT_CHANNEL_ID = 1413444293632331776
 
   BOT.message do |event|
-    break #unless event.user.id.player?
+    break unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
     indiv = Challenges::Individual.find_by(player_id: player.id)
@@ -155,10 +155,10 @@ class Sunny
 
     # Heart emojis by tribe name
     hearts_by_tribe = {
-      "orca" => "💙",
+      "maga" => "💙",
       "panthera" => "💛",
-      "serpentes" => "💜",
-      "falco" => "❤️"
+      "venassor" => "💚",
+      "iterum" => "❤️"
     }
 
     # Send HP embed
@@ -181,7 +181,7 @@ class Sunny
     living = Challenges::Individual.where.not(stage: 0).map { |individual| BOT.user(individual.player.user_id).mention }
     channel.send_message(living.join(" "))
     Que.clear!
-    TestJob.enqueue if alive.size > 1
-    channel.send_message("Results at <t:#{(Time.now.utc + 1 * 60).to_i}:t>") if alive.size > 1
+    HuntJob.enqueue if alive.size > 1
+    channel.send_message("Results at <t:#{(Time.now.utc + 3 * 60 * 60).to_i}:t>") if alive.size > 1
   end
 end
