@@ -2,7 +2,7 @@ class Sunny
   RESULT_CHANNEL_ID = 1413444293632331776
 
   BOT.message do |event|
-    break unless event.user.id.player?
+    break # unless event.user.id.player?
     player = Player.find_by(user_id: event.user.id)
 
     indiv = Challenges::Individual.find_by(player_id: player.id)
