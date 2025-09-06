@@ -32,7 +32,7 @@ end
     bot.game = "Alvivor S3: Spirits & Souls"
   end
 
-  bot.run false
+  bot.run true
 end
 
 # Beowulf.run
