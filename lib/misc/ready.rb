@@ -5,6 +5,6 @@ class Sunny
     make_item_commands
 
     # Add Ons
-   HuntJob.enqueue()
+   # HuntJob.enqueue()
   end
 end
