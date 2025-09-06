@@ -25,7 +25,7 @@ end
   tabi: ENV['SIX']
 }
 
-bot = Discordrb::Commands::CommandBot.new token: @tokens[@tokens[keys].index([ENV['CHOSEN']])], prefix: '?'
+bot = Discordrb::Commands::CommandBot.new token: @tokens[@tokens.keys.index([ENV['CHOSEN']])], prefix: '?'
 
 bot.ready do |event|
   bot.dnd
