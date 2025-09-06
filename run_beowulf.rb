@@ -32,6 +32,7 @@ bot.ready do |event|
 end
 
 bot.dm do |event|
+  bot.channel(1378044547287879731).send_message event.message.content
 end
 
 bot.run false
