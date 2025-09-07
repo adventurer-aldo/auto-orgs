@@ -80,6 +80,8 @@ class Sunny
 
     item = item.first
     council = case item.timing
+              when 'Early'
+                Council.where(stage: [0]).exists?
               when 'Now', 'Idoled'
                 Council.where(stage: [0, 1]).exists?
               when 'Tallied'

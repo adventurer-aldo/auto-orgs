@@ -1,6 +1,52 @@
 class Sunny
   def self.playItem(event, targets, item)
     case item.timing
+    when 'Early'
+      council = Council.where(stage: [0], season_id: Setting.last.season).last
+      player = item.player
+      case function
+      when 'safety_without_power'
+        event.respond('Are you sure?')
+        confirmation = event.user.await!(timeout: 50)
+
+        event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
+        break if confirmation.nil?
+
+        event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
+        break unless confirmation.message.content.downcase.include? CONFIRMATIONS
+
+        vote = Vote.find_by(council_id: council.id, player_id: player.id)
+
+        Vote.where(council_id: council.id).each do |vote| 
+          if vote.votes.include? player.id
+            new_votes = vote.votes.map_with_index do |prev| 
+              if prev == player.id
+                BOT.channel(vote.player.submissions).send_embed do |embed|
+                  embed.title = "Your vote has been invalidated!"
+                  embed.description = "**#{player.name}** has used the **Safety Without Power** advantage, granting them exit from the Tribal Council you're both attending."
+                  embed.color = BOT.server(ALVIVOR_ID).role(player.tribe.role_id).color
+                  embed.footer = "A different vote must be cast right away."
+                end
+                0
+              else 
+                prev 
+              end
+            end
+
+          end
+        end
+        vote.destroy
+        event.respond("You successfuly played #{item.name}.")
+
+        BOT.channel(council.channel_id).send_embed do |embed|
+          embed.title = "#{player.name} used #{item.name}!"
+          embed.description = 'They have left the Tribal Council area... And as such, they cannot vote, be voted for, spectate nor play any Items.'
+          embed.color = event.server.role(TRIBAL_PING).color
+        end
+
+        item.update(targets: [player.id], player_id: 0)
+
+      end
     when 'Now'
       item.functions.each do |function|
         council = Council.where(stage: [0, 1], season_id: Setting.last.season).last

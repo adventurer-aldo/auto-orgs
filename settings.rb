@@ -62,6 +62,7 @@ class Sunny
       pet_food
       extra_vote
       swap_idol
+      safety_without_power
   ]
 
   # MISC
