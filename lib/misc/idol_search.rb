@@ -22,7 +22,7 @@ class Sunny
     x = letter.ord - 'a'.ord + 1
     y = num
 
-    player = Player.find_by(user_id: event.user.id)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
 
     last_search_time = player.searches.maximum(:last_search_time)
     now = Time.now.to_i
