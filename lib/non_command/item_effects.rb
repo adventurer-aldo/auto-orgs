@@ -10,10 +10,10 @@ class Sunny
         confirmation = event.user.await!(timeout: 50)
 
         event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
-        break if confirmation.nil?
+        next if confirmation.nil?
 
         event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
-        break unless confirmation.message.content.downcase.include? CONFIRMATIONS
+        next unless confirmation.message.content.downcase.include? CONFIRMATIONS
 
         vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
