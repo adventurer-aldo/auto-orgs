@@ -5,7 +5,7 @@ class Sunny
     make_item_commands
 
     # Add Ons
-   hayden = Player.find_by(user_id: 198321560153489408, season_id: 2)
-   Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
+   # hayden = Player.find_by(user_id: 198321560153489408, season_id: 2)
+   # Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
   end
 end
