@@ -66,6 +66,8 @@ class Sunny
 
         players.each do |player|
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
+          BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
+          BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
         end
 
         return "And that's about it. Go meet your new tribemates!"
@@ -145,6 +147,8 @@ class Sunny
         players.each do |player|
           player.update(tribe_id: Tribe.where(season: Setting.last.season, role_id: tribes[0].id).last.id)
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
+          BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
+          BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
           event.channel.start_typing
           sleep(3)
           event.respond format(@cheers.sample, BOT.user(player.user_id).mention)
