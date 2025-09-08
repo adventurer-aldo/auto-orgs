@@ -5,13 +5,15 @@ class Sunny
   BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
     break unless HOSTS.include? event.user.id
 
-    event.respond "What is the type?\n**Now | Tallied | Idoled | Super**"
+    event.respond "What is the type?\n**Early | Now | Tallied | Idoled | Super**"
     type = event.user.await!(timeout: 40).message.content.downcase
 
     event.respond("That's not immediate or queue...") unless %w[n i t s].include? type
-    break unless %w[n i t s].include? type
+    break unless %w[e n i t s].include? type
 
     case type
+    when 'e'
+      type = 'Early'
     when 'n'
       type = 'Now'
     when 't'
