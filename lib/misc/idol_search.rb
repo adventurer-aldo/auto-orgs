@@ -2,10 +2,22 @@ class Sunny
   # Hardcoded events mapping names to list of coordinates
   EVENTS = {
     idan_vote: [
-      [9, 4],  # I4
+      [9, 4]  # I4
     ],
     isaiah_vote: [
-      [9, 6],  # I6
+      [9, 6]  # I6
+    ],
+    tabi_safety_without_power: [
+      [6, 7]  # F7
+    ],
+    emerald_idol: [
+      [1, 6]  # A6
+    ],
+    jayden_steal: [
+      [10, 5]  # J5
+    ],
+    lynn_block: [
+      [11, 9]  # K9
     ]
   }
 
@@ -71,6 +83,14 @@ class Sunny
         event.respond("Idan was still among us. You can claim his remaining legacy with the command `!idan_among_us`")
       when :isaiah_vote
         event.respond("Isaiah hasn't left us. He was reborn anew. You can see him once again with the command `!new_isaiah`")
+      when :lynn_block
+        event.respond("Lynn wished she could control the votes, or even block one of them so that she could still roam free... You can avoid having the same regret, with the command `!lynn_block`")
+      when :jayden_steal
+        event.respond("Our goodbye to this world does not always warn itself, as was the case with Stew. Perhaps if you were a bit more egotistical, you could control your fate and avoid the same destiny, with the command `!stew_steal`")
+      when :emerald_idol
+        event.respond("Emerald's parting words were \"I'll be back\"... Do you wish for Emerald's return? Then use the command `!emerald_returns`")
+      when :tabi_safety_without_power
+        event.respond("Tabi left us in the middle of **Iterum** tribe's Tribal Council. But alas, Tabi didn't return. The same power is available to you, so long as you return to us, with the command `!tabi_exits`")
       end
     else
       event.respond("Nothing at #{letter.upcase}#{y}.")
