@@ -9,3 +9,5 @@ It's a bird! It's a plane! No, it's just %s.
 It's time to lock in, %s.
 Your whole life led up to this moment, %s.
 Your ancestors are counting on you to win Alvivor, %s.
+Was it luck that got you here, %s?
+%s's new arc begins now.
