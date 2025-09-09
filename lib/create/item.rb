@@ -3,7 +3,7 @@ class Sunny
   # > Council
 
   BOT.command :get_items do |event|
-    Item.all.map { |item|  "#{item.name}, owned by #{[0, nil].include?(item.player_id) ? 'no one' : item.player.name } — Code: `#{item.code}`"}
+    Item.all.map { |item|  "#{item.name}, owned by #{[0, nil].include?(item.player_id) ? 'no one' : item.player.name } in Season #{item.season_id} — Code: `#{item.code}`"}.join("\n")
   end
 
   BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
