@@ -1,6 +1,6 @@
 class Sunny
   BOT.command(:coinflip, description: 'Randomly get Heads or Tails.') do |event|
-    event.respond("**#{['Heads!', 'Tails!'].sample}**")
+    event.respond("**#{['Heads!', 'Tails!'][0]}**")
   end
 
   BOT.command(:random, description: "Picks an item within a list separated by spaces.") do |event, *args|
