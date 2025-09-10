@@ -48,6 +48,7 @@ class Sunny
   end
 
   BOT.command :fibb do |event|
+    break unless event.user.id.host?
     chan = event.channel
     view = Discordrb::Webhooks::View.new
     view.row do |row|
