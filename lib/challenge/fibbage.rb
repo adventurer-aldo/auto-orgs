@@ -22,7 +22,7 @@ class Sunny
     view.row do |row|
       row.string_select(custom_id: "FirstQuestion", options: @fibbs[1].map { |fibb| { label: fibb, value: fibb } })
     end
-    event.channel.send_message("**1st Question:**\nBen and Jerry only started making ice cream because it was too expensive to make __\_\_\_\_\_.", false, nil, nil, nil, nil, view)
+    event.channel.send_message("**1st Question:**\nBen and Jerry only started making ice cream because it was too expensive to make __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
   end
 
 end
