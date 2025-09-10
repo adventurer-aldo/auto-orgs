@@ -10,12 +10,40 @@ class Sunny
   7 => ["Social Credit points", "birds", "horses", "ducks", "donkeys"],
   8 => ["Sit alone in the shower thinking", "Sleep", "traumatized", "goon", "watch a baby cry"],
   9 => ["DNA", "at home technology", "braind", "a hot tub", "bugs"],
-  10 => ["The Fallen Ice King", "Laughing Man", "The Ghostbusters", "The Bad Guy", "The Panty Snatcher"],
+  10 => ["Fallen Ice King", "Laughing Man", "Ghostbusters", "Bad Guy", "Panty Snatcher"],
   11 => ["Breaking and entering", "absinthe", "pickles", "drugs", "magic mushrooms"],
   12 => ["Celiochromatysis syrup", "iced tea", "sunscreen", "Vaseline", "Flavored poop"],
   13 => ["Bass clef", "phone", "perfect pitch", "Baby Shark", "G6"]
 }
 
+  @id_map = {
+    "FirstQuestion"      => 1,
+    "SecondQuestion"     => 2,
+    "ThirdQuestion"      => 3,
+    "FourthQuestion"     => 4,
+    "FifthQuestion"      => 5,
+    "SixthQuestion"      => 6,
+    "SeventhQuestion"    => 7,
+    "EighthQuestion"     => 8,
+    "NinthQuestion"      => 9,
+    "TenthQuestion"      => 10,
+    "EleventhQuestion"   => 11,
+    "TwelfthQuestion"    => 12,
+    "ThirteenthQuestion" => 13
+  }
+
+  @id_map.keys.each do |key|
+    BOT.string_select(custom_id: key) do |event|
+      break unless event.user.id.player?
+      player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
+      q_no = @id_map[key]
+      BOT.channel(HOST_CHAT).send_message("**#{player.name}** chose **#{event.values.first}** for Question No. #{q_no}")
+      BOT.channel(player.submissions).send_message("You chose **#{event.values.first}** for Question No. #{q_no}")
+
+      Challenges::Fibbage.find_or_create_by(player_id: player.id, question_no: q_no)
+                        .update(value: event.values.first)
+    end
+  end
 
   BOT.command :fibb do |event|
     chan = event.channel
