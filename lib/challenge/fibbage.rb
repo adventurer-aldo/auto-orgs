@@ -34,6 +34,8 @@ class Sunny
 
   @id_map.keys.each do |key|
     BOT.string_select(custom_id: key) do |event|
+      event.defer_update
+
       break unless event.user.id.player?
       player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
       q_no = @id_map[key]
