@@ -17,19 +17,19 @@ class Sunny
 }
 
   @questions = [
-  "Ben and Jerry only started making ice cream because it was too expensive to make __\\_\\_\\_\\_\\_.",
-  "In 2012, a teenager from Weslaco, Texas claimed the reason he stabbed his friend was because a __\\_\\_\\_\\_\\_ made him do it.",
-  "A science student in Nepal has created an innovative solar panel that is far cheaper to make than a traditional solar panel, because it's made with __\\_\\_\\_\\_\\_.",
-  "According to Forbes, the average income for an “ice cream taster” is $__\\_\\_\\_\\_\\_ a year.",
-  "According to a University of Jena study, the people who have the most memorable faces are __\\_\\_\\_\\_\\_ people.",
-  "*Psycho* was the first American movie to show a __\\_\\_\\_\\_\\_.",
-  "Instead of having guard dogs, police in rural parts of China's Xinjiang Province use __\\_\\_\\_\\_\\_.",
-  "According to a University of Barcelona study, surprisingly, 5% of people have absolutely no emotional response when they __\\_\\_\\_\\_\\_.",
-  "The Backyard Brains company sells a device that lets you control __\\_\\_\\_\\_\\_ with your mobile phone.",
-  "During the mid to late-nineties, the town of Glastonbury was on a manhunt for the odd house intruder known as “The __\\_\\_\\_\\_\\_.”",
-  "For a story he was reporting on in 1955, Dan Rather tried __\\_\\_\\_\\_\\_ for the first time.",
-  "Although gross, chemist Sir Robert Cheseborough claimed he ate a spoonful of his invention, __\\_\\_\\_\\_\\_, every day.",
-  "CELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a __\\_\\_\\_\\_\\_ is.”"
+  "Ben and Jerry only started making ice cream because it was too expensive to make ﹍﹍﹍﹍﹍﹍.",
+  "In 2012, a teenager from Weslaco, Texas claimed the reason he stabbed his friend was because a ﹍﹍﹍﹍﹍﹍ made him do it.",
+  "A science student in Nepal has created an innovative solar panel that is far cheaper to make than a traditional solar panel, because it's made with ﹍﹍﹍﹍﹍﹍.",
+  "According to Forbes, the average income for an “ice cream taster” is $﹍﹍﹍﹍﹍﹍ a year.",
+  "According to a University of Jena study, the people who have the most memorable faces are ﹍﹍﹍﹍﹍﹍ people.",
+  "*Psycho* was the first American movie to show a ﹍﹍﹍﹍﹍﹍.",
+  "Instead of having guard dogs, police in rural parts of China's Xinjiang Province use ﹍﹍﹍﹍﹍﹍.",
+  "According to a University of Barcelona study, surprisingly, 5% of people have absolutely no emotional response when they ﹍﹍﹍﹍﹍﹍.",
+  "The Backyard Brains company sells a device that lets you control ﹍﹍﹍﹍﹍﹍ with your mobile phone.",
+  "During the mid to late-nineties, the town of Glastonbury was on a manhunt for the odd house intruder known as “The ﹍﹍﹍﹍﹍﹍.”",
+  "For a story he was reporting on in 1955, Dan Rather tried ﹍﹍﹍﹍﹍﹍ for the first time.",
+  "Although gross, chemist Sir Robert Cheseborough claimed he ate a spoonful of his invention, ﹍﹍﹍﹍﹍﹍, every day.",
+  "CELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a ﹍﹍﹍﹍﹍﹍ is.”"
 ]
 
 
@@ -76,79 +76,79 @@ class Sunny
     view.row do |row|
       row.string_select(custom_id: "FirstQuestion", options: @fibbs[1].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**1st Question:**\nBen and Jerry only started making ice cream because it was too expensive to make __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
+    chan.send_message("**1st Question:**\nBen and Jerry only started making ice cream because it was too expensive to make ﹍﹍﹍﹍﹍﹍.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "SecondQuestion", options: @fibbs[2].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**2nd Question:**\nIn 2012, a teenager from Weslaco, Texas claimed the reason he stabbed his friend was because a __\\_\\_\\_\\_\\_ made him do it.", false, nil, nil, nil, nil, view)
+    chan.send_message("**2nd Question:**\nIn 2012, a teenager from Weslaco, Texas claimed the reason he stabbed his friend was because a ﹍﹍﹍﹍﹍﹍ made him do it.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "ThirdQuestion", options: @fibbs[3].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**3rd Question:**\nA science student in Nepal has created an innovative solar panel that is far cheaper to make than a traditional solar panel, because it’s made with __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
+    chan.send_message("**3rd Question:**\nA science student in Nepal has created an innovative solar panel that is far cheaper to make than a traditional solar panel, because it’s made with ﹍﹍﹍﹍﹍﹍.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "FourthQuestion", options: @fibbs[4].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**4th Question:**\nAccording to Forbes, the average income for an “ice cream taster” is $__\_\_\_\_\_ a year.", false, nil, nil, nil, nil, view)
+    chan.send_message("**4th Question:**\nAccording to Forbes, the average income for an “ice cream taster” is $﹍﹍﹍﹍﹍﹍ a year.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "FifthQuestion", options: @fibbs[5].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**5th Question:**\nAccording to a University of Jena study, the people who have the most memorable faces are __\\_\\_\\_\\_\\_ people.", false, nil, nil, nil, nil, view)
+    chan.send_message("**5th Question:**\nAccording to a University of Jena study, the people who have the most memorable faces are ﹍﹍﹍﹍﹍﹍ people.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "SixthQuestion", options: @fibbs[6].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**6th Question:**\n*Psycho* was the first American movie to show a __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
+    chan.send_message("**6th Question:**\n*Psycho* was the first American movie to show a ﹍﹍﹍﹍﹍﹍.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "SeventhQuestion", options: @fibbs[7].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**7th Question:**\nInstead of having guard dogs, police in rural parts of China’s Xinjiang Province use __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
+    chan.send_message("**7th Question:**\nInstead of having guard dogs, police in rural parts of China’s Xinjiang Province use ﹍﹍﹍﹍﹍﹍.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "EighthQuestion", options: @fibbs[8].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**8th Question:**\nAccording to a University of Barcelona study, surprisingly, 5% of people have absolutely no emotional response when they __\\_\\_\\_\\_\\_.", false, nil, nil, nil, nil, view)
+    chan.send_message("**8th Question:**\nAccording to a University of Barcelona study, surprisingly, 5% of people have absolutely no emotional response when they ﹍﹍﹍﹍﹍﹍.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "NinthQuestion", options: @fibbs[9].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**9th Question:**\nThe Backyard Brains company sells a device that lets you control __\\_\\_\\_\\_\\_ with your mobile phone.", false, nil, nil, nil, nil, view)
+    chan.send_message("**9th Question:**\nThe Backyard Brains company sells a device that lets you control ﹍﹍﹍﹍﹍﹍ with your mobile phone.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "TenthQuestion", options: @fibbs[10].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**10th Question:**\nDuring the mid to late-nineties, the town of Glastonbury was on a manhunt for the odd house intruder known as “The __\\_\\_\\_\\_\\_.”", false, nil, nil, nil, nil, view)
+    chan.send_message("**10th Question:**\nDuring the mid to late-nineties, the town of Glastonbury was on a manhunt for the odd house intruder known as “The ﹍﹍﹍﹍﹍﹍.”", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "EleventhQuestion", options: @fibbs[11].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**11th Question:**\nFor a story he was reporting on in 1955, Dan Rather tried __\\_\\_\\_\\_\\_ for the first time.", false, nil, nil, nil, nil, view)
+    chan.send_message("**11th Question:**\nFor a story he was reporting on in 1955, Dan Rather tried ﹍﹍﹍﹍﹍﹍ for the first time.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "TwelfthQuestion", options: @fibbs[12].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**12th Question:**\nAlthough gross, chemist Sir Robert Cheseborough claimed he ate a spoonful of his invention, __\\_\\_\\_\\_\\_, every day.", false, nil, nil, nil, nil, view)
+    chan.send_message("**12th Question:**\nAlthough gross, chemist Sir Robert Cheseborough claimed he ate a spoonful of his invention, ﹍﹍﹍﹍﹍﹍, every day.", false, nil, nil, nil, nil, view)
 
     view = Discordrb::Webhooks::View.new
     view.row do |row|
       row.string_select(custom_id: "ThirteenthQuestion", options: @fibbs[13].map { |fibb| { label: fibb, value: fibb } })
     end
-    chan.send_message("**13th Question:**\nCELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a __\\_\\_\\_\\_\\_ is.”", false, nil, nil, nil, nil, view)
+    chan.send_message("**13th Question:**\nCELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a ﹍﹍﹍﹍﹍﹍ is.”", false, nil, nil, nil, nil, view)
   end
 
 end
