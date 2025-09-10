@@ -1,19 +1,19 @@
 class Sunny
 
   @fibbs = {
-  1 => ["Twunks", "Butter", "Bagels", "Hot Dogs", "Lemonade"],
-  2 => ["Ghost named Idan", "Overdose on bath salts", "Demon", "evil spirit", "Discord Admin"],
-  3 => ["The skin of fallen enemies", "artificial intelligence", "Hair", "Wood", "recycled video game consoles"],
-  4 => ["100,000", "35,000", "50,000", "6,700", "65,160"],
+  1 => ["twunks", "butter", "bagels", "hot dogs", "lemonade"],
+  2 => ["ghost named Idan", "overdose on bath salts", "demon", "evil spirit", "discord Admin", "Ouija board"],
+  3 => ["the skin of fallen enemies", "artificial intelligence", "hair", "Wood", "recycled video game consoles", "human hair"],
+  4 => ["100,000", "35,000", "50,000", "6,700", "65,160", "56,000"],
   5 => ["the dumbest", "alien", "attractive", "left-handed children", "ugly"],
-  6 => ["Unclothed", "bathroom", "death", "partial nudity", "shower scene"],
-  7 => ["Social Credit points", "birds", "horses", "ducks", "donkeys"],
-  8 => ["Sit alone in the shower thinking", "Sleep", "traumatized", "goon", "watch a baby cry"],
-  9 => ["DNA", "at home technology", "braind", "a hot tub", "bugs"],
-  10 => ["Fallen Ice King", "Laughing Man", "Ghostbusters", "Bad Guy", "Panty Snatcher"],
-  11 => ["Breaking and entering", "absinthe", "pickles", "drugs", "magic mushrooms"],
-  12 => ["Celiochromatysis syrup", "iced tea", "sunscreen", "Vaseline", "Flavored poop"],
-  13 => ["Bass clef", "phone", "perfect pitch", "Baby Shark", "G6"]
+  6 => ["unclothed", "bathroom", "death", "partial nudity", "shower scene", "toilet flushing"],
+  7 => ["Social Credit points", "birds", "horses", "ducks", "donkeys", "geese"],
+  8 => ["sit alone in the shower thinking", "sleep", "traumatized", "goon", "watch a baby cry", "listen to music"],
+  9 => ["DNA", "at home technology", "braind", "a hot tub", "bugs", "cockroaches"],
+  10 => ["Fallen Ice King", "Laughing Man", "Ghostbusters", "Bad Guy", "Panty Snatcher", "Tickler"],
+  11 => ["Breaking and entering", "absinthe", "pickles", "drugs", "magic mushrooms", "heroin"],
+  12 => ["Celiochromatysis syrup", "iced tea", "sunscreen", "vaseline", "flavored poop"],
+  13 => ["bass clef", "phone", "perfect pitch", "Baby Shark", "G6", "baby shower"]
 }
 
   @id_map = {
