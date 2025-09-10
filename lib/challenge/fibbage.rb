@@ -58,14 +58,14 @@ class Sunny
       q_no = @id_map[key]
       BOT.channel(HOST_CHAT).send_message("**#{player.name}** chose **#{event.values.first}** for Question No. #{q_no}")
       BOT.channel(player.submissions).send_message("You chose **#{event.values.first}** for Question No. #{q_no}")
+      Challenges::Fibbage.find_or_create_by(player_id: player.id, question_no: q_no)
+                        .update(value: event.values.first)
       BOT.channel(player.submissions).send_embed do |embed|
         embed.title = "List of your answers"
         embed.description = player.fibbages.order(question_no: :asc).map { |fibb| "**#{fibb.question_no}.** #{@questions[fibb.question_no - 1]}\n**Answer:** #{fibb.value}" }.join("\n\n")
         embed.color = event.user.on(ALVIVOR_ID).color
       end
 
-      Challenges::Fibbage.find_or_create_by(player_id: player.id, question_no: q_no)
-                        .update(value: event.values.first)
     end
   end
 
