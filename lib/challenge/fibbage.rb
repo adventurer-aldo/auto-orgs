@@ -16,6 +16,23 @@ class Sunny
   13 => ["bass clef", "phone", "perfect pitch", "Baby Shark", "G6", "baby shower"]
 }
 
+  @questions = [
+  "Ben and Jerry only started making ice cream because it was too expensive to make __\\_\\_\\_\\_\\_.",
+  "In 2012, a teenager from Weslaco, Texas claimed the reason he stabbed his friend was because a __\\_\\_\\_\\_\\_ made him do it.",
+  "A science student in Nepal has created an innovative solar panel that is far cheaper to make than a traditional solar panel, because it's made with __\\_\\_\\_\\_\\_.",
+  "According to Forbes, the average income for an “ice cream taster” is $__\\_\\_\\_\\_\\_ a year.",
+  "According to a University of Jena study, the people who have the most memorable faces are __\\_\\_\\_\\_\\_ people.",
+  "*Psycho* was the first American movie to show a __\\_\\_\\_\\_\\_.",
+  "Instead of having guard dogs, police in rural parts of China's Xinjiang Province use __\\_\\_\\_\\_\\_.",
+  "According to a University of Barcelona study, surprisingly, 5% of people have absolutely no emotional response when they __\\_\\_\\_\\_\\_.",
+  "The Backyard Brains company sells a device that lets you control __\\_\\_\\_\\_\\_ with your mobile phone.",
+  "During the mid to late-nineties, the town of Glastonbury was on a manhunt for the odd house intruder known as “The __\\_\\_\\_\\_\\_.”",
+  "For a story he was reporting on in 1955, Dan Rather tried __\\_\\_\\_\\_\\_ for the first time.",
+  "Although gross, chemist Sir Robert Cheseborough claimed he ate a spoonful of his invention, __\\_\\_\\_\\_\\_, every day.",
+  "CELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a __\\_\\_\\_\\_\\_ is.”"
+]
+
+
   @id_map = {
     "FirstQuestion"      => 1,
     "SecondQuestion"     => 2,
@@ -41,6 +58,11 @@ class Sunny
       q_no = @id_map[key]
       BOT.channel(HOST_CHAT).send_message("**#{player.name}** chose **#{event.values.first}** for Question No. #{q_no}")
       BOT.channel(player.submissions).send_message("You chose **#{event.values.first}** for Question No. #{q_no}")
+      BOT.channel(player.submissions).send_embed do |embed|
+        embed.title = "List of your answers"
+        embed.description = player.fibbages.order(question_no: :asc).map { |fibb| "**#{fibb.question_no}.** #{@questions[fibb.question_no - 1]}\n**Answer:** #{fibb.value}" }.join("\n\n")
+        embed.color = event.user.on(ALVIVOR_ID).color
+      end
 
       Challenges::Fibbage.find_or_create_by(player_id: player.id, question_no: q_no)
                         .update(value: event.values.first)
