@@ -313,6 +313,7 @@ class Sunny
       delayed_respond(event, "#{name}: #{score}")
     end
   end
+  return
 end
 
 end
