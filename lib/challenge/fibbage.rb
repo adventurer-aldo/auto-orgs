@@ -256,27 +256,26 @@ class Sunny
   # scoreboard
   points = Hash.new(0)
 
+  # helper for typing + response
+  def delayed_respond(event, msg)
+    event.channel.start_typing
+    sleep([msg.length * 0.05, 1].max) # at least 1 second, longer if msg is longer
+    event.respond msg
+  end
+
   (1..13).each do |q_no|
     tries = Challenges::Fibbage.where(question_no: q_no).to_a
 
-    # typing effect
-    event.channel.start_typing
-    sleep(3)
-
-    # announce question
-    event.respond "."
-    event.respond "**Question #{q_no}:**"
-    event.respond "👉 #{@questions[q_no - 1]}"
+    delayed_respond(event, ".")
+    delayed_respond(event, "**Question #{q_no}:**")
+    delayed_respond(event, "👉 #{@questions[q_no - 1]}")
 
     if tries.empty?
-      event.respond "No submissions or guesses for this question."
+      delayed_respond(event, "No submissions or guesses for this question.")
       next
     end
 
-    # group answers
     grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
-
-    # fibs first, correct answer last
     correct_key = real_answers[q_no].downcase
     ordered = grouped.partition { |val, _| val != correct_key }
     fibs = ordered[0]
@@ -286,39 +285,40 @@ class Sunny
       display_value = attempts.first.value.to_s
       names = attempts.map { |t| t.player.name }.join(", ")
 
-      event.respond "."
-      event.respond "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})"
+      delayed_respond(event, ".")
+      delayed_respond(event, "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})")
 
       if val_key == correct_key
         attempts.each do |t|
           points[t.player.name] += 1000
-          event.respond "**CORRECT!** +1000 points for #{t.player.name}"
+          delayed_respond(event, "**CORRECT!** +1000 points for #{t.player.name}")
         end
+        delayed_respond(event, "✅ The real answer was: **#{real_answers[q_no]}**")
       else
         liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
         if liar_entry
           liar_name = liar_entry[:author]
           points[liar_name] += 500
-          event.respond "❌ WRONG! It was #{liar_name}'s lie!"
-          event.respond "#{liar_name} gets +500 points"
+          delayed_respond(event, "❌ WRONG! It was #{liar_name}'s lie!")
+          delayed_respond(event, "#{liar_name} gets +500 points")
         else
-          event.respond "❌ Wrong answer — but no liar matched for \"#{display_value}\""
+          delayed_respond(event, "❌ Wrong answer — but no liar matched for \"#{display_value}\"")
         end
       end
     end
 
-    # round scoreboard
-    event.respond "."
-    event.respond "📊 Current Scores:"
+    delayed_respond(event, ".")
+    delayed_respond(event, "📊 Current Scores:")
     points.sort_by { |_name, score| -score }.each do |name, score|
-      event.respond "#{name}: #{score}"
+      delayed_respond(event, "#{name}: #{score}")
     end
   end
 
-  # final scoreboard
-  event.respond "."
-  event.respond "🏆 Final Scores:"
-  points.sort_by { |_name, score| -score }.each { |name, score| event.respond "#{name}: #{score}" }
+  delayed_respond(event, ".")
+  delayed_respond(event, "🏆 Final Scores:")
+  points.sort_by { |_name, score| -score }.each do |name, score|
+    delayed_respond(event, "#{name}: #{score}")
+  end
 end
 
 end
