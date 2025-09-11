@@ -249,72 +249,127 @@ class Sunny
     sleep([msg.length * 0.05, 1].max) # at least 1 second, longer if msg is longer
     event.respond msg
   end
-  BOT.command :results do |event|
-    break unless event.user.id.host?
-  # real answers
-  real_answers = {
-    1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
-    5 => "ugly", 6 => "toilet flushing", 7 => "geese", 8 => "listen to music",
-    9 => "cockroaches", 10 => "Tickler", 11 => "heroin", 12 => "vaseline",
-    13 => "baby shower"
-  }
+    BOT.command :results do |event|
+      break unless event.user.id.host?
+    # real answers
+    real_answers = {
+      1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
+      5 => "ugly", 6 => "toilet flushing", 7 => "geese", 8 => "listen to music",
+      9 => "cockroaches", 10 => "Tickler", 11 => "heroin", 12 => "vaseline",
+      13 => "baby shower"
+    }
 
-  # scoreboard
-  points = Hash.new(0)
+    # scoreboard
+    points = Hash.new(0)
 
-  # helper for typing + response
+    # helper for typing + response
 
-  (1..13).each do |q_no|
-    tries = Challenges::Fibbage.where(question_no: q_no).to_a
-
-    delayed_respond(event, ".")
-    delayed_respond(event, "**Question #{q_no}:**")
-    delayed_respond(event, "👉 #{@questions[q_no - 1]}")
-
-    if tries.empty?
-      delayed_respond(event, "No submissions or guesses for this question.")
-      next
-    end
-
-    grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
-    correct_key = real_answers[q_no].downcase
-    ordered = grouped.partition { |val, _| val != correct_key }
-    fibs = ordered[0]
-    correct = ordered[1]
-
-    (fibs + correct).each do |val_key, attempts|
-      display_value = attempts.first.value.to_s
-      names = attempts.map { |t| t.player.name }.join(", ")
+    (1..13).each do |q_no|
+      tries = Challenges::Fibbage.where(question_no: q_no).to_a
 
       delayed_respond(event, ".")
-      delayed_respond(event, "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})")
+      delayed_respond(event, "**Question #{q_no}:**")
+      delayed_respond(event, "👉 #{@questions[q_no - 1]}")
 
-      if val_key == correct_key
-        attempts.each do |t|
-          points[t.player.name] += 1000
-          delayed_respond(event, "**CORRECT!** +1000 points for #{t.player.name}")
-        end
-        delayed_respond(event, "✅ The real answer was: **#{real_answers[q_no]}**")
-      else
-        liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
-        if liar_entry
-          liar_name = liar_entry[:author]
-          points[liar_name] += 500
-          delayed_respond(event, "❌ WRONG! It was #{liar_name}'s lie!")
-          delayed_respond(event, "#{liar_name} gets +500 points")
+      if tries.empty?
+        delayed_respond(event, "No submissions or guesses for this question.")
+        next
+      end
+
+      grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
+      correct_key = real_answers[q_no].downcase
+      ordered = grouped.partition { |val, _| val != correct_key }
+      fibs = ordered[0]
+      correct = ordered[1]
+
+      (fibs + correct).each do |val_key, attempts|
+        display_value = attempts.first.value.to_s
+        names = attempts.map { |t| t.player.name }.join(", ")
+
+        delayed_respond(event, ".")
+        delayed_respond(event, "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})")
+
+        if val_key == correct_key
+          attempts.each do |t|
+            points[t.player.name] += 1000
+            delayed_respond(event, "**CORRECT!** +1000 points for #{t.player.name}")
+          end
+          delayed_respond(event, "✅ The real answer was: **#{real_answers[q_no]}**")
         else
-          delayed_respond(event, "❌ Wrong answer — but no liar matched for \"#{display_value}\"")
+          liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
+          if liar_entry
+            liar_name = liar_entry[:author]
+            points[liar_name] += 500 * attempts.size
+            delayed_respond(event, "❌ WRONG! It was #{liar_name}'s lie!")
+            delayed_respond(event, "#{liar_name} gets +500 points")
+          else
+            delayed_respond(event, "❌ Wrong answer — but no liar matched for \"#{display_value}\"")
+          end
+        end
+      end
+
+      delayed_respond(event, ".")
+      delayed_respond(event, "📊 Current Scores:")
+      points.sort_by { |_name, score| -score }.each do |name, score|
+        delayed_respond(event, "#{name}: #{score}")
+      end
+    end
+    return
+  end
+
+    BOT.command :real_results do |event|
+      break unless event.user.id.host?
+    # real answers
+    real_answers = {
+      1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
+      5 => "ugly", 6 => "toilet flushing", 7 => "geese", 8 => "listen to music",
+      9 => "cockroaches", 10 => "Tickler", 11 => "heroin", 12 => "vaseline",
+      13 => "baby shower"
+    }
+
+    # scoreboard
+    points = Hash.new(0)
+
+    # helper for typing + response
+
+    (1..13).each do |q_no|
+      tries = Challenges::Fibbage.where(question_no: q_no).to_a
+
+      if tries.empty?
+        next
+      end
+
+      grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
+      correct_key = real_answers[q_no].downcase
+      ordered = grouped.partition { |val, _| val != correct_key }
+      fibs = ordered[0]
+      correct = ordered[1]
+
+      (fibs + correct).each do |val_key, attempts|
+        display_value = attempts.first.value.to_s
+        names = attempts.map { |t| t.player.name }.join(", ")
+
+        if val_key == correct_key
+          attempts.each do |t|
+            points[t.player.name] += 1000
+          end
+        else
+          liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
+          if liar_entry
+            liar_name = liar_entry[:author]
+            points[liar_name] += 500 * attempts.size
+          else
+          end
+        end
+      end
+
+      if q_no == 13
+        event.respond("📊 Current Scores:")
+        points.sort_by { |_name, score| -score }.each do |name, score|
+          event.respond("#{name}: #{score}")
         end
       end
     end
-
-    delayed_respond(event, ".")
-    delayed_respond(event, "📊 Current Scores:")
-    points.sort_by { |_name, score| -score }.each do |name, score|
-      delayed_respond(event, "#{name}: #{score}")
-    end
+    return
   end
-  return
-end
-
 end
