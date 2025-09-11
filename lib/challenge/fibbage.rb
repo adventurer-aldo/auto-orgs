@@ -365,7 +365,7 @@ class Sunny
 
       if q_no == 13
         event.respond("📊 Current Scores:")
-        points.sort_by { |_name, score| -score }.each do |name, score|
+        points.sort_by { |_name, score| score }.each do |name, score|
           event.respond("#{name}: #{score}")
         end
       end
