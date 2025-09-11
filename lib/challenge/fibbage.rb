@@ -349,13 +349,13 @@ class Sunny
       ]
     }
 
-    # scoreboard (seed with known players + any players found in Challenge::Fibbage)
+    # scoreboard (seed with known players + any players found in Challenges::Fibbage)
     points = Hash.new(0)
     solved_fibbs.values.flatten.each { |h| points[h[:author]] ||= 0 }
-    Challenge::Fibbage.all.each { |f| points[f.player.name] ||= 0 }
+    Challenges::Fibbage.all.each { |f| points[f.player.name] ||= 0 }
 
     (1..13).each do |q_no|
-      tries = Challenge::Fibbage.where(question_no: q_no).to_a
+      tries = Challenges::Fibbage.where(question_no: q_no).to_a
       event.respond "Question ##{q_no}: #{@questions[q_no - 1]}"
 
       if tries.empty?
