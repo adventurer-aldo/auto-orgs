@@ -313,12 +313,6 @@ class Sunny
       delayed_respond(event, "#{name}: #{score}")
     end
   end
-
-  delayed_respond(event, ".")
-  delayed_respond(event, "🏆 Final Scores:")
-  points.sort_by { |_name, score| -score }.each do |name, score|
-    delayed_respond(event, "#{name}: #{score}")
-  end
 end
 
 end
