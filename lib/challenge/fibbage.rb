@@ -244,6 +244,11 @@ class Sunny
     end
     chan.send_message("**13th Question:**\nCELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a ﹍﹍﹍﹍﹍﹍ is.”", false, nil, nil, nil, nil, view)
   end
+  def self.delayed_respond(event, msg)
+    event.channel.start_typing
+    sleep([msg.length * 0.05, 1].max) # at least 1 second, longer if msg is longer
+    event.respond msg
+  end
   BOT.command :fibbtry do |event|
   # real answers
   real_answers = {
@@ -257,11 +262,6 @@ class Sunny
   points = Hash.new(0)
 
   # helper for typing + response
-  def delayed_respond(event, msg)
-    event.channel.start_typing
-    sleep([msg.length * 0.05, 1].max) # at least 1 second, longer if msg is longer
-    event.respond msg
-  end
 
   (1..13).each do |q_no|
     tries = Challenges::Fibbage.where(question_no: q_no).to_a
