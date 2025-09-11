@@ -250,6 +250,7 @@ class Sunny
     event.respond msg
   end
   BOT.command :fibbtry do |event|
+    break unless event.user.id.host?
   # real answers
   real_answers = {
     1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
