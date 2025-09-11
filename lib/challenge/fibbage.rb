@@ -244,73 +244,81 @@ class Sunny
     end
     chan.send_message("**13th Question:**\nCELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a ﹍﹍﹍﹍﹍﹍ is.”", false, nil, nil, nil, nil, view)
   end
-    BOT.command :fibbtry do |event|
-    # real answers
-    real_answers = {
-      1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
-      5 => "ugly", 6 => "toilet flushing", 7 => "geese", 8 => "listen to music",
-      9 => "cockroaches", 10 => "Tickler", 11 => "heroin", 12 => "vaseline",
-      13 => "baby shower"
-    }
+  BOT.command :fibbtry do |event|
+  # real answers
+  real_answers = {
+    1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
+    5 => "ugly", 6 => "toilet flushing", 7 => "geese", 8 => "listen to music",
+    9 => "cockroaches", 10 => "Tickler", 11 => "heroin", 12 => "vaseline",
+    13 => "baby shower"
+  }
 
-    # scoreboard
-    points = Hash.new(0)
+  # scoreboard
+  points = Hash.new(0)
 
-    (1..13).each do |q_no|
-      tries = Challenges::Fibbage.where(question_no: q_no).to_a
+  (1..13).each do |q_no|
+    tries = Challenges::Fibbage.where(question_no: q_no).to_a
 
-      # typing effect
-      event.channel.start_typing
-      sleep(3)
+    # typing effect
+    event.channel.start_typing
+    sleep(3)
 
-      # announce question
+    # announce question
+    event.respond "."
+    event.respond "**Question #{q_no}:**"
+    event.respond "👉 #{@questions[q_no - 1]}"
+
+    if tries.empty?
+      event.respond "No submissions or guesses for this question."
+      next
+    end
+
+    # group answers
+    grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
+
+    # fibs first, correct answer last
+    correct_key = real_answers[q_no].downcase
+    ordered = grouped.partition { |val, _| val != correct_key }
+    fibs = ordered[0]
+    correct = ordered[1]
+
+    (fibs + correct).each do |val_key, attempts|
+      display_value = attempts.first.value.to_s
+      names = attempts.map { |t| t.player.name }.join(", ")
+
       event.respond "."
-      event.respond "**Question #{q_no}:**"
-      event.respond "👉 #{@questions[q_no - 1]}"
+      event.respond "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})"
 
-      if tries.empty?
-        event.respond "No submissions or guesses for this question."
-        next
-      end
-
-      # group answers
-      grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
-
-      grouped.each do |val_key, attempts|
-        display_value = attempts.first.value.to_s
-        names = attempts.map { |t| t.player.name }.join(", ")
-
-        event.respond "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})"
-
-        if val_key == real_answers[q_no].downcase
-          attempts.each do |t|
-            points[t.player.name] += 1000
-            event.respond "✅ Correct! +1000 points for #{t.player.name}"
-          end
-        else
-          # who authored the lie
-          liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
-          if liar_entry
-            liar_name = liar_entry[:author]
-            points[liar_name] += 500
-            event.respond "❌ WRONG! It was #{liar_name}'s lie!"
-            event.respond "#{liar_name} gets +500 points"
-          else
-            event.respond "❌ Wrong answer — but no liar was matched for \"#{display_value}\""
-          end
+      if val_key == correct_key
+        attempts.each do |t|
+          points[t.player.name] += 1000
+          event.respond "**CORRECT!** +1000 points for #{t.player.name}"
         end
-      end
-
-      # round scoreboard
-      event.respond "📊 Current Scores:"
-      points.sort_by { |_name, score| -score }.each do |name, score|
-        event.respond "#{name}: #{score}"
+      else
+        liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
+        if liar_entry
+          liar_name = liar_entry[:author]
+          points[liar_name] += 500
+          event.respond "❌ WRONG! It was #{liar_name}'s lie!"
+          event.respond "#{liar_name} gets +500 points"
+        else
+          event.respond "❌ Wrong answer — but no liar matched for \"#{display_value}\""
+        end
       end
     end
 
-    # final scoreboard
-    event.respond "🏆 Final Scores:"
-    points.sort_by { |_name, score| -score }.each { |name, score| event.respond "#{name}: #{score}" }
+    # round scoreboard
+    event.respond "."
+    event.respond "📊 Current Scores:"
+    points.sort_by { |_name, score| -score }.each do |name, score|
+      event.respond "#{name}: #{score}"
+    end
   end
+
+  # final scoreboard
+  event.respond "."
+  event.respond "🏆 Final Scores:"
+  points.sort_by { |_name, score| -score }.each { |name, score| event.respond "#{name}: #{score}" }
+end
 
 end
