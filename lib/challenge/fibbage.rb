@@ -249,7 +249,7 @@ class Sunny
     sleep([msg.length * 0.05, 1].max) # at least 1 second, longer if msg is longer
     event.respond msg
   end
-  BOT.command :fibbtry do |event|
+  BOT.command :results do |event|
     break unless event.user.id.host?
   # real answers
   real_answers = {
