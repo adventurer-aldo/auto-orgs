@@ -244,8 +244,7 @@ class Sunny
     end
     chan.send_message("**13th Question:**\nCELEBRITY TWEET! 12:44 AM - 10 Dec 2013 @SimonCowell Tweeted: “Still not sure what a ﹍﹍﹍﹍﹍﹍ is.”", false, nil, nil, nil, nil, view)
   end
-  
-  BOT.command :fibbtry do |event|
+    BOT.command :fibbtry do |event|
     # real answers
     real_answers = {
       1 => "bagels", 2 => "ouija board", 3 => "human hair", 4 => "56000",
@@ -254,139 +253,58 @@ class Sunny
       13 => "baby shower"
     }
 
-    # use existing @solved_fibbs if present, otherwise fallback to an explicit mapping
-    solved_fibbs = defined?(@solved_fibbs) ? @solved_fibbs : {
-      1 => [
-        { author: "Hasegawa", value: "twunks" },
-        { author: "Hayden",   value: "butter" },
-        { author: "Hunjax",   value: "bagels" },
-        { author: "Iromi",    value: "lemonade" },
-        { author: "Jayden",   value: "hot dogs" }
-      ],
-      2 => [
-        { author: "Hasegawa", value: "ghost named Idan" },
-        { author: "Hayden",   value: "overdose on bath salts" },
-        { author: "Hunjax",   value: "demon" },
-        { author: "Iromi",    value: "discord Admin" },
-        { author: "Jayden",   value: "evil spirit" }
-      ],
-      3 => [
-        { author: "Hasegawa", value: "the skin of fallen enemies" },
-        { author: "Hayden",   value: "recycled video game consoles" },
-        { author: "Hunjax",   value: "hair" },
-        { author: "Iromi",    value: "wood" },
-        { author: "Jayden",   value: "artificial intelligence" }
-      ],
-      4 => [
-        { author: "Hasegawa", value: "100,000" },
-        { author: "Hayden",   value: "65,160" },
-        { author: "Hunjax",   value: "50,000" },
-        { author: "Iromi",    value: "6,700" },
-        { author: "Jayden",   value: "35,000" }
-      ],
-      5 => [
-        { author: "Hasegawa", value: "the dumbest" },
-        { author: "Hayden",   value: "left-handed children" },
-        { author: "Hunjax",   value: "ugly" },
-        { author: "Iromi",    value: "alien" },
-        { author: "Jayden",   value: "attractive" }
-      ],
-      6 => [
-        { author: "Hasegawa", value: "unclothed" },
-        { author: "Hayden",   value: "partial nudity" },
-        { author: "Hunjax",   value: "shower scene" },
-        { author: "Iromi",    value: "bathroom" },
-        { author: "Jayden",   value: "death" }
-      ],
-      7 => [
-        { author: "Hasegawa", value: "Social Credit points" },
-        { author: "Hayden",   value: "donkeys" },
-        { author: "Hunjax",   value: "birds" },
-        { author: "Iromi",    value: "ducks" },
-        { author: "Jayden",   value: "horses" }
-      ],
-      8 => [
-        { author: "Hasegawa", value: "sit alone in the shower thinking" },
-        { author: "Hayden",   value: "watch a baby cry" },
-        { author: "Hunjax",   value: "sleep" },
-        { author: "Iromi",    value: "goon" },
-        { author: "Jayden",   value: "traumatized" }
-      ],
-      9 => [
-        { author: "Hasegawa", value: "DNA" },
-        { author: "Hayden",   value: "a hot tub" },
-        { author: "Hunjax",   value: "bugs" },
-        { author: "Iromi",    value: "braind" },
-        { author: "Jayden",   value: "at home technology" }
-      ],
-      10 => [
-        { author: "Hasegawa", value: "Fallen Ice King" },
-        { author: "Hayden",   value: "Panty Snatcher" },
-        { author: "Hunjax",   value: "Bad Guy" },
-        { author: "Iromi",    value: "Ghostbusters" },
-        { author: "Jayden",   value: "Laughing Man" }
-      ],
-      11 => [
-        { author: "Hasegawa", value: "Breaking and entering" },
-        { author: "Hayden",   value: "absinthe" },
-        { author: "Hunjax",   value: "magic mushrooms" },
-        { author: "Iromi",    value: "pickles" },
-        { author: "Jayden",   value: "drugs" }
-      ],
-      12 => [
-        { author: "Hasegawa", value: "Celiochromatysis syrup" },
-        { author: "Hayden",   value: "Vaseline" },
-        { author: "Hunjax",   value: "flavored poop" },
-        { author: "Iromi",    value: "Iced Tea" },
-        { author: "Jayden",   value: "sunscreen" }
-      ],
-      13 => [
-        { author: "Hasegawa", value: "bass clef" },
-        { author: "Hayden",   value: "G6" },
-        { author: "Hunjax",   value: "Baby Shark" },
-        { author: "Iromi",    value: "phone" },
-        { author: "Jayden",   value: "perfect pitch" }
-      ]
-    }
-
-    # scoreboard (seed with known players + any players found in Challenges::Fibbage)
+    # scoreboard
     points = Hash.new(0)
-    solved_fibbs.values.flatten.each { |h| points[h[:author]] ||= 0 }
-    Challenges::Fibbage.all.each { |f| points[f.player.name] ||= 0 }
 
     (1..13).each do |q_no|
       tries = Challenges::Fibbage.where(question_no: q_no).to_a
-      event.respond "Question ##{q_no}: #{@questions[q_no - 1]}"
+
+      # typing effect
+      event.channel.start_typing
+      sleep(3)
+
+      # announce question
+      event.respond "."
+      event.respond "**Question #{q_no}:**"
+      event.respond "👉 #{@questions[q_no - 1]}"
 
       if tries.empty?
         event.respond "No submissions or guesses for this question."
         next
       end
 
-      # group by chosen value (case-insensitive)
+      # group answers
       grouped = tries.group_by { |t| t.value.to_s.strip.downcase }
+
       grouped.each do |val_key, attempts|
         display_value = attempts.first.value.to_s
-        event.respond "#{attempts.size} people said \"#{display_value}\""
+        names = attempts.map { |t| t.player.name }.join(", ")
 
-        if val_key == real_answers[q_no].to_s.strip.downcase
-          # everyone who chose the real answer gets +1000
+        event.respond "#{attempts.size} person#{'s' if attempts.size > 1} said \"#{display_value}\" (#{names})"
+
+        if val_key == real_answers[q_no].downcase
           attempts.each do |t|
-            player_name = t.player.name
-            points[player_name] += 1000
-            event.respond "✅ Correct! +1000 points for #{player_name}"
+            points[t.player.name] += 1000
+            event.respond "✅ Correct! +1000 points for #{t.player.name}"
           end
         else
-          # find who authored that lie in solved_fibbs
-          liar_entry = solved_fibbs[q_no].find { |h| h[:value].to_s.strip.downcase == val_key }
+          # who authored the lie
+          liar_entry = @solved_fibbs[q_no].find { |h| h[:value].downcase == val_key }
           if liar_entry
             liar_name = liar_entry[:author]
             points[liar_name] += 500
-            event.respond "❌ #{liar_name}'s LIE! #{liar_name} gets +500 points"
+            event.respond "❌ WRONG! It was #{liar_name}'s lie!"
+            event.respond "#{liar_name} gets +500 points"
           else
-            event.respond "❌ No known liar recorded for \"#{display_value}\""
+            event.respond "❌ Wrong answer — but no liar was matched for \"#{display_value}\""
           end
         end
+      end
+
+      # round scoreboard
+      event.respond "📊 Current Scores:"
+      points.sort_by { |_name, score| -score }.each do |name, score|
+        event.respond "#{name}: #{score}"
       end
     end
 
