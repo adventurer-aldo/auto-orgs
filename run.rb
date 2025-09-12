@@ -18,7 +18,7 @@ class QueJob < Que::ActiveRecord::Model
   end
 
   def self.table_name
-    "jobs"
+    "que_jobs"
   end
 end
 Dotenv.load
