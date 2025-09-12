@@ -3,13 +3,6 @@ class Sunny
   BURNED_ROLE_ID = 1399650936682450995
 
   BOT.command :hot_potato do |event|
-    break unless event.user.id.host?
-
-    event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
-    event.channel.start_typing
-    sleep(2)
-    event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
-
     players = Player.where(status: ALIVE, season_id: Setting.last.season)
     players.each do |player|
       Participant.create(player_id: player.id)
