@@ -13,6 +13,13 @@ require 'require_all'
 require 'que/active_record/model'
 
 class QueJob < Que::ActiveRecord::Model
+  def self.table_name_prefix
+    "que_"
+  end
+
+  def self.table_name
+    "jobs"
+  end
 end
 Dotenv.load
 
