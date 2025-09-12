@@ -18,6 +18,7 @@ class Sunny
     event.respond("#{BOT.user(target.user_id).mention()}!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
     Challenges::Potato.all.first.update(player_id: target.id)
     PotatoJob.enqueue
+    return
   end
 
   BOT.command :pass do |event, *args|
