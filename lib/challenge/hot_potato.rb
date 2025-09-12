@@ -3,13 +3,20 @@ class Sunny
   BURNED_ROLE_ID = 1399650936682450995
 
   BOT.command :hot_potato do |event|
+    break unless event.user.id.host?
+
+    event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
+    event.channel.start_typing
+    sleep(2)
+    event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
+
     players = Player.where(status: ALIVE, season_id: Setting.last.season)
     players.each do |player|
-      Participant.create(player_id: player.id)
+      Challenges::Participant.create(player_id: player.id)
     end
     target = players.sample()
     event.respond("#{BOT.user(target.user_id).mention()}!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
-    Potato.all.first.update(player_id: target.id)
+    Challenges::Potato.all.first.update(player_id: target.id)
     PotatoJob.enqueue
   end
 
@@ -18,7 +25,7 @@ class Sunny
 
     break unless event.channel.id == POTATO_CHANNEL
 
-    players = Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
+    players = Challenges::Participant.where(status: 1).map { |player| Player.find_by(id: player.player_id) }
     passer = Player.find_by(user_id: event.user.id, status: ALIVE)
 
     target = args.join('').downcase
@@ -45,7 +52,7 @@ class Sunny
 
     matches = mention_matches if mention_matches.size == 1
 
-    break unless Potato.all.first.player_id == passer.id
+    break unless Challenges::Potato.all.first.player_id == passer.id
 
     event.respond("More than a single castaway matches that...") if matches.size > 1
     break if matches.size > 1
@@ -56,7 +63,7 @@ class Sunny
     event.respond("That's you...") if matches.first.user_id == event.user.id
     break if matches.first.user_id == event.user.id
 
-    Potato.all.first.update(player_id: matches.first.id)
+    Challenges::Potato.all.first.update(player_id: matches.first.id)
     event.respond("The :potato: **Hot Potato** was passed to #{BOT.user(matches.first.user_id).mention}!")
   end
 
@@ -92,11 +99,11 @@ class Sunny
     channel.send_message('1...')
     channel.start_typing
     sleep(3)
-    unlucky = Player.find_by(id: Potato.all.last.player_id)
+    unlucky = Player.find_by(id: Challenges::Potato.all.last.player_id)
     unlucky.participants.update!(status: 0)
     channel.send_message(":boom: **KABOOM!! The Hot Potato blew up in #{unlucky.name}'s face!!**")
     sleep(2)
-    participants = Participant.where(status: 1)
+    participants = Challenges::Participant.where(status: 1)
 
     player = Player.find_by(id: participants.map(&:player_id).sample)
     if participants.size < 2
@@ -104,7 +111,7 @@ class Sunny
       sleep(2)
       channel.send_message("There's no more :potato: **Hot Potatoes** remaining!")
     else
-      Potato.all.last.update(player_id: player.id)
+      Challenges::Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
       BOT.user(unlucky.user_id).on(channel.server.id).add_role(BURNED_ROLE_ID)
       Que.clear!
@@ -120,7 +127,7 @@ class Sunny
     if participants.size < 2
       channel.start_typing
       sleep(2)
-      channel.send_message("As the sole remaining castaway... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
+      channel.send_message("I'm excited to announce that as the sole remaining castaway... **#{player.name} wins INDIVIDUAL IMMUNITY!!")
     end
   end
 
