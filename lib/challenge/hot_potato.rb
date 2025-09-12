@@ -127,7 +127,7 @@ class Sunny
     if participants.size < 2
       channel.start_typing
       sleep(2)
-      channel.send_message("As the sole remaining castaway... **#{player.name} wins the very first INDIVIDUAL IMMUNITY CHALLENGE!!")
+      channel.send_message("I'm excited to announce that as the sole remaining castaway... **#{player.name} wins INDIVIDUAL IMMUNITY!!")
     end
   end
 
