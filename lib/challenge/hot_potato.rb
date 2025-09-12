@@ -69,6 +69,7 @@ class Sunny
   end
 
   def self.explode_potato
+    return unless Challenges::Participant.where(status: 1).size > 1
     channel = BOT.channel(POTATO_CHANNEL)
     channel.send_message("It's getting... **HOT**!\n10...")
     channel.start_typing
