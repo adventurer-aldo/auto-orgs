@@ -4,20 +4,20 @@ class Sunny
 
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
-
-    event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
-    event.channel.start_typing
-    sleep(2)
-    event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
-
+    
     players = Player.where(status: ALIVE, season_id: Setting.last.season)
     players.each do |player|
       Challenges::Participant.create(player_id: player.id)
     end
     target = players.sample()
-    event.respond("#{BOT.user(target.user_id).mention()}!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
     Challenges::Potato.all.first.update(player_id: target.id)
     PotatoJob.enqueue
+
+    event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
+    event.channel.start_typing
+    sleep(2)
+    event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
+    event.respond("#{BOT.user(target.user_id).mention()}!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
     return
   end
 
@@ -115,7 +115,7 @@ class Sunny
       Challenges::Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
       BOT.user(unlucky.user_id).on(channel.server.id).add_role(BURNED_ROLE_ID)
-      Que.clear!
+      QueJob.destroy_by(job_class: "PotatoJob")
       PotatoJob.enqueue
     end
     
