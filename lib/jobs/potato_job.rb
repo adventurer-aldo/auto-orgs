@@ -4,7 +4,7 @@ class Sunny
 
     def run
       # Call your results reveal/update method
-      Sunny.explode_potato if Sunny::Challenges::Participant.where(status: 1).size > 1
+      Sunny.explode_potato if Participant.where(status: 1).size > 1
 
       destroy
     end
