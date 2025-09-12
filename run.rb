@@ -10,7 +10,10 @@ require "json"
 require 'shrine'
 require "net/http"
 require 'require_all'
+require 'que/active_record/model'
 
+class QueJob < Que::ActiveRecord::Model
+end
 Dotenv.load
 
 class Sunny
