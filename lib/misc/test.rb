@@ -55,6 +55,9 @@ class Sunny
 
 
   BOT.command :test do |event|
+    return Setting.game_stage
+  end
+  BOT.command :test_circle do |event|
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end
 
