@@ -77,35 +77,29 @@ class Sunny
       case await.message.content.downcase
       when *%w[yes yeah yeh yuh yup y ye heck\ yeah yep yessir indeed yessey yess]
         rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
-        begin
-          choices << player
-          choices.sort_by!(&:id)
+        choices << player
+        choices.sort_by!(&:id)
 
-          perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE]
-          choices.each { |n| perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) }
+        perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE]
+        choices.each { |n| perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) }
 
-          alliance = Alliances::Group.create!(
-            channel_id: event.server.create_channel(
-              choices.map(&:name).join('-'),
-              parent: ALLIANCES,
-              topic: "Created at F#{rank} by **#{player.name}**. | #{choices.map(&:name).join('-')}",
-              permission_overwrites: perms
-            ).id
-          )
+        alliance = Alliances::Group.create!(
+          channel_id: event.server.create_channel(
+            choices.map(&:name).join('-'),
+            parent: ALLIANCES,
+            topic: "Created at F#{rank} by **#{player.name}**. | #{choices.map(&:name).join('-')}",
+            permission_overwrites: perms
+          ).id
+        )
 
-          choices.each do |p|
-            Alliances::Association.create(alliance_id: alliance.id, player_id: p.id)
-          end
-
-          BOT.send_message(alliance.channel_id, event.server.role(tribe.role_id).mention.to_s)
-          event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
-        rescue ActiveRecord::RecordNotUnique
-          event.respond('**This alliance already exists!**')
+        choices.each do |p|
+          Alliances::Association.create(alliance_id: alliance.id, player_id: p.id)
         end
+
+        BOT.send_message(alliance.channel_id, event.server.role(tribe.role_id).mention.to_s)
+        event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
       when *%w[no nah nop nay noo nope nuh nuh-uh]
         event.respond('I guess not...')
-      else
-        event.respond("Sorry, I didn't quite understand what you said. Can you start all over?")
       end
     end
     return

@@ -18,6 +18,9 @@ class Sunny
     ],
     lynn_block: [
       [11, 9]  # K9
+    ],
+    karma_idol: [
+      [11, 5]  # K5
     ]
   }
 
@@ -91,6 +94,8 @@ class Sunny
         event.respond("Emerald's parting words were \"I'll be back\"... Do you wish for Emerald's return? Then use the command `!emerald_returns`")
       when :tabi_safety_without_power
         event.respond("Tabi left us in the middle of **Iterum** tribe's Tribal Council. But alas, Tabi didn't return. The same power is available to you, so long as you return to us, with the command `!tabi_exits`")
+      when :karma_idol
+        event.respond("You found Karma's soul, which was so close to you since Karma was the final spirit to leave us before the creation of the **Syaman** tribe. Thus, you can call Karma to you and let them possess you, with the command `!i_shaman_karma`")
       end
     else
       event.respond("Nothing at #{letter.upcase}#{y}.")
