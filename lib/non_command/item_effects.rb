@@ -61,8 +61,8 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
-          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
@@ -76,8 +76,8 @@ class Sunny
           event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
           break if confirmation.nil?
 
-          event.respond('I guess not...') unless confirmation.message.content.downcase.include? CONFIRMATIONS
-          break unless confirmation.message.content.downcase.include? CONFIRMATIONS
+          event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+          break unless CONFIRMATIONS.include? confirmation.message.content.downcase
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
