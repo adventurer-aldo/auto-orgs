@@ -2,8 +2,8 @@ class Sunny
   BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
     break unless HOSTS.include? event.user.id
 
-    finalists = Player.where(status: ALIVE, season_id: Setting.last.season)
-    jury_all = Player.where(status: 'Jury', season_id: Setting.last.season)
+    finalists = Player.where(status: ALIVE, season_id: Setting.season)
+    jury_all = Player.where(status: 'Jury', season_id: Setting.season)
 
     Setting.last.update(game_stage: 2)
     council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
@@ -11,7 +11,7 @@ class Sunny
         topic: "The last time we'll read the votes during this season of Alvivor.",
         parent: FTC,
         permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
-    ).id, season_id: Setting.last.season)
+    ).id, season_id: Setting.season)
 
     finalists.each do |finalist|
       channel = event.server.create_channel("#{finalist.name}-speech",

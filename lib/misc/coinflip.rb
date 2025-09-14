@@ -13,7 +13,7 @@ class Sunny
   end
 
   BOT.command(:confess, description: "Sends a message to all the confessionals.") do |event, *args|
-    players = Player.where(status: ALIVE, season_id: Setting.last.season)
+    players = Player.where(status: ALIVE, season_id: Setting.season)
     players.each do |player|
       BOT.channel(player.confessional).send_message(args.join(' '))
     end

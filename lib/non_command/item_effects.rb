@@ -3,7 +3,7 @@ class Sunny
     case item.timing
     when 'Early'
       item.functions.each do |function| 
-        council = Council.where(stage: [0], season_id: Setting.last.season).last
+        council = Council.where(stage: [0], season_id: Setting.season).last
         player = item.player
         case function
         when 'safety_without_power'
@@ -51,7 +51,7 @@ class Sunny
       end
     when 'Now'
       item.functions.each do |function|
-        council = Council.where(stage: [0, 1], season_id: Setting.last.season).last
+        council = Council.where(stage: [0, 1], season_id: Setting.season).last
         player = item.player
         case function
         when 'pet_food'
@@ -115,7 +115,7 @@ class Sunny
           text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
           id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
           if text_attempt.size == 1
-            targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
+            targets << Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
           elsif content != ''
@@ -181,7 +181,7 @@ class Sunny
           text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
           id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
           if text_attempt.size == 1
-            targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
+            targets << Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
           elsif id_attempt.size == 1
             targets << Player.find_by(id: id_attempt[0])
           elsif content != ''
@@ -221,13 +221,13 @@ class Sunny
         end
       end
     else
-      player = Player.find_by(id: item.player_id, season_id: Setting.last.season)
+      player = Player.find_by(id: item.player_id, season_id: Setting.season)
       allowed_targets = 1
       targets = []
       item.functions.each do |function|
         case function
         when 'idol'
-          council = Council.where(season_id: Setting.last.season, stage: [0, 1, 2]).last
+          council = Council.where(season_id: Setting.season, stage: [0, 1, 2]).last
           enemies = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
           enemies.delete(nil)
 
@@ -253,7 +253,7 @@ class Sunny
             text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
             id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
             if text_attempt.size == 1
-              targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
+              targets << Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
             elsif id_attempt.size == 1
               targets << Player.find_by(id: id_attempt[0])
             elsif content != ''

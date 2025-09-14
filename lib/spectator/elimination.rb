@@ -9,7 +9,7 @@ class Sunny
       embed.color = '#CB00FF'
     end
 
-    players = Player.where(season_id: Setting.last.season, status: ALIVE)
+    players = Player.where(season_id: Setting.season, status: ALIVE)
 
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.string_select(custom_id: "EliminationPick", options: players.map { |player| {label: player.name, value: player.id} }) }
@@ -19,12 +19,12 @@ class Sunny
   BOT.string_select(custom_id: "EliminationPick") do |event|
     event.defer_update
 
-    break if Council.where(season_id: Setting.last.season, stage: Array(0..4)).exists?
+    break if Council.where(season_id: Setting.season, stage: Array(0..4)).exists?
     channel = BOT.channel(1393731026882269398)
 
     size = SpectatorGame::Elimination.all.size
 
-    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season, episode_id: 2)
+    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.season, episode_id: 2)
 
     player = Player.find_by(id: event.values.first.to_i)
 

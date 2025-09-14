@@ -3,7 +3,7 @@ class Sunny
     BOT.message(in: channel_id) do |event|
       break unless event.user.id.player?
       
-      player = Player.find_by(user_id: event.user.id, season: Setting.last.season)
+      player = Player.find_by(user_id: event.user.id, season: Setting.season)
       tribe = player.tribe
       challenge = Challenges::Tribal.find_by(tribe_id: tribe.id)
       

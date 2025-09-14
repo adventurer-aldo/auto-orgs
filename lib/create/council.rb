@@ -10,17 +10,17 @@ class Sunny
     tribe = []
     confirm = []
     perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
-    cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.last.season).size
+    cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.season).size
     tribes.each do |tribed|
-      if Tribe.where(role_id: tribed.id, season_id: Setting.last.season).exists?
+      if Tribe.where(role_id: tribed.id, season_id: Setting.season).exists?
         # Close camps and challenges
-        closing_tribe = Tribe.find_by(role_id: tribed.id, season_id: Setting.last.season)
+        closing_tribe = Tribe.find_by(role_id: tribed.id, season_id: Setting.season)
         BOT.channel(closing_tribe.channel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
         BOT.channel(closing_tribe.channel_id).send_message("**Closed for Tribal Council.**")
         BOT.channel(closing_tribe.cchannel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
         BOT.channel(closing_tribe.cchannel_id).send_message("**Closed for Tribal Council.**")
         # Yeah End
-        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.last.season).order(id: :desc)&.first&.id
+        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.season).order(id: :desc)&.first&.id
         if Setting.last.tribes.include? tribe_query
           tribe += [tribe_query]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
@@ -32,7 +32,7 @@ class Sunny
       end
     end
 
-    perms += [JURY_SPECTATE] if Setting.last.game_stage == 1
+    perms += [JURY_SPECTATE] if Setting.game_stage == 1
 
     event.respond('One or more of those tribes do not exist in the database.') if confirm.intersect? [false, nil]
     break if confirm.intersect? [false, nil]
@@ -75,7 +75,7 @@ class Sunny
     end
     channel.start_typing
     sleep(1)
-    if Setting.last.game_stage.zero?
+    if Setting.game_stage.zero?
       BOT.send_message(channel.id, 'Tonight, one of you castaways will have their torch snuffed out. And when that happens, you will be eliminated from the tribe...')
       channel.start_typing
       sleep(1)
@@ -97,7 +97,7 @@ class Sunny
     players.each do |player|
       Vote.create(council_id: council.id, player_id: player.id, parchments: ['0'])
       BOT.channel(player.submissions).send_embed do |embed|
-        embed.title = "You're participating in the F#{Player.where(status: ALIVE, season_id: Setting.last.season).size} Tribal Council in #{player.tribe.name}"
+        embed.title = "You're participating in the F#{Player.where(status: ALIVE, season_id: Setting.season).size} Tribal Council in #{player.tribe.name}"
         embed.description = "The castaways participating are:\n\n#{players.map(&:name).sort.join("\n")}\n\nUse the `!vote` command to cast your vote!"
         embed.color = tribes.map(&:color).sample
       end

@@ -3,7 +3,7 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     tribes = event.message.role_mentions
-    players = Player.where(season_id: Setting.last.season, status: ALIVE + ['Exiled'])
+    players = Player.where(season_id: Setting.season, status: ALIVE + ['Exiled'])
     if tribes.size > 1
       if (players.size % tribes.size).zero?
         @set_tribes = []
@@ -29,7 +29,7 @@ class Sunny
           channel_id: chan.id,
           vchannel_id: vchan.id,
           cchannel_id: cchan.id,
-          season_id: Setting.last.season).id
+          season_id: Setting.season).id
         end
         Setting.last.update(tribes: @set_tribes)
 
@@ -139,13 +139,13 @@ class Sunny
             channel_id: chan.id,
             vchannel_id: vchan.id,
             cchannel_id: cchan.id,
-            season_id: Setting.last.season
+            season_id: Setting.season
           ).id
         end
         Setting.last.update(tribes: @set_tribes, game_stage: 1)
 
         players.each do |player|
-          player.update(tribe_id: Tribe.where(season: Setting.last.season, role_id: tribes[0].id).last.id)
+          player.update(tribe_id: Tribe.where(season: Setting.season, role_id: tribes[0].id).last.id)
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'

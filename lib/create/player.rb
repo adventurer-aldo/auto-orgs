@@ -12,7 +12,7 @@ class Sunny
     break unless cast.size > 0
 
     cast.each do |person|
-      player = Player.create(user_id: person.id, name: person.display_name, season_id: Setting.last.season,
+      player = Player.create(user_id: person.id, name: person.display_name, season_id: Setting.season,
       confessional: event.server.create_channel(
           "#{person.display_name}-confessional",
           parent: CONFESSIONALS,
@@ -35,7 +35,7 @@ class Sunny
       BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!help`!")
     end
 
-    Season.find_by(id: Setting.last.season).update(start_time: Time.now)
+    Season.find_by(id: Setting.season).update(start_time: Time.now)
     InServerStats.enqueue(job_options: {run_at: Time.now})
     return 'The cast has been selected!'
   end

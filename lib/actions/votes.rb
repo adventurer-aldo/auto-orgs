@@ -16,17 +16,17 @@ class Sunny
       player = match.first
 
     else
-      player = if [0, 1].include? Setting.last.game_stage
-                 Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+      player = if [0, 1].include? Setting.game_stage
+                 Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
                else
-                 Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: 'Jury')
+                 Player.find_by(user_id: event.user.id, season_id: Setting.season, status: 'Jury')
                end
     end
 
     break unless event.channel.id == player.submissions
 
     vote = Vote.where(player_id: player.id)
-    council = Council.where(id: vote.map(&:council), stage: [0,1,3], season_id: Setting.last.season)
+    council = Council.where(id: vote.map(&:council), stage: [0,1,3], season_id: Setting.season)
     break unless vote.exists? && council.exists?
 
     council = council.last
@@ -76,7 +76,7 @@ class Sunny
       text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
       id_attempt = options.filter { |id| id == content.to_i }
       if text_attempt.size == 1
-        target = Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
+        target = Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
         voted[number] = target.id
       elsif id_attempt.size == 1
         target = Player.find_by(id: id_attempt[0])

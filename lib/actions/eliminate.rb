@@ -3,15 +3,15 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     content = args.join(' ')
-    enemies = Player.where(season_id: Setting.last.season, status: ALIVE)
+    enemies = Player.where(season_id: Setting.season, status: ALIVE)
 
     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
     target = nil
     if text_attempt.size == 1
-      target = Player.find_by(name: text_attempt[0], season_id: Setting.last.season)
+      target = Player.find_by(name: text_attempt[0], season_id: Setting.season)
     elsif id_attempt.size == 1
-      target = Player.find_by(id: id_attempt[0], season_id: Setting.last.season)
+      target = Player.find_by(id: id_attempt[0], season_id: Setting.season)
     else
       event.respond("There's no single castaway that matches that.") unless content == ''
     end
@@ -46,7 +46,7 @@ class Sunny
               'Idoled'
             end
 
-    seeds = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat, season_id: Setting.last.season) }
+    seeds = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: stat, season_id: Setting.season) }
     seeds.delete(nil)
 
     event.respond("This will be between #{seeds.map(&:name).join(', ')}")

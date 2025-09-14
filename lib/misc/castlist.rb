@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :cast do |event|
-    event.respond("**Castaways currently in the game:**\n" + Player.where(status: ALIVE, season_id: Setting.last.season).pluck(:name).join("\n"))
+    event.respond("**Castaways currently in the game:**\n" + Player.where(status: ALIVE, season_id: Setting.season).pluck(:name).join("\n"))
   end
 
   BOT.command :vote_count do |event|

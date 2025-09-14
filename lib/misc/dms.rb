@@ -41,7 +41,7 @@ class Sunny
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
       index = 0
       players = tribe.players.where(status: ALIVE)
-      outsiders = Player.where(status: ALIVE, season_id: Setting.last.season).where.not(tribe_id: tribe.id)
+      outsiders = Player.where(status: ALIVE, season_id: Setting.season).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
         outsiders.each do |outsider|
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{outsider.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }

@@ -2,7 +2,7 @@ class Sunny
   BOT.command :tribal, description: "Changes the Tribal Council stage to 1 (after 12h) to all those who have 0." do |event|
     break unless HOSTS.include? event.user.id
 
-    if [0, 1].include? Setting.last.game_stage
+    if [0, 1].include? Setting.game_stage
       Council.where(stage: 0).update(stage: 1)
     else
       Council.where(stage: 0).update(stage: 2)

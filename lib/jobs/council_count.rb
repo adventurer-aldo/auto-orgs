@@ -15,8 +15,8 @@ class Sunny
       channel.send_message("**Welcome #{roles.map(&:mention).join(' ').to_s}**")
       channel.start_typing
       sleep(2)
-      rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
-      total = Player.where(season_id: Setting.last.season).size
+      rank = Player.where(season_id: Setting.season, status: ALIVE).size
+      total = Player.where(season_id: Setting.season).size
       if council.stage > 2
         channel.send_message("**It's time to read the votes, once again!**")
         channel.start_typing
@@ -92,7 +92,7 @@ class Sunny
 
         while i < max
           i += 1
-          items = Item.where(timing: 'Tallied', season_id: Setting.last.season).excluding(Item.where(player_id: nil)).excluding(Item.where(targets: []))
+          items = Item.where(timing: 'Tallied', season_id: Setting.season).excluding(Item.where(player_id: nil)).excluding(Item.where(targets: []))
           if items.exists?
             max += 6
             items.map.each do |item|
@@ -140,7 +140,7 @@ class Sunny
         end
       end
       precounted_votes = all_votes
-      precounted_votes -= Player.where(status: 'Idoled', season_id: Setting.last.season).map(&:id)
+      precounted_votes -= Player.where(status: 'Idoled', season_id: Setting.season).map(&:id)
       unless precounted_votes == []
         all_votes.insert((all_votes.size - 1), all_votes.delete_at(all_votes.index(precounted_votes.max_by { |i| precounted_votes.count(i)})))
       end
@@ -212,11 +212,11 @@ class Sunny
         elsif all_votes.size == 1 || vote_count[all_votes[0]] + 1 == majority
           channel.start_typing
           sleep(2)
-          case Setting.last.game_stage
+          case Setting.game_stage
           when 0
             channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls is...**")
           when 1
-            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.last.season).size].downcase} member of the Jury is...**")
+            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.season).size].downcase} member of the Jury is...**")
           end
           sleep(5)
           lame = ' (NO PARCHMENT)'
@@ -273,11 +273,11 @@ class Sunny
                 sleep(3)
                 channel.send_message('You will only be able to vote the castaways tied.')
 
-                Player.where(season_id: Setting.last.season, status: 'Idoled').update(status: 'Immune')
-                immunes = Player.where(status: 'Immune', season_id: Setting.last.season).map(&:id)
+                Player.where(season_id: Setting.season, status: 'Idoled').update(status: 'Immune')
+                immunes = Player.where(status: 'Immune', season_id: Setting.season).map(&:id)
 
                 vote_count.each do |k,v|
-                  if v == vote_count.values.max && Player.where(id: k, status: ['Idoled', 'Immune'], season_id: Setting.last.season).exists? == false
+                  if v == vote_count.values.max && Player.where(id: k, status: ['Idoled', 'Immune'], season_id: Setting.season).exists? == false
                     Vote.find_by(player_id: k, council_id: council.id).update(allowed: 0, votes: [])
                   else
                     Vote.find_by(player_id: k, council_id: council.id).update(allowed: 1, votes: [0])
@@ -302,8 +302,8 @@ class Sunny
                 channel.send_message('The castaway that draws the purple rock will be out of the game **immediately**.')
                 channel.start_typing
                 sleep(3)
-                Player.where(status: 'In', season_id: Setting.last.season).update(status: 'Immune')
-                seeds = Player.where(status: 'Idoled', season_id: Setting.last.season)
+                Player.where(status: 'In', season_id: Setting.season).update(status: 'Immune')
+                seeds = Player.where(status: 'Idoled', season_id: Setting.season)
                 channel.send_message("This will be between #{seeds.map(&:name).join(', ')}")
                 channel.start_typing
                 sleep(3)

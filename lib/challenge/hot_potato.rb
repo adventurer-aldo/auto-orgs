@@ -5,7 +5,7 @@ class Sunny
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
     
-    players = Player.where(status: ALIVE, season_id: Setting.last.season)
+    players = Player.where(status: ALIVE, season_id: Setting.season)
     players.each do |player|
       Challenges::Participant.create(player_id: player.id)
     end
@@ -42,7 +42,7 @@ class Sunny
     if event.message.mentions.size.positive?
       ids = event.message.mentions.map { |user| user.id }
       ids.each do |id|
-        if Player.where(status: ALIVE, user_id: id, season_id: Setting.last.season).exists?
+        if Player.where(status: ALIVE, user_id: id, season_id: Setting.season).exists?
           mention_matches << Player.find_by(user_id: id, status: ALIVE)
         end
       end

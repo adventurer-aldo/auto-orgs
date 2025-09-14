@@ -9,7 +9,7 @@ class Sunny
       embed.color = '#CB00FF'
     end
 
-    players = Player.where(season_id: Setting.last.season)
+    players = Player.where(season_id: Setting.season)
 
     winner_view = Discordrb::Webhooks::View.new
     winner_view.row { |row| row.string_select(custom_id: "DraftWinnerPick", options: players.map { |player| {label: player.name, value: player.id} }) }
@@ -30,11 +30,11 @@ class Sunny
 
   BOT.string_select(custom_id: 'DraftWinnerPick') do |event|
     event.defer_update
-    break if Council.where(season_id: Setting.last.season).exists?
+    break if Council.where(season_id: Setting.season).exists?
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.season)
 
     new_pick = event.values.first.to_i
 
@@ -62,11 +62,11 @@ class Sunny
 
   BOT.string_select(custom_id: 'DraftFirstPick') do |event|
     event.defer_update
-    break if Council.where(season_id: Setting.last.season).exists?
+    break if Council.where(season_id: Setting.season).exists?
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.season)
 
     new_pick = event.values.first.to_i
 
@@ -94,11 +94,11 @@ class Sunny
 
   BOT.string_select(custom_id: 'DraftSecondPick') do |event|
     event.defer_update
-    break if Council.where(season_id: Setting.last.season).exists?
+    break if Council.where(season_id: Setting.season).exists?
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.season)
 
     new_pick = event.values.first.to_i
 
@@ -126,11 +126,11 @@ class Sunny
 
   BOT.string_select(custom_id: 'DraftThirdPick') do |event|
     event.defer_update
-    break if Council.where(season_id: Setting.last.season).exists?
+    break if Council.where(season_id: Setting.season).exists?
 
     channel = BOT.channel(1125132585882898462)
 
-    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.last.season)
+    draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.season)
 
     new_pick = event.values.first.to_i
 

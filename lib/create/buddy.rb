@@ -3,7 +3,7 @@ class Sunny
   BOT.command :unbuddy do |event|
     break unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     buddies = player.buddies
 
     break unless event.channel.id == player.confessional || event.channel.id == player.submissions
@@ -22,7 +22,7 @@ class Sunny
   BOT.command :buddy do |event|
     break unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     buddies = player.buddies
 
     break unless event.channel.id == player.confessional || event.channel.id == player.submissions

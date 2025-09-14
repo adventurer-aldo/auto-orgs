@@ -24,12 +24,12 @@ class Sunny
   end
 
   BOT.command :alliance, description: 'Make an alliance with other players on your tribe.' do |event, *args|
-    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
     tribe = player.tribe
     break unless event.user.id.host? || (event.user.id.player? && event.server.role(tribe.role_id).members.size > 3)
     break unless [player.confessional, player.submissions].include? event.channel.id
 
-    enemies = Player.where(tribe_id: [tribe.id] + Council.last.tribes, season_id: Setting.last.season, status: ALIVE).excluding(Player.where(id: player.id))
+    enemies = Player.where(tribe_id: [tribe.id] + Council.last.tribes, season_id: Setting.season, status: ALIVE).excluding(Player.where(id: player.id))
     options = enemies.map(&:id)
     options_text = enemies.map(&:name)
     text = enemies.map { |enemy| "**#{enemy.id}** — #{enemy.name}" }
@@ -76,7 +76,7 @@ class Sunny
     event.user.await!(timeout: 70) do |await|
       case await.message.content.downcase
       when *%w[yes yeah yeh yuh yup y ye heck\ yeah yep yessir indeed yessey yess]
-        rank = Player.where(season_id: Setting.last.season, status: ALIVE).size
+        rank = Player.where(season_id: Setting.season, status: ALIVE).size
         choices << player
         choices.sort_by!(&:id)
 

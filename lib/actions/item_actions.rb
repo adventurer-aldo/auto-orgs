@@ -5,8 +5,8 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
-    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.last.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
+    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.season)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
@@ -15,7 +15,7 @@ class Sunny
 
     item = item.first
 
-    enemies = Player.where(season_id: Setting.last.season, status: ALIVE).excluding(Player.where(user_id: event.user.id))
+    enemies = Player.where(season_id: Setting.season, status: ALIVE).excluding(Player.where(user_id: event.user.id))
     text = enemies.map do |en|
       "**#{en.id}** — #{en.name}"
     end
@@ -36,7 +36,7 @@ class Sunny
     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
     if text_attempt.size == 1
-      targets << Player.find_by(name: text_attempt[0], season_id: Setting.last.season, status: ALIVE)
+      targets << Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
     elsif id_attempt.size == 1
       targets << Player.find_by(id: id_attempt[0])
     else
@@ -70,7 +70,7 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season, status: ALIVE)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
     item = player.items.where(code: args[0])
 
     break unless [player.confessional, player.submissions].include? event.channel.id

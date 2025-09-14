@@ -1,14 +1,14 @@
 class Sunny
 
   def self.make_item_commands
-    @items = Item.where(season_id: Setting.last.season)
+    @items = Item.where(season_id: Setting.season)
     return if @items.empty?
 
     @items.each do |item|
       BOT.command item.code.to_sym do |event|
         break unless event.user.id.player?
 
-        player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
+        player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
         break unless %w[In Immune Idoled Exiled].include? player.status
 
         event.channel.start_typing

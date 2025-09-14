@@ -40,7 +40,7 @@ class Sunny
         </tr>
       </thead>
       <tbody>
-      #{SpectatorGame::Elimination.where(season_id: Setting.last.season).map do |elim|
+      #{SpectatorGame::Elimination.where(season_id: Setting.season).map do |elim|
           player = Player.find_by(id: elim.player_id)
           %Q(
             <tr>
@@ -79,7 +79,7 @@ class Sunny
     </tr>
   </thead>
   <tbody>
-  #{SpectatorGame::Draft.where(season_id: Setting.last.season).sort_by { |draft| draft.score }.select { |draft| !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?}.map do |draft|
+  #{SpectatorGame::Draft.where(season_id: Setting.season).sort_by { |draft| draft.score }.select { |draft| !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?}.map do |draft|
 %Q(
     <tr>
       <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>

@@ -1,6 +1,6 @@
 class Integer
   def player?
-    Player.exists?(user_id: self, season_id: Setting.last.season)
+    Player.exists?(user_id: self, season_id: Setting.season)
   end
 
   def host?

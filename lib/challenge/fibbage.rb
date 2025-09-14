@@ -148,7 +148,7 @@ class Sunny
       event.defer_update
 
       break unless event.user.id.player?
-      player = Player.find_by(user_id: event.user.id, season_id: Setting.last.season)
+      player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
       q_no = @id_map[key]
       BOT.channel(HOST_CHAT).send_message("**#{player.name}** chose **#{event.values.first}** for Question No. #{q_no}")
       BOT.channel(player.submissions).send_message("You chose **#{event.values.first}** for Question No. #{q_no}")
