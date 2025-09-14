@@ -1,10 +1,10 @@
 class Setting < ActiveRecord::Base
   def self.game_stage
-    return find_by(name: 'game_stage').value.first.to_i
+    return find_by(name: 'game_stage').values.first.to_i
   end
 
   def self.season_id
-    return find_by(name: 'season_id').value.first.to_i
+    return find_by(name: 'season_id').values.first.to_i
   end
 
   def self.season
@@ -12,23 +12,23 @@ class Setting < ActiveRecord::Base
   end
 
   def self.archive_category
-    return find_by(name: 'archive_category').value.first.to_i
+    return find_by(name: 'archive_category').values.first.to_i
   end
 
   def self.tribes
-    return find_by(name: 'tribes').value.map(&:to_i)
+    return find_by(name: 'tribes').values.map(&:to_i)
   end
 
   def self.game_stage=(value)
-    find_by(name: 'game_stage').update(value: [value])
+    find_by(name: 'game_stage').update(values: [value])
   end
 
   def self.tribes=(value)
-    find_by(name: 'tribes').update(value:)
+    find_by(name: 'tribes').update(values:)
   end
 
   def self.archive_category=(value)
-    find_by(name: 'archive_category').update(value:)
+    find_by(name: 'archive_category').update(values:)
   end
 
 
