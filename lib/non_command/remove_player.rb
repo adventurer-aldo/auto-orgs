@@ -10,6 +10,7 @@ class Sunny
       user.remove_role(tribe.role_id) if tribe
       user.remove_role(CASTAWAY)
       user.add_role(JURY)
+      BOT.channel(JURY_CHANNEL).send_message("Welcome in the newest member of the jury, #{BOT.user(loser.user_id).mention}...")
     else
       loser.update(status: 'Out', rank:)
       user = BOT.user(loser.user_id).on(alvivor_server)
