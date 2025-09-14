@@ -42,13 +42,13 @@ class Sunny
   BOT.command :grid do |event|
     return unless HOSTS.include? event.user.id
 
-    event.respond(Setting.last.tribes.map { |tribe_id| generate_grid(tribe_id) }.join("\n\n"))
+    event.respond(Setting.tribes.map { |tribe_id| generate_grid(tribe_id) }.join("\n\n"))
   end
 
   BOT.command :battleships do |event|
     return unless HOSTS.include? event.user.id
 
-    tribes = Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }
+    tribes = Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }
     event.respond('The first tribe to attack will be decided by a coinflip!')
     event.channel.start_typing
     sleep(3)

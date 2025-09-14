@@ -5,7 +5,7 @@ class Sunny
     finalists = Player.where(status: ALIVE, season_id: Setting.season)
     jury_all = Player.where(status: 'Jury', season_id: Setting.season)
 
-    Setting.last.update(game_stage: 2)
+    Setting.game_stage = 2
     council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
         'final-tribal-council',
         topic: "The last time we'll read the votes during this season of Alvivor.",

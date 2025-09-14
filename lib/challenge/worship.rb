@@ -1,5 +1,5 @@
 class Sunny
-  Tribe.where(id: Setting.last.tribes).pluck(:cchannel_id).each do |channel_id|
+  Tribe.where(id: Setting.tribes).pluck(:cchannel_id).each do |channel_id|
     BOT.message(in: channel_id) do |event|
       break unless event.user.id.player?
       

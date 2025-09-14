@@ -8,7 +8,7 @@ class Sunny
   @habiti_words = ['query', 'crypt', 'foyer', 'plumb', 'squib', 'modal', 'myrrh']
 
   
-  BOT.message(in: Setting.last.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id }) do |event|
+  BOT.message(in: Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id }) do |event|
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
 
     return if player.nil?

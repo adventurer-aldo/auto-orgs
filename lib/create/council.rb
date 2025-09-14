@@ -21,7 +21,7 @@ class Sunny
         BOT.channel(closing_tribe.cchannel_id).send_message("**Closed for Tribal Council.**")
         # Yeah End
         tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.season).order(id: :desc)&.first&.id
-        if Setting.last.tribes.include? tribe_query
+        if Setting.tribes.include? tribe_query
           tribe += [tribe_query]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
         else
@@ -37,14 +37,13 @@ class Sunny
     event.respond('One or more of those tribes do not exist in the database.') if confirm.intersect? [false, nil]
     break if confirm.intersect? [false, nil]
 
-    sets = Setting.last
-    players = Player.where(tribe_id: tribe, status: ALIVE, season_id: sets.season)
+    players = Player.where(tribe_id: tribe, status: ALIVE, season_id: Setting.season_id)
     channel = event.server.create_channel("f#{cast_left}-#{tribes.map(&:name).join('-')}",
     parent: COUNCILS,
     topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
     permission_overwrites: perms)
 
-    council = Council.create(tribes: tribe, channel_id: channel.id, season_id: sets.season, stage: 1)
+    council = Council.create(tribes: tribe, channel_id: channel.id, season_id: Setting.season_id, stage: 1)
 
 
 
@@ -56,9 +55,9 @@ class Sunny
     channel.start_typing
     sleep(2)
     BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
-    if sets.game_stage == 1
+    if Setting.game_stage == 1
       BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
-      jury = Player.where(status: 'Jury', season_id: sets.season)
+      jury = Player.where(status: 'Jury', season_id: Setting.season_id)
       if !jury.empty?
         channel.start_typing
         sleep(2)

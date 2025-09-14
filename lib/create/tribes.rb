@@ -31,7 +31,7 @@ class Sunny
           cchannel_id: cchan.id,
           season_id: Setting.season).id
         end
-        Setting.last.update(tribes: @set_tribes)
+        Setting.tribes = @set_tribes
 
         @buffs = []
         (players.size/tribes.size).times do 
@@ -142,7 +142,8 @@ class Sunny
             season_id: Setting.season
           ).id
         end
-        Setting.last.update(tribes: @set_tribes, game_stage: 1)
+        Setting.tribes = @set_tribes
+        Setting.game_stage = 1
 
         players.each do |player|
           player.update(tribe_id: Tribe.where(season: Setting.season, role_id: tribes[0].id).last.id)

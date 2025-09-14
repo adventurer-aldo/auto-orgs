@@ -6,7 +6,7 @@ class Sunny
       event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
       break if [JURY_SPLITTER, PRE_JURY_SPLITTER, PLAYING_SPLITTER].include? event.channel.id
 
-      event.channel.parent = Setting.last.archive_category
+      event.channel.parent = Setting.archive_category
       event.respond ':ballot_box_with_check: **This channel has been archived!**'
       event.channel.permission_overwrites.each do |role, _perms|
         if event.server.role(role)
@@ -23,7 +23,7 @@ class Sunny
       event.channel.parent.children.each do |channel|
         next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER,PLAYING_SPLITTER].include? channel.id
 
-        channel.parent = Setting.last.archive_category
+        channel.parent = Setting.archive_category
         BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
         channel.permission_overwrites.each do |role, _perms|
           if event.server.role(role)
@@ -44,9 +44,9 @@ class Sunny
   BOT.command :dehive, description: 'Delete all channels on the Archives category.' do |event|
     break unless HOSTS.include? event.user.id
 
-    return 'You cannot do this action while inside the archives.' if event.channel.parent == Setting.last.archive_category
+    return 'You cannot do this action while inside the archives.' if event.channel.parent == Setting.archive_category
 
-    BOT.channel(Setting.last.archive_category).children.each(&:delete)
+    BOT.channel(Setting.archive_category).children.each(&:delete)
     return 'The archives have been deleted.'
   end
 

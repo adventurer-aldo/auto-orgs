@@ -14,7 +14,7 @@ class Sunny
     if Alliances::Group.where(channel_id: event.channel.id).exists?
       Alliances::Group.destroy_by(channel_id: event.channel.id)
       event.respond(":broken_heart: **This alliance has been disbanded...**")
-      event.channel.parent = Setting.last.archive_category
+      event.channel.parent = Setting.archive_category
       event.channel.permission_overwrites.each do |role, _perms|
         unless role == EVERYONE || event.server.role(role).nil? == false
           event.channel.define_overwrite(event.server.member(role), 1088, 2048)

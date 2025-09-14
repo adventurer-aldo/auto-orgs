@@ -19,5 +19,17 @@ class Setting < ActiveRecord::Base
     return find_by(name: 'tribes').value.map(&:to_i)
   end
 
+  def self.game_stage=(value)
+    find_by(name: 'game_stage').update(value: [value])
+  end
+
+  def self.tribes=(value)
+    find_by(name: 'tribes').update(value:)
+  end
+
+  def self.archive_category=(value)
+    find_by(name: 'archive_category').update(value:)
+  end
+
 
 end

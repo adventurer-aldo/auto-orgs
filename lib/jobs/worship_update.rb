@@ -3,7 +3,7 @@ class Sunny
     self.run_at = proc { Time.now + (5 * 60)}
 
     def run
-      score_strings = Setting.last.tribes.map do |tribe_id|
+      score_strings = Setting.tribes.map do |tribe_id|
         t = Tribe.find_by(id: tribe_id)
         "#{t.name} — #{t.challenges.first.end_time} Points"
       end

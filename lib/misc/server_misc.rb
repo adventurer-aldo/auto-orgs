@@ -1,6 +1,6 @@
 class Sunny
   BOT.command(:set_archive) do |event, *args|
-    Setting.last.update(archive_category: args.join(''))
+    Setting.archive_category = args
     return "#{BOT.channel(args.join('').to_i).mention} has been set as the **Archive Category!**"
   end
   
