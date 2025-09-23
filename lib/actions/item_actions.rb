@@ -65,12 +65,12 @@ class Sunny
   end
 
   BOT.command :play, description: 'Plays an item.' do |event, *args|
-    break unless event.user.id.player?
+    break unless event.user.id.player? || event.user.id.host?
 
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
+    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
     item = player.items.where(code: args[0])
 
     break unless [player.confessional, player.submissions].include? event.channel.id
