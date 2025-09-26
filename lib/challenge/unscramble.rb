@@ -14,7 +14,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     case individual.stage
     when 0
@@ -29,7 +29,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 1
       individual.update(stage: individual.stage + 1)
@@ -42,7 +42,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 2
       individual.update(stage: individual.stage + 1)
@@ -55,7 +55,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 3
       individual.update(stage: individual.stage + 1)
@@ -68,7 +68,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 4
       individual.update(stage: individual.stage + 1)
@@ -81,7 +81,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 5
       individual.update(stage: individual.stage + 1)
@@ -94,7 +94,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 6
       individual.update(stage: individual.stage + 1)
@@ -107,7 +107,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 7
       individual.update(stage: individual.stage + 1)
@@ -120,7 +120,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 8
       individual.update(stage: individual.stage + 1)
@@ -133,7 +133,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 9
       individual.update(stage: individual.stage + 1)
@@ -146,7 +146,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 10
       individual.update(stage: individual.stage + 1)
@@ -159,7 +159,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 11
       individual.update(stage: individual.stage + 1)
@@ -172,7 +172,7 @@ class Sunny
     next unless event.user.id.player?
 
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
-    individual = player.individuals.first
+    individual = player.challenges.first
 
     if individual.stage == 12
       end_time = Time.now.to_i
