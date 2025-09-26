@@ -5,7 +5,7 @@ class Sunny
   BOT.command :prepare do |event|
     break unless event.user.id.host?
 
-    Player.where(season_id: Setting.last.season).each do |player|
+    Player.where(season_id: Setting.season).each do |player|
       Challenges::Individual.create(player_id: player.id, stage: 0)
     end
   end
