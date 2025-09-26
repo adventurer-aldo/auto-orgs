@@ -13,7 +13,7 @@ class Sunny
   BOT.command :unscramble do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     case individual.stage
@@ -28,7 +28,7 @@ class Sunny
   BOT.command :karma do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 1
@@ -41,7 +41,7 @@ class Sunny
   BOT.command :pepsi do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 2
@@ -54,7 +54,7 @@ class Sunny
   BOT.command :idan do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 3
@@ -67,7 +67,7 @@ class Sunny
   BOT.command :mew do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 4
@@ -80,7 +80,7 @@ class Sunny
   BOT.command :lynn do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 5
@@ -93,7 +93,7 @@ class Sunny
   BOT.command :emerald do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 6
@@ -106,7 +106,7 @@ class Sunny
   BOT.command :iromi do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 7
@@ -119,7 +119,7 @@ class Sunny
   BOT.command :isaiah do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 8
@@ -132,7 +132,7 @@ class Sunny
   BOT.command :hunjax do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 9
@@ -145,7 +145,7 @@ class Sunny
   BOT.command :redpanda do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 10
@@ -158,7 +158,7 @@ class Sunny
   BOT.command :stew do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 11
@@ -171,7 +171,7 @@ class Sunny
   BOT.command :tabi do |event|
     next unless event.user.id.player?
 
-    player = player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
     individual = player.individuals.first
 
     if individual.stage == 12
