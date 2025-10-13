@@ -5,7 +5,7 @@ class Sunny
     council_and_votes = Setting.season.councils.map do |council| 
       council.votes.map do |vote| 
         names = vote.votes.map do |vote_id| 
-          Player.find_by(id: vote_id).name
+          vote_id == 0 ? "nobody" : Player.find_by(id: vote_id).name
         end.join(', ')
         "**#{vote.player.name}** voted #{names}"
       end.join("\n")
