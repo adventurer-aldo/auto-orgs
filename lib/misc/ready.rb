@@ -4,9 +4,10 @@ class Sunny
     BOT.game = 'Season 4!'
     council_and_votes = Setting.season.councils.map do |council| 
       council.votes.map do |vote| 
-        "**#{vote.player.name}** voted #{vote.votes.map do |vote_id| 
-          Player.find_by(id: vote_id)
-        end.join(', ')}"
+        names = vote.votes.map do |vote_id| 
+          Player.find_by(id: vote_id).name
+        end.join(', ')
+        "**#{vote.player.name}** voted #{names}"
       end.join("\n")
     end
     council_and_votes.each do |council_votes|
