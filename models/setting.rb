@@ -12,7 +12,7 @@ class Setting < ActiveRecord::Base
   end
 
   def self.season
-    return season_id
+    return Season.find_by(id: season_id)
   end
 
   def self.season_id=(value)
