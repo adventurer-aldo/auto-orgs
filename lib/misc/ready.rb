@@ -2,7 +2,13 @@ class Sunny
   BOT.ready do
     BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello, our world! <a:torch:1400359863393062952>')
     BOT.game = 'Season 4!'
-    council_and_votes = Setting.season.councils.map { |council| council.votes.map { |vote| "**#{vote.player.name}** voted #{vote.votes.map { |vote_id| Player.find_by(id: vote_id)&.to_s.name}.join(', ')}"}.join("\n")}
+    council_and_votes = Setting.season.councils.map do |council| 
+      council.votes.map do |vote| 
+        "**#{vote.player.name}** voted #{vote.votes.map do |vote_id| 
+          Player.find_by(id: vote_id)&.to_s.name
+        end.join(', ')}"
+      end.join("\n")
+    end
     council_and_votes.each do |council_votes|
       BOT.send_message(HOST_CHAT, council_votes)
     end
