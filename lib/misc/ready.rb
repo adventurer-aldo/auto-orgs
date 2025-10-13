@@ -10,8 +10,11 @@ class Sunny
         "**#{vote.player.name}** voted #{names}"
       end.join("\n")
     end
-    council_and_votes.each do |council_votes|
+    council_and_votes.each_with_index do |council_votes, index|
+      BOT.send_message(HOST_CHAT, "# Tribal Council No. #{index + 1}")
+      
       BOT.send_message(HOST_CHAT, council_votes)
+      sleep(30)
     end
     make_item_commands
 
