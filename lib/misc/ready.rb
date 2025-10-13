@@ -1,6 +1,6 @@
 class Sunny
   BOT.ready do
-    BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello, new world! <a:torch:1400359863393062952>')
+    BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello, world! <a:torch:1400359863393062952>')
     BOT.game = 'Season 4!'
     # BOT.send_message(HOST_CHAT, QueJob.all)
     make_item_commands
