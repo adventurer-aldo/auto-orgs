@@ -5,7 +5,7 @@ class Sunny
     make_item_commands
 
     test = BOT.channel(1434870641156423832)
-    conn = BOT.voice_connect(test)
+    conn = BOT.voice_connect(test, false)
     sleep(5)
     puts("Yeah.")
     conn.play_dca("https://cdn.discordapp.com/attachments/1378044547287879731/1434886839155560541/testaudio.dca?ex=6909f601&is=6908a481&hm=e6a70cb16f88488b856d314cca7b8fb4c8674ac4941a04abf9758c9de81ef409&")
