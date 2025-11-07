@@ -15,6 +15,6 @@ class Sunny
     a = Tempfile.new(["output", ".raw"])
     b = URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436347056762650838/output.raw?ex=690f45f0&is=690df470&hm=a6d02e56f4e0f885397971377d4df27a807fc9215507a4846b8bf86a627c70d8&").read
     a.write(b)
-    conn.play(a.path)
+    conn.play_file(a.path)
   end
 end
