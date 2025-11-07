@@ -1,6 +1,6 @@
 class Sunny
   BOT.ready do
-    BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello our musical world! <a:torch:1400359863393062952>')
+    BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello? ur musical world! <a:torch:1400359863393062952>')
     BOT.game = 'Alvivor Season 4: ???!'
     make_item_commands
 
