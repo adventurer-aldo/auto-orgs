@@ -38,7 +38,7 @@ class Sunny
 
   def self.run
     puts 'Sunny Go!'
-    BOT.run false
+    BOT.run true
   end
 end
 
