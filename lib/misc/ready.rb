@@ -13,7 +13,7 @@ class Sunny
     conn = BOT.voice_connect(test)
     puts("Yeah.")
     a = Tempfile.new(["output", ".raw"])
-    b = URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436347056762650838/output.raw?ex=690f45f0&is=690df470&hm=a6d02e56f4e0f885397971377d4df27a807fc9215507a4846b8bf86a627c70d8&").read
+    b = URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436350018448658634/output.wav?ex=690f48b2&is=690df732&hm=257c2b54d5c06b7835167469dbf0dc9f82fe4d3585c382e9949a629ba4498bcc&").read
     a.write(b)
     conn.play_file(a.path)
   end
