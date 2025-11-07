@@ -8,10 +8,10 @@ class Sunny
    # Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
   end
 
-  BOT.command :audio do |event|
+  BOT.command :aaa do |event|
     test = BOT.channel(1434870641156423832)
     conn = BOT.voice_connect(test)
     puts("Yeah.")
-    conn.play_io(URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436314774622310441/tally.ogg?ex=690f27df&is=690dd65f&hm=b209d8878d0377d0f72839398787c0191e375fb666e48265451e40151bf82f7b&").open)
+    conn.play(URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436347056762650838/output.raw?ex=690f45f0&is=690df470&hm=a6d02e56f4e0f885397971377d4df27a807fc9215507a4846b8bf86a627c70d8&").open)
   end
 end
