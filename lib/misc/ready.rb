@@ -9,9 +9,6 @@ class Sunny
    test = BOT.channel(1434870641156423832)
    conn = BOT.voice_connect(test)
    puts("Yeah.")
-   a = Tempfile.new(["output", ".raw"])
-   b = URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1436350018448658634/output.wav?ex=690f48b2&is=690df732&hm=257c2b54d5c06b7835167469dbf0dc9f82fe4d3585c382e9949a629ba4498bcc&").read
-   a.write(b)
-   conn.play_file(a.path)
+   conn.play_dca(URI.parse("https://cdn.discordapp.com/attachments/1378044547287879731/1434886839155560541/testaudio.dca?ex=690f3c01&is=690dea81&hm=ecbbcb1a765ff8409eadb628b3f8b6f5b97bd57bd1a1cbfec29fcda1289415db&").open)
   end
 end
