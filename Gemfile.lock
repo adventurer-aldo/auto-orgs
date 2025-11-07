@@ -111,6 +111,7 @@ DEPENDENCIES
   dotenv
   mini_magick
   open-uri
+  opus-ruby
   pg
   que
   require_all
