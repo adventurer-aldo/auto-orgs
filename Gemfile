@@ -13,6 +13,8 @@ gem 'mini_magick'
 
 gem 'open-uri'
 
+gem 'opus-ruby'
+
 gem 'pg'
 
 gem 'que'
