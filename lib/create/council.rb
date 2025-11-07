@@ -54,7 +54,7 @@ class Sunny
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 55) + (60 * 60 * 23)})
     channel.start_typing
     sleep(2)
-    BOT.send_message(channel.id, "**Welcome to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
+    BOT.send_message(channel.id, "# **Welcome #{Council.where(tribes: tribe).size > 1 ? 'back ' : ''}to Tribal Council, #{tribes.map(&:mention).join(' ')}**")
     if Setting.game_stage == 1
       BOT.send_file(channel.id, URI.parse('https://i.ibb.co/qD2FKNF/fires.gif').open, filename: 'fires.gif')
       jury = Player.where(status: 'Jury', season_id: Setting.season_id)
