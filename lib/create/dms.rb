@@ -32,13 +32,13 @@ class Sunny
     end
   end
 
-  BOT.command :create_dms do |event|
-    break unless event.user.id.host?
+  def self.create_dms
 
     tribes = Setting.tribes.map { |id| Tribe.find_by(id: id) }
     tribes.each do |tribe|
       existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
+      category.sort_after(TRIBES)
       index = 0
       players = tribe.players.where(status: ALIVE)
       outsiders = Player.where(status: ALIVE, season_id: Setting.season).where.not(tribe_id: tribe.id)
@@ -83,6 +83,12 @@ class Sunny
         end
       end
     end
+  end
+
+  BOT.command :create_dms do |event|
+    break unless event.user.id.host?
+
+    create_dms
   end
 
 end

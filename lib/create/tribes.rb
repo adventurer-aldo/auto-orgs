@@ -69,7 +69,7 @@ class Sunny
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
         end
-
+        create_dms
         return "And that's about it. Go meet your new tribemates!"
       else
         return "There's not enough castaways to split equally amongst those roles."
@@ -161,6 +161,7 @@ class Sunny
         event.respond '.'
         event.channel.start_typing
         sleep(5)
+        create_dms
         event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'
       end
 
