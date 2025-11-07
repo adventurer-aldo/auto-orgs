@@ -10,6 +10,6 @@ class Sunny
     conn = BOT.voice_connect(test)
     puts("Yeah. We go.")
     url = "https://cdn.discordapp.com/attachments/1378044547287879731/1436350018448658634/output.wav?ex=690f48b2&is=690df732&hm=257c2b54d5c06b7835167469dbf0dc9f82fe4d3585c382e9949a629ba4498bcc&"
-    conn.play(URI.parse(url).open)
+    conn.play_file(url)
   end
 end
