@@ -8,8 +8,17 @@ class Sunny
     # Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
   end
 
-  BOT.command :store do |event|
+  BOT.command :store do |event, *args|
     return "You didn't upload anything in your message!" unless event.message.attachments.size.positive?
+    return "You didn't write a filename!" unless args.size.positive?
+    
+    Shrine.storages[:store].upload(event.message.attachments[0], args.join(''))
+  end
+  
+  BOT.command :retrieve do |event, *args|
+    return "You didn't write a filename!" unless args.size.positive?
+
+    event.channel.send_file(Shrine.storages[:store].open(args.join('')), filename: args.join(''))
   end
 
   BOT.command :aaa do |event|
