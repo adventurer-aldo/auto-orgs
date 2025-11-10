@@ -9,7 +9,7 @@ class Sunny
   end
 
   BOT.command :store do |event|
-    return "You didn't upload anything in your message!" unless event.message.attachments.positive?
+    return "You didn't upload anything in your message!" unless event.message.attachments.size.positive?
   end
 
   BOT.command :aaa do |event|
