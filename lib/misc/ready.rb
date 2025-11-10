@@ -12,7 +12,7 @@ class Sunny
     return "You didn't upload anything in your message!" unless event.message.attachments.size.positive?
     return "You didn't write a filename!" unless args.size.positive?
     
-    Shrine.storages[:store].upload(event.message.attachments[0], args.join(''))
+    Shrine.storages[:store].upload(URI.parse(event.message.attachments[0].url), args.join(''))
   end
   
   BOT.command :retrieve do |event, *args|
