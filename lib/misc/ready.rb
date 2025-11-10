@@ -8,6 +8,10 @@ class Sunny
     # Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
   end
 
+  BOT.command :store do |event|
+    return "You didn't upload anything in your message!" unless event.message.attachments.positive?
+  end
+
   BOT.command :aaa do |event|
     test = BOT.channel(1434870641156423832)
     conn = BOT.voice_connect(test)
