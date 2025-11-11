@@ -5,7 +5,7 @@ ruby "3.4.5"
 
 gem 'activerecord'
 
-gem 'discordrb', github: 'shardlab/discordrb', branch: 'main'
+gem 'discordrb', github: 'shardlab/discordrb', branch: 'feat/voice-encoding-2025-06-22'
 
 gem 'dotenv'
 
