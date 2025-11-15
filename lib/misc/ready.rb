@@ -27,6 +27,7 @@ class Sunny
     puts("Yeah. We go.")
     file = Shrine.storages[:store].open("tally_test.dca")
     conn.play_dca(file)
+    conn.play_dca(file)
     BOT.send_message(HOST_CHAT, "Looks like it's time to boil up.")
     conn.destroy
   end
