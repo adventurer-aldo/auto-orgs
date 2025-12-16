@@ -2,7 +2,7 @@ class Sunny
   BOT.member_join do |event|
     BOT.channel(USER_JOIN_CHANNEL).send_embed do |embed|
       embed.title = "#{event.user.display_name}'s time here has begun! :arrow_forward:"
-      embed.description = "Welcome! We're glad to have you here!\n**Season 4**'s applications are on the horizon..."
+      embed.description = "**Welcome to Alvivor!**\nWe're glad to have you here!\n**Season 4**'s applications are on the horizon..."
       embed.color = 'ffdf15'
       embed.thumbnail = Discordrb::Webhooks::EmbedThumbnail.new(url: event.user.avatar_url)
     end
