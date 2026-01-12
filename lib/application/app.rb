@@ -1,10 +1,10 @@
 class Sunny
-  BOT.command :application_thing do |event|
+  def self.application_thing
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.button(custom_id: "application_start_button", label: "🍊 Start Application", style: 3) }
     embed = Discordrb::Webhooks::Embed.new
     embed.title = "Applications for Alvivor Season 4: Fruits"
-    embed.description = "Alumni and newbies are allowed to apply to become one of 16 Castaways. Newbies and alumni who haven't played more than 1 season will be given priority.\nClick the button below to begin your application!"
+    embed.description = "Alumni and newbies are allowed to apply to become one of **16 Castaways**. \nNewbies and alumni who haven't played more than 1 season will be given priority.\n\nClick the button below to begin your application!"
     embed.color = "2A388A"
     BOT.channel(1128055783519686756).send_message("", false, embed, nil, nil, nil, view)
   end
