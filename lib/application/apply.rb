@@ -14,7 +14,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 1'
-      embed.description = "Do you believe in spirits? Why?"
+      embed.description = "Which is your favorite fruit and why?"
       embed.color = '9a5cd8'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply2` when you are done.')
     end
@@ -24,7 +24,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 2'
-      embed.description = "People who don't walk on this earth with us any longer... Where do you think they go to?"
+      embed.description = "Do you eat fruits because they're healthy, tasty or not at all?"
       embed.color = '9a5cd8'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply3` when you are done.')
     end
@@ -45,7 +45,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 4'
-      embed.description = 'Do you always honor your promises?'
+      embed.description = 'Do you forgive people who have you wronged you? Why or why not?'
       embed.color = '9a5cd8'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply5` when you are done.')
     end
@@ -55,7 +55,7 @@ class Sunny
     break unless event.channel.parent == 1128056313721659423
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 5'
-      embed.description = "Imagine the following scenario:\n```You're in a team/tribe of 5, attending Tribal Council, where one of you will be voted out of the game by the tribe. Two of your tribemates are a solid duo, never-gonna-backstab-you type. The other two are... floaters. They'll do whatever as long as they don't get voted out. They're not close, even!```Which duo would you side with?"
+      embed.description = "Between loyalty and opportunity to get ahead, which will you choose? And does that apply for real life or for ORGs?"
       embed.color = '9a5cd8'
       embed.footer = Discordrb::Webhooks::EmbedFooter.new(text: 'Use the command `!apply6` when you are done.')
     end

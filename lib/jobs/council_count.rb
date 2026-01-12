@@ -214,9 +214,9 @@ class Sunny
           sleep(2)
           case Setting.game_stage
           when 0
-            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls is...**")
+            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from Alvivor Season 4: Fruits is...**")
           when 1
-            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 3: Spirits & Souls and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.season).size].downcase} member of the Jury is...**")
+            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from Alvivor Season 4: Fruits and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.season).size].downcase} member of the Jury is...**")
           end
           sleep(5)
           lame = ' (NO PARCHMENT)'
