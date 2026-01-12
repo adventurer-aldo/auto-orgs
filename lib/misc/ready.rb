@@ -1,7 +1,6 @@
 class Sunny
   BOT.ready do
     BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello! Our fruity world! <a:torch:1400359863393062952>')
-    application_thing()
     BOT.game = 'Alvivor Season 4: Fruits'
     #make_item_commands
     # Add Ons
