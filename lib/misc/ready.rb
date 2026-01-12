@@ -2,7 +2,6 @@ class Sunny
   BOT.ready do
     BOT.send_message(HOST_CHAT, '# <a:torch:1400359863393062952> Hello! Our fruity world! <a:torch:1400359863393062952>')
     BOT.game = 'Alvivor Season 4: Fruits'
-    Sunny.application_thing
     #make_item_commands
     # Add Ons
     # hayden = Player.find_by(user_id: 198321560153489408, season_id: 2)
