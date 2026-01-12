@@ -1,5 +1,5 @@
 class Sunny
-  def application_thing
+  BOT.command :application_thing do |event|
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.button(custom_id: "application_start_button", label: "🍊 Start Application", style: 3) }
     embed = Discordrb::Webhooks::Embed.new
