@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.4.5"
+ruby "4.0.1"
 
 gem 'activerecord'
 
-gem 'discordrb', github: 'shardlab/discordrb', branch: 'feat/voice-encoding-2025-06-22'
+gem 'discordrb', github: 'shardlab/discordrb' # , branch: 'feat/voice-encoding-2025-06-22'
 
 gem 'dotenv'
 
