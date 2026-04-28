@@ -1,27 +1,4 @@
 class Sunny
-  BOT.command :make_parchment do |event, *args|
-    break unless event.user.id.host?
-
-    text = args.join(' ')
-    text = event.user.display_name if text == ''
-    event.channel.send_file(generate_parchment(text), filename: 'parchment.png')
-  end
-
-  BOT.command :replace_pet_food_items do |event|
-    break unless event.user.id.host?
-
-    changed = 0
-    Item.where(season_id: Setting.season_id).find_each do |item|
-      functions = Array(item.functions)
-      next unless functions.include?('pet_food')
-
-      item.update(functions: functions.map { |function| function == 'pet_food' ? 'extra_vote' : function }.uniq)
-      changed += 1
-    end
-
-    event.respond("Replaced `pet_food` with `extra_vote` on #{changed} item#{changed == 1 ? '' : 's'}.")
-  end
-
   BOT.command :test do |event, *args|
     season = args[0] ? Season.find_by(id: args[0].to_i) : Setting.season
 
