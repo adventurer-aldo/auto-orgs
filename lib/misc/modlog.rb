@@ -45,6 +45,7 @@ class Sunny
     existing = modlog_message_cache[event.message.id] || {}
     modlog_message_cache[event.message.id] = {
       author: modlog_user_info(event.user),
+      server_id: event.server&.id,
       suspicious_mentions: modlog_suspicious_mentions?(event),
       timestamp: existing[:timestamp] || event.timestamp || Time.now,
       edited_timestamp: existing[:edited_timestamp],
@@ -81,6 +82,7 @@ class Sunny
     message.update(
       content: event.content,
       channel_id: event.channel.id,
+      server_id: event.server&.id,
       timestamp: event.timestamp || Time.now
     )
   end
@@ -111,13 +113,14 @@ class Sunny
     message.update(
       content: new_content,
       channel_id: event.channel.id,
+      server_id: event.server&.id,
       timestamp: created_at || event.timestamp || Time.now,
       edited_timestamp: edited_at
     )
   end
 
   BOT.message_delete do |event|
-    message = Message.find_by(message_id: event.id)
+    message = Message.find_by(message_id: event.id, server_id: event.server&.id)
     message_info = modlog_message_cache.delete(event.id)
     author = message_info&.dig(:author)
     content = message&.content
