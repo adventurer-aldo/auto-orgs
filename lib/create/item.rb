@@ -51,4 +51,29 @@ class Sunny
     token = prepare_pending_item(user_id: event.user.id, channel_id: event.channel.id, **parsed)
     event.channel.send_message(item_summary(pending_items[token]), false, nil, nil, nil, nil, item_confirmation_view(token))
   end
+
+  BOT.command :remove_item, description: "Deletes an item from the current season." do |event, *args|
+    break unless event.user.id.host?
+
+    code = args.first.to_s
+    if code.empty?
+      items = Item.where(season_id: Setting.season_id).order(:name)
+      if items.empty?
+        event.respond('There are no current-season items to delete.')
+      else
+        text = items.size > 25 ? 'Choose an item to delete. Showing the first 25 by name.' : 'Choose an item to delete.'
+        event.channel.send_message(text, false, nil, nil, nil, nil, item_remove_select_view(event.user.id))
+      end
+      break
+    end
+
+    item = Item.find_by(code: code, season_id: Setting.season_id)
+    unless item
+      event.respond("No current-season item exists with code `#{code}`.")
+      break
+    end
+
+    token = prepare_pending_item_removal(user_id: event.user.id, item_id: item.id)
+    event.channel.send_message(item_removal_summary(item), false, nil, nil, nil, nil, item_removal_confirmation_view(token))
+  end
 end

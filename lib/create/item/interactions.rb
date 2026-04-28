@@ -105,7 +105,7 @@ class Sunny
 
     item = create_pending_item(token)
     pending_items.delete(token)
-    make_item_commands
+    register_item_command(item)
     event.update_message(content: '**Your item has been created!**', components: nil)
 
     BOT.channel(payload[:channel_id]).send_embed('**New item has been created!**') do |embed|
@@ -114,5 +114,60 @@ class Sunny
       embed.description << "**Description:** #{item.description}\n"
       embed.description << "**Restricted To:** #{item_restriction_name(item.own_restriction)}"
     end
+  end
+
+  BOT.string_select(custom_id: /\Aitem_remove_select:/) do |event|
+    user_id = event.custom_id.split(':', 2).last.to_i
+    if user_id != event.user.id
+      event.respond(content: 'Only the host who opened this menu can use it.', ephemeral: true)
+      break
+    end
+
+    item = Item.find_by(id: event.values.first.to_i, season_id: Setting.season_id)
+    unless item
+      event.update_message(content: 'That item no longer exists.', components: nil)
+      break
+    end
+
+    token = prepare_pending_item_removal(user_id: event.user.id, item_id: item.id)
+    event.update_message(content: item_removal_summary(item), components: item_removal_confirmation_view(token))
+  end
+
+  BOT.button(custom_id: /\Aitem_remove_cancel:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_item_removals[token]
+
+    if payload.nil? || payload[:user_id] != event.user.id
+      event.respond(content: 'This item deletion is no longer available.', ephemeral: true)
+      break
+    end
+
+    pending_item_removals.delete(token)
+    event.update_message(content: 'Item deletion cancelled.', components: nil)
+  end
+
+  BOT.button(custom_id: /\Aitem_remove_confirm:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_item_removals[token]
+
+    if payload.nil? || payload[:user_id] != event.user.id
+      event.respond(content: 'This item deletion is no longer available.', ephemeral: true)
+      break
+    end
+
+    item = Item.find_by(id: payload[:item_id], season_id: Setting.season_id)
+    pending_item_removals.delete(token)
+
+    unless item
+      event.update_message(content: 'That item no longer exists.', components: nil)
+      break
+    end
+
+    name = item.name
+    code = item.code
+    item.destroy
+    BOT.remove_command(code.to_sym)
+    item_command_codes.delete(code)
+    event.update_message(content: "**Deleted item:** #{name} (`#{code}`)", components: nil)
   end
 end

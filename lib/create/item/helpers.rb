@@ -3,9 +3,19 @@ require 'shellwords'
 
 class Sunny
   @pending_items = {}
+  @pending_item_removals = {}
+  @item_command_codes = []
 
   def self.pending_items
     @pending_items ||= {}
+  end
+
+  def self.pending_item_removals
+    @pending_item_removals ||= {}
+  end
+
+  def self.item_command_codes
+    @item_command_codes ||= []
   end
 
   def self.item_code_name(code)
@@ -45,6 +55,50 @@ class Sunny
       row.button(custom_id: "item_cancel:#{token}", label: 'Cancel', style: :danger)
     end
     view
+  end
+
+  def self.item_removal_summary(item)
+    <<~TEXT
+      **Delete this item?**
+      **Name:** #{item.name}
+      **Description:** #{item.description}
+      **Functions:** #{Array(item.functions).map { |function| item_code_name(function) }.join(', ')}
+      **Code:** `#{item.code}`
+      **Restricted To:** #{item_restriction_name(item.own_restriction)}
+      **Owned By:** #{item.player_id.nil? ? 'No one' : Player.find_by(id: item.player_id)&.name || "Player ID #{item.player_id}"}
+    TEXT
+  end
+
+  def self.item_removal_confirmation_view(token)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.button(custom_id: "item_remove_confirm:#{token}", label: 'Delete', style: :danger)
+      row.button(custom_id: "item_remove_cancel:#{token}", label: 'Cancel', style: :secondary)
+    end
+    view
+  end
+
+  def self.item_remove_select_view(user_id)
+    items = Item.where(season_id: Setting.season_id).order(:name)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.string_select(
+        custom_id: "item_remove_select:#{user_id}",
+        options: items.first(25).map { |item| item_remove_select_option(item) },
+        placeholder: 'Choose an item to delete',
+        min_values: 1,
+        max_values: 1
+      )
+    end
+    view
+  end
+
+  def self.item_remove_select_option(item)
+    {
+      label: item.name[0, 100],
+      value: item.id.to_s,
+      description: "#{item.code} | #{Array(item.functions).map { |function| item_code_name(function) }.join(', ')}"[0, 100]
+    }
   end
 
   def self.item_tribe_options
@@ -147,5 +201,14 @@ class Sunny
       own_restriction: payload[:own_restriction],
       season_id: Setting.season_id
     )
+  end
+
+  def self.prepare_pending_item_removal(user_id:, item_id:)
+    token = SecureRandom.hex(8)
+    pending_item_removals[token] = {
+      user_id: user_id,
+      item_id: item_id
+    }
+    token
   end
 end
