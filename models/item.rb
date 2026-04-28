@@ -4,7 +4,6 @@ class Item < ActiveRecord::Base
   ].freeze
 
   NOW_FUNCTIONS = %w[
-    pet_food
     extra_vote
     steal_vote
     block_vote
@@ -12,8 +11,6 @@ class Item < ActiveRecord::Base
 
   TALLIED_FUNCTIONS = %w[
     idol
-    idol_nullifier
-    swap_idol
   ].freeze
 
   belongs_to :season, foreign_key: 'season_id'

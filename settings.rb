@@ -58,12 +58,9 @@ class Sunny
 
   DEFINED_FUNCTIONS = %w[
       idol
-      idol_nullifier
       steal_vote
       block_vote
-      pet_food
       extra_vote
-      swap_idol
       safety_without_power
   ]
 
