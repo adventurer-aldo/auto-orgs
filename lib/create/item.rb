@@ -291,7 +291,7 @@ class Sunny
     make_item_commands
     event.update_message(content: '**Your item has been created!**', components: nil)
 
-    BOT.channel(payload[:channel_id]).send_embed do |embed|
+    BOT.channel(payload[:channel_id]).send_embed('**New item has been created!**') do |embed|
       embed.title = item.name
       embed.description = "**Code:** `#{item.code}`\n"
       embed.description << "**Description:** #{item.description}\n"
