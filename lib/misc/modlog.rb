@@ -14,13 +14,7 @@ class Sunny
   def self.modlog_time(time)
     return 'Unknown' if time.nil?
 
-    "<t:#{time.to_i}:F>"
-  end
-
-  def self.modlog_relative_time(time)
-    return 'Unknown' if time.nil?
-
-    "<t:#{time.to_i}:R>"
+    "<t:#{time.to_i}:f>"
   end
 
   def self.modlog_user_info(user)
@@ -53,7 +47,7 @@ class Sunny
       author: modlog_user_info(event.user),
       suspicious_mentions: modlog_suspicious_mentions?(event),
       timestamp: existing[:timestamp] || event.timestamp || Time.now,
-      edited_timestamp: Time.now,
+      edited_timestamp: existing[:edited_timestamp],
       cached_at: existing[:cached_at] || Time.now
     }
   end
@@ -101,6 +95,7 @@ class Sunny
     new_content = event.content
     created_at = message.timestamp || modlog_message_cache[event.message.id][:timestamp]
     edited_at = Time.now
+    modlog_message_cache[event.message.id][:edited_timestamp] = edited_at
 
     BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
       embed.title = 'Message Edited'
@@ -108,8 +103,8 @@ class Sunny
       embed.description = "Channel: #{modlog_channel_name(event.channel)}"
       embed.add_field(name: 'Before', value: modlog_block(old_content))
       embed.add_field(name: 'After', value: modlog_block(new_content))
-      embed.add_field(name: 'Sent', value: "#{modlog_time(created_at)} (#{modlog_relative_time(created_at)})", inline: true)
-      embed.add_field(name: 'Edited', value: "#{modlog_time(edited_at)} (#{modlog_relative_time(edited_at)})", inline: true)
+      embed.add_field(name: 'Sent', value: modlog_time(created_at), inline: true)
+      embed.add_field(name: 'Edited', value: modlog_time(edited_at), inline: true)
       embed.color = '#f0ad4e'
     end
 
@@ -137,7 +132,7 @@ class Sunny
         embed.author = modlog_embed_author(author)
         embed.description = "Channel: #{modlog_channel_name(event.channel)}"
         embed.add_field(name: 'Note', value: 'Multiple deleted messages from this user had @everyone, @here, or multiple mentions. Further similar deletes are being suppressed briefly.')
-        embed.add_field(name: 'Deleted', value: "#{modlog_time(deleted_at)} (#{modlog_relative_time(deleted_at)})", inline: true)
+        embed.add_field(name: 'Deleted', value: modlog_time(deleted_at), inline: true)
         embed.color = '#d9534f'
       end
     end
@@ -152,9 +147,9 @@ class Sunny
       embed.author = modlog_embed_author(author)
       embed.description = "Channel: #{modlog_channel_name(event.channel)}"
       embed.add_field(name: 'Content', value: modlog_block(content))
-      embed.add_field(name: 'Sent', value: "#{modlog_time(created_at)} (#{modlog_relative_time(created_at)})", inline: true)
-      embed.add_field(name: 'Last Edited', value: "#{modlog_time(edited_at)} (#{modlog_relative_time(edited_at)})", inline: true) if edited_at
-      embed.add_field(name: 'Deleted', value: "#{modlog_time(deleted_at)} (#{modlog_relative_time(deleted_at)})", inline: true)
+      embed.add_field(name: 'Sent', value: modlog_time(created_at), inline: true)
+      embed.add_field(name: 'Last Edited', value: modlog_time(edited_at), inline: true) if edited_at
+      embed.add_field(name: 'Deleted', value: modlog_time(deleted_at), inline: true)
       embed.color = '#d9534f'
     end
 
