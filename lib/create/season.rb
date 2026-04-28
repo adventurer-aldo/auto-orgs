@@ -3,7 +3,8 @@ class Sunny
     break unless HOSTS.include? event.user.id
 
     newseason = Season.create(name: args.join(' '))
-    Setting.update(season: newseason.id, game_stage: 0)
+    Setting.season_id = newseason.id
+    Setting.game_stage = 0
     return 'New season created!'
   end
 end
