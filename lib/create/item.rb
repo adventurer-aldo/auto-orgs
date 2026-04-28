@@ -2,6 +2,24 @@ class Sunny
   # > Item
   # > Council
 
+  def self.item_type_name(type)
+    type.to_s.split('_').map(&:capitalize).join(' ')
+  end
+
+  BOT.command :items do |event, *args|
+    season_id = args[0]&.to_i || Setting.season_id
+    items = Item.where(season_id: season_id).order(:name)
+
+    return event.respond("No items found for Season #{season_id}.") if items.empty?
+
+    event.channel.send_embed do |embed|
+      embed.title = "Season #{season_id} Items"
+      embed.description = items.map do |item|
+        "**#{item.name}**\nType: #{item_type_name(item.timing)}\n#{item.description}"
+      end.join("\n\n")
+    end
+  end
+
   BOT.command :get_items do |event|
     Item.all.map { |item|  "#{item.name}, owned by #{[0, nil].include?(item.player_id) ? 'no one' : item.player.name } in Season #{item.season_id} — Code: `#{item.code}`"}.join("\n")
   end
