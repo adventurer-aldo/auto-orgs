@@ -1,19 +1,89 @@
 class Sunny
 
-  BOT.command :test do |event|
-    players_by_season = Player.all.group_by(&:season_id).sort_by { |season_id, _players| season_id || 0 }
+  BOT.command :test do |event, *args|
+    season = args[0] ? Season.find_by(id: args[0].to_i) : Setting.season
 
-    return event.respond('No players found.') if players_by_season.empty?
+    return event.respond('Season not found.') if season.nil?
 
-    players_by_season.each do |season_id, players|
-      ranked_players = players.sort_by { |player| [player.rank.nil? ? 1 : 0, player.rank || 0, player.name] }
-      rankings = ranked_players.map do |player|
-        rank = player.rank || '?'
-        "#{rank}. #{player.name}"
-      end
+    event.channel.send_file(Sunny.get_season_cast_image(season), filename: "season-#{season.id}.png")
+  end
 
-      event.respond("**Season #{season_id}**\n#{rankings.join("\n")}")
+  def self.get_season_cast_image(season)
+    players = Player.where(season_id: season.id).sort_by { |player| [player.rank.nil? ? 1 : 0, player.rank || 0, player.name] }
+    season_title = season.respond_to?(:name) && season.name.to_s != '' ? "#{season.id}: #{season.name}" : season.id
+    escape_html = ->(text) { text.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;') }
+
+    avatars = players.map do |player|
+      user = BOT.user(player.user_id)
+      avatar_url = user.avatar_url
+      %Q(
+        <div class="player">
+          <img class="avatar" src="#{avatar_url}">
+          <div class="name">#{escape_html.call(player.name)}</div>
+        </div>)
     end
+
+    base = %Q(
+      <section class="season-cast">
+        <h1>Season #{escape_html.call(season_title)}</h1>
+        <div class="players">
+          #{avatars.join('')}
+        </div>
+      </section>
+
+      <style>
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .season-cast {
+          background: #f7f2e8;
+          border: 8px solid #262626;
+          color: #262626;
+          padding: 28px;
+          width: 980px;
+        }
+
+        h1 {
+          font-size: 52px;
+          font-weight: 800;
+          line-height: 1;
+          margin: 0 0 28px;
+          text-align: center;
+        }
+
+        .players {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 24px 18px;
+        }
+
+        .player {
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
+
+        .avatar {
+          border: 5px solid #262626;
+          border-radius: 50%;
+          height: 140px;
+          object-fit: cover;
+          width: 140px;
+        }
+
+        .name {
+          font-size: 22px;
+          font-weight: 700;
+          margin-top: 10px;
+          max-width: 170px;
+          overflow-wrap: anywhere;
+          text-align: center;
+        }
+      </style>)
+
+    html_to_image(base)
   end
 
   def self.get_user_circular_avatar(user_id)
