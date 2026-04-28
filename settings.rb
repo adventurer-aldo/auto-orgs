@@ -75,6 +75,26 @@ class Sunny
 
   PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
 
+  def self.deny_every_spectate
+    Discordrb::Overwrite.new(Setting.everyone_role_id, deny: 3072)
+  end
+
+  def self.every_spectate
+    Discordrb::Overwrite.new(Setting.everyone_role_id, allow: 1088, deny: 2048)
+  end
+
+  def self.true_spectate
+    Discordrb::Overwrite.new(Setting.trusted_spectator_role_id, type: 'role', allow: 1088, deny: 2048)
+  end
+
+  def self.jury_spectate
+    Discordrb::Overwrite.new(Setting.jury_role_id, type: 'role', allow: 1088, deny: 2048)
+  end
+
+  def self.prejury_spectate
+    Discordrb::Overwrite.new(Setting.prejury_role_id, type: 'role', allow: 1088, deny: 2048)
+  end
+
   def self.hosts
     hosts = Setting.hosts_ids
     hosts.empty? ? HOSTS : hosts

@@ -19,7 +19,7 @@ class Sunny
     channel.parent = archive_category_for(event)
     channel.permission_overwrites.each do |role, _perms|
       if event.server.role(role)
-        if role != EVERYONE
+        if role != Setting.everyone_role_id
           channel.define_overwrite(event.server.role(role), 1024, 2048)
         else
           channel.define_overwrite(event.server.role(role), 0, 3072)
@@ -34,14 +34,14 @@ class Sunny
     break unless event.user.id.host?
 
     if args.join(' ') != 'all'
-      event.respond("**You can't archive this channel!**") if [JURY_SPLITTER,PRE_JURY_SPLITTER].include? event.channel.id
-      break if [JURY_SPLITTER, PRE_JURY_SPLITTER, PLAYING_SPLITTER].include? event.channel.id
+      event.respond("**You can't archive this channel!**") if [Setting.jury_splitter_channel_id,Setting.prejury_splitter_channel_id].include? event.channel.id
+      break if [Setting.jury_splitter_channel_id, Setting.prejury_splitter_channel_id, Setting.playing_splitter_channel_id].include? event.channel.id
 
       archive_channel(event.channel, event)
       event.respond ':ballot_box_with_check: **This channel has been archived!**'
     else
       event.channel.parent.children.each do |channel|
-        next channel if [JURY_SPLITTER,PRE_JURY_SPLITTER,PLAYING_SPLITTER].include? channel.id
+        next channel if [Setting.jury_splitter_channel_id,Setting.prejury_splitter_channel_id,Setting.playing_splitter_channel_id].include? channel.id
 
         archive_channel(channel, event)
         BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')

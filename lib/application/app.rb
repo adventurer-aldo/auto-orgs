@@ -15,9 +15,9 @@ class Sunny
       event.send_message(content: "You already started your application! Check <##{Application.find_by(user_id: event.user.id).channel_id}>.", ephemeral: true)
     else
       display_name = event.user.on(event.server.id).display_name
-      perms = [DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(event.user.id, type: 'member', allow: 3072)]
+      perms = [Sunny.deny_every_spectate, Discordrb::Overwrite.new(event.user.id, type: 'member', allow: 3072)]
       veteran = Player.where(user_id: event.user.id).exists?
-      new_application = Application.create(user_id: event.user.id, channel_id: event.server.create_channel(display_name + '-interview✍', parent: APPLICATIONS,
+      new_application = Application.create(user_id: event.user.id, channel_id: event.server.create_channel(display_name + '-interview✍', parent: Setting.applications_category_id,
       topic: "#{display_name}'s application. Your adventure in Alvivor #{veteran ? 'continues' : 'starts'} here!", permission_overwrites: perms).id)
 
       event.send_message(content: "Your application has begun! Go to <##{new_application.channel_id}> for more details.", ephemeral: true)

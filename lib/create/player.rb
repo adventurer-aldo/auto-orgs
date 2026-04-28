@@ -15,21 +15,21 @@ class Sunny
       player = Player.create(user_id: person.id, name: person.display_name, season_id: Setting.season,
       confessional: event.server.create_channel(
           "#{person.display_name}-confessional",
-          parent: CONFESSIONALS,
+          parent: Setting.confessionals_category_id,
           topic: "#{person.display_name}'s Confessional. This is where you'll talk to the spectators about your game!",
           permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
-          TRUE_SPECTATE, DENY_EVERY_SPECTATE]).id,
+          Sunny.true_spectate, Sunny.deny_every_spectate]).id,
       submissions: event.server.create_channel("#{person.display_name}-submissions",
-          parent: CONFESSIONALS,
+          parent: Setting.confessionals_category_id,
           topic: 'Your Submissions channel. Submit challenge scores, check your inventory and play your items!',
           permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
-          DENY_EVERY_SPECTATE]).id)
+          Sunny.deny_every_spectate]).id)
 
-      person.on(event.server).add_role(CASTAWAY)
-      person.on(event.server).remove_role(SPECTATOR)
-      person.on(event.server).remove_role(TRUSTED_SPECTATOR)
+      person.on(event.server).add_role(Setting.castaway_role_id)
+      person.on(event.server).remove_role(Setting.spectator_role_id)
+      person.on(event.server).remove_role(Setting.trusted_spectator_role_id)
 
-      BOT.channel(player.confessional).sort_after(BOT.channel(PLAYING_SPLITTER))
+      BOT.channel(player.confessional).sort_after(BOT.channel(Setting.playing_splitter_channel_id))
       BOT.channel(player.submissions).sort_after(BOT.channel(player.confessional))
       BOT.send_message(player.confessional, "**Welcome to your confessional, <@#{person.id}>**\nThis is where you'll be talking about your game and the spectators will get a peek at your current mindset!")
       BOT.send_message(player.submissions, "**Welcome to your submissions channel!**\nHere you'll be putting your challenge scores, play, trade, receive items and submit your votes.\n\nTo start things off, check your inventory with `!help`!")

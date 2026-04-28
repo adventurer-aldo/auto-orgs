@@ -9,7 +9,7 @@ class Sunny
 
     tribe = []
     confirm = []
-    perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE, PREJURY_SPECTATE]
+    perms = [Sunny.true_spectate, Sunny.deny_every_spectate, Sunny.prejury_spectate]
     cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.season).size
     tribes.each do |tribed|
       if Tribe.where(role_id: tribed.id, season_id: Setting.season).exists?
@@ -32,14 +32,14 @@ class Sunny
       end
     end
 
-    perms += [JURY_SPECTATE] if Setting.game_stage == 1
+    perms += [Sunny.jury_spectate] if Setting.game_stage == 1
 
     event.respond('One or more of those tribes do not exist in the database.') if confirm.intersect? [false, nil]
     break if confirm.intersect? [false, nil]
 
     players = Player.where(tribe_id: tribe, status: ALIVE, season_id: Setting.season_id)
     channel = event.server.create_channel("f#{cast_left}-#{tribes.map(&:name).join('-')}",
-    parent: COUNCILS,
+    parent: Setting.councils_category_id,
     topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
     permission_overwrites: perms)
 
@@ -61,7 +61,7 @@ class Sunny
       if !jury.empty?
         channel.start_typing
         sleep(2)
-        BOT.send_message(channel.id, "**And welcome to the members of our #{event.server.role(JURY).mention}:**")
+        BOT.send_message(channel.id, "**And welcome to the members of our #{event.server.role(Setting.jury_role_id).mention}:**")
         channel.start_typing
         sleep(1)
         BOT.send_message(channel.id, "**#{jury.map(&:name).join("\n")}**")

@@ -9,18 +9,18 @@ class Sunny
         @set_tribes = []
         tribes.each do |tribe|
           # > Voice Channel for the Tribe
-          vchan = event.server.create_channel(tribe.name + ' Voice',2, parent: TRIBES,
+          vchan = event.server.create_channel(tribe.name + ' Voice',2, parent: Setting.tribes_category_id,
           permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
-          Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
+          Discordrb::Overwrite.new(Setting.everyone_role_id, deny: 3146752)])
           cchan = event.server.create_channel(tribe.name + '-challenges',
-            parent: TRIBES,
+            parent: Setting.tribes_category_id,
             topic: tribe.name + "'s Challenges channel. This is where you'll submit challenges-related stuff or play in them if needed.",
-            permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+            permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
             Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           chan = event.server.create_channel(tribe.name + '-camp',
-          parent: TRIBES,
+          parent: Setting.tribes_category_id,
           topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
-          permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+          permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")
 
@@ -105,7 +105,7 @@ class Sunny
         event.respond '**Merge has begun!**'
         event.channel.start_typing
         sleep(6)
-        event.respond "Castaways that are voted off from now on will make part of the #{event.server.role(JURY).mention}"
+        event.respond "Castaways that are voted off from now on will make part of the #{event.server.role(Setting.jury_role_id).mention}"
         event.channel.start_typing
         sleep(5)
         event.respond 'Welcome your last partners and/or foes in the last stage of the game!'
@@ -117,18 +117,18 @@ class Sunny
         tribes.each do |tribe|
           # Voice
           vchan = event.server.create_channel(tribe.name,2,
-          parent: TRIBES,
+          parent: Setting.tribes_category_id,
           permission_overwrites: [Discordrb::Overwrite.new(tribe.id, allow: 3146752),
-          Discordrb::Overwrite.new(EVERYONE, deny: 3146752)])
+          Discordrb::Overwrite.new(Setting.everyone_role_id, deny: 3146752)])
           chan = event.server.create_channel(tribe.name + '-camp',
-          parent: TRIBES,
+          parent: Setting.tribes_category_id,
           topic: "#{tribe.name}'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
-          permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+          permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           cchan = event.server.create_channel(tribe.name + '-challenges',
-            parent: TRIBES,
+            parent: Setting.tribes_category_id,
             topic: "#{tribe.name}'s Challenges channel. This is where you'll team up or pit against each other when needed...",
-            permission_overwrites: [TRUE_SPECTATE, DENY_EVERY_SPECTATE,
+            permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
             Discordrb::Overwrite.new(tribe.id, allow: 3072)])
 
           chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")

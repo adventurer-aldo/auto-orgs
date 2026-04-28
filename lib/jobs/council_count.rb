@@ -9,8 +9,8 @@ class Sunny
 
       loser = nil
       seed = nil
-      roles = council.tribes.map { |r| BOT.server(ALVIVOR_ID).role(Tribe.find_by(id: r).role_id) }
-      roles << BOT.server(ALVIVOR_ID).role(TRIBAL_PING)
+      roles = council.tribes.map { |r| BOT.server(Setting.server_id).role(Tribe.find_by(id: r).role_id) }
+      roles << BOT.server(Setting.server_id).role(Setting.tribal_ping_role_id)
       channel = BOT.channel(council.channel_id)
       channel.send_message("**Welcome #{roles.map(&:mention).join(' ').to_s}**")
       channel.start_typing
@@ -109,7 +109,7 @@ class Sunny
               channel.send_embed do |embed|
                 embed.title = item.name
                 embed.description = item.description
-                embed.color = BOT.server(ALVIVOR_ID).role(TRIBAL_PING).color
+                embed.color = BOT.server(Setting.server_id).role(Setting.tribal_ping_role_id).color
               end
               item.functions.each do |function|
                 case function

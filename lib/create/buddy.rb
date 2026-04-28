@@ -30,7 +30,7 @@ class Sunny
     # Check if you can get new buddies.
     if buddies.map(&:can_change).include?(true) || buddies.size < 2 
       if buddies.size < 2
-        acceptable_mentions = event.message.mentions.uniq.filter { |user| user.on(ALVIVOR_ID).role?(TRUSTED_SPECTATOR) }.filter { |user| !buddies.map(&:user_id).include?(user.id)}[0..1]
+        acceptable_mentions = event.message.mentions.uniq.filter { |user| user.on(Setting.server_id).role?(Setting.trusted_spectator_role_id) }.filter { |user| !buddies.map(&:user_id).include?(user.id)}[0..1]
 
         event.respond "You didn't mention anybody eligible!" if acceptable_mentions.size < 1
         return if acceptable_mentions.size < 1

@@ -9,25 +9,25 @@ class Sunny
     council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
         'final-tribal-council',
         topic: "The last time we'll read the votes during this season of Alvivor.",
-        parent: FTC,
-        permission_overwrites: [DENY_EVERY_SPECTATE, TRUE_SPECTATE]
+        parent: Setting.ftc_category_id,
+        permission_overwrites: [Sunny.deny_every_spectate, Sunny.true_spectate]
     ).id, season_id: Setting.season)
 
     finalists.each do |finalist|
       channel = event.server.create_channel("#{finalist.name}-speech",
       topic: "This is where #{finalist.name} will present a case to win the game.",
-      parent: FTC,
-      permission_overwrites: [EVERY_SPECTATE, Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072)])
+      parent: Setting.ftc_category_id,
+      permission_overwrites: [Sunny.every_spectate, Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072)])
       Vote.create(player_id: finalist.id, council_id: council.id, allowed: 0, votes: [])
       # channel.send_message('Post your speech to win the game here, ' + BOT.user(finalist.user_id).mention.to_s + '!')
     end
 
     jury_all.each do |jury|
       perms = finalists.map { |finalist| Discordrb::Overwrite.new(finalist.user_id, type: 'member', allow: 3072) }
-      perms += [EVERY_SPECTATE, Discordrb::Overwrite.new(jury.user_id, type: 'member', allow: 3072)]
+      perms += [Sunny.every_spectate, Discordrb::Overwrite.new(jury.user_id, type: 'member', allow: 3072)]
       channel = event.server.create_channel("#{jury.name}-questions",
       topic: "#{jury.name} will be asking questions here, where the finalists will be able to clarify them.",
-      parent: FTC,
+      parent: Setting.ftc_category_id,
       permission_overwrites: perms)
       Vote.create(player_id: jury.id, council_id: council.id, allowed: 1, parchments: ['0'])
       # channel.send_message(BOT.user(jury.user_id).mention.to_s)

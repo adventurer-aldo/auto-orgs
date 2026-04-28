@@ -165,7 +165,7 @@ class Sunny
           player = Player.find_by(id: elim.player_id)
           %Q(
             <tr>
-              <th scope="row">#{BOT.user(elim.user_id).on(ALVIVOR_ID).display_name}</th>
+              <th scope="row">#{BOT.user(elim.user_id).on(Setting.server_id).display_name}</th>
               <td>#{player&.name}</td>
             </tr>)
         end.join('')}
@@ -197,7 +197,7 @@ class Sunny
   #{SpectatorGame::Draft.where(season_id: Setting.season).sort_by { |draft| draft.score }.select { |draft| !draft.winner_pick.nil? && !draft.pick_1.nil? && !draft.pick_2.nil? && !draft.pick_3.nil?}.map do |draft|
 %Q(
     <tr>
-      <th scope="row">#{BOT.user(draft.user_id).on(ALVIVOR_ID).display_name}</th>
+      <th scope="row">#{BOT.user(draft.user_id).on(Setting.server_id).display_name}</th>
       <td style="#{ALIVE.include?(Player.find_by(id: draft.winner_pick).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.winner_pick).name}</td>
       <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_1).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.pick_1).name}</td>
       <td style="#{ALIVE.include?(Player.find_by(id: draft.pick_2).status) ? '' : "background-color: #{dead_background}; color: #{dead_color};"}">#{Player.find_by(id: draft.pick_2).name}</td>

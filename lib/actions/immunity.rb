@@ -24,7 +24,7 @@ class Sunny
       next player if player.nil?
 
       player.update(status: 'Immune')
-      BOT.user(player.user_id).on(event.server).add_role(IMMUNITY)
+      BOT.user(player.user_id).on(event.server).add_role(Setting.immunity_role_id)
     end
 
     if players.empty?

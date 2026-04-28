@@ -1,6 +1,6 @@
 class Sunny
   BOT.command(:apply) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     veteran = Player.where(user_id: event.user.id).exists?
     event.channel.send_embed do |embed|
       embed.title = 'Thanks for deciding to apply!'
@@ -11,7 +11,7 @@ class Sunny
   end
 
   BOT.command(:apply1) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 1'
       embed.description = "Which is your favorite fruit and why?"
@@ -21,7 +21,7 @@ class Sunny
   end
 
   BOT.command(:apply2) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 2'
       embed.description = "Do you eat fruits because they're healthy, tasty or not at all?"
@@ -31,7 +31,7 @@ class Sunny
   end
   
   BOT.command(:apply3) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     veteran = Player.where(user_id: event.user.id).exists?
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 3'
@@ -42,7 +42,7 @@ class Sunny
   end
   
   BOT.command(:apply4) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 4'
       embed.description = 'Do you forgive people who have you wronged you? Why or why not?'
@@ -52,7 +52,7 @@ class Sunny
   end
   
   BOT.command(:apply5) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 5'
       embed.description = "Between loyalty and opportunity to get ahead, which will you choose? And does that apply for real life or for ORGs?"
@@ -62,7 +62,7 @@ class Sunny
   end
 
   BOT.command(:apply6) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 6'
       embed.description = "On a scale of 1-10, how active do you think you'll be?"
@@ -72,7 +72,7 @@ class Sunny
   end
 
   BOT.command(:apply7) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 7'
       embed.description = "Will you be playing other ORGs during the season? If so, how many?"
@@ -82,7 +82,7 @@ class Sunny
   end
 
   BOT.command(:apply8) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Application Question 8'
       embed.description = 'Do you have any limitations that we should be aware of? Our challenges *may* or *may not* require playing with colors or listening to certain sounds.'
@@ -92,7 +92,7 @@ class Sunny
   end
   
   BOT.command(:apply9) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Final Question'
       embed.description = "Lastly, any picture you'd like to represent you?"
@@ -102,7 +102,7 @@ class Sunny
   end
 
   BOT.command(:finish) do |event|
-    break unless event.channel.parent == 1128056313721659423
+    break unless event.channel.parent == Setting.applications_category_id
     event.channel.send_embed do |embed|
       embed.title = 'Your application is complete!'
       embed.description = "Thank you for applying! We'd be excited to have you enjoy Alvivor!\nYou'll be mentioned again for check-ins at a later date, and then see you at #{BOT.channel(1322130194726649956).mention}!"

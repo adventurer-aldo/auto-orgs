@@ -25,7 +25,7 @@ class Sunny
                   BOT.channel(vote.player.submissions).send_embed do |embed|
                     embed.title = "Your vote has been invalidated!"
                     embed.description = "**#{player.name}** has used the **Safety Without Power** advantage, granting them exit from the Tribal Council you're both attending."
-                    embed.color = BOT.server(ALVIVOR_ID).role(player.tribe.role_id).color
+                    embed.color = BOT.server(Setting.server_id).role(player.tribe.role_id).color
                     embed.footer = "A different vote must be cast right away."
                   end
                   0
@@ -42,7 +42,7 @@ class Sunny
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name}!"
             embed.description = 'They have left the Tribal Council area... And as such, they cannot vote, be voted for, spectate nor play any Items.'
-            embed.color = event.server.role(TRIBAL_PING).color
+            embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
           item.update(targets: [player.id], player_id: 0)
@@ -84,7 +84,7 @@ class Sunny
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name}!"
             embed.description = 'They will now be able to cast one additional vote during this tribal council.'
-            embed.color = event.server.role(TRIBAL_PING).color
+            embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
           vote.update(allowed: vote.allowed + 1, votes: vote.votes + [vote.votes.last], parchments: vote.parchments + [vote.parchments.last])
           item.update(targets: [player.id], player_id: nil)
@@ -152,7 +152,7 @@ class Sunny
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
             embed.description = "This advantage steals one of #{targets.map(&:name).join(', ')}'s votes and allows #{player.name} to cast an extra vote with the stolen parchment..."
-            embed.color = event.server.role(TRIBAL_PING).color
+            embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
           item.update(player_id: 0, targets: targets.map(&:id))
@@ -214,7 +214,7 @@ class Sunny
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name} on #{targets.map(&:name).join(', ')}!"
             embed.description = "This advantage blocks one of #{targets.map(&:name).join(', ')}'s votes."
-            embed.color = event.server.role(TRIBAL_PING).color
+            embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
           item.update(player_id: nil, targets: targets.map(&:id))

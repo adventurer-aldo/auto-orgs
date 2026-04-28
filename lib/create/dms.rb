@@ -16,7 +16,7 @@ class Sunny
           event.server.create_channel("#{player.name}-#{other_player.name}",
             parent: category,
             topic: "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
-            permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
+            permission_overwrites: [ Sunny.deny_every_spectate, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
             Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
         else
           chan = existing_match.first
@@ -38,7 +38,7 @@ class Sunny
     tribes.each do |tribe|
       existing_category = event.server.channels.select { |channel| channel.name ==  tribe.name + ' 1-on-1s'}
       category = existing_category.empty? ? event.server.create_channel(tribe.name + ' 1-on-1s', 4) : existing_category.first
-      category.sort_after(TRIBES)
+      category.sort_after(Setting.tribes_category_id)
       index = 0
       players = tribe.players.where(status: ALIVE)
       outsiders = Player.where(status: ALIVE, season_id: Setting.season).where.not(tribe_id: tribe.id)
@@ -67,7 +67,7 @@ class Sunny
             event.server.create_channel("#{player.name}-#{other_player.name}",
               parent: category,
               topic: tribe.name + "#{player.name} and #{other_player.name} will be chatting privately here!",
-              permission_overwrites: [ DENY_EVERY_SPECTATE, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
+              permission_overwrites: [ Sunny.deny_every_spectate, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
               Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
           else
             chan = existing_match.first

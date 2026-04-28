@@ -16,7 +16,7 @@ class Sunny
       event.respond(":broken_heart: **This alliance has been disbanded...**")
       event.channel.parent = Setting.archive_category
       event.channel.permission_overwrites.each do |role, _perms|
-        unless role == EVERYONE || event.server.role(role).nil? == false
+        unless role == Setting.everyone_role_id || event.server.role(role).nil? == false
           event.channel.define_overwrite(event.server.member(role), 1088, 2048)
         end
       end
@@ -80,13 +80,13 @@ class Sunny
         choices << player
         choices.sort_by!(&:id)
 
-        perms = [TRUE_SPECTATE, DENY_EVERY_SPECTATE]
+        perms = [Sunny.true_spectate, Sunny.deny_every_spectate]
         choices.each { |n| perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) }
 
         alliance = Alliances::Group.create!(
           channel_id: event.server.create_channel(
             choices.map(&:name).join('-'),
-            parent: ALLIANCES,
+            parent: Setting.alliances_category_id,
             topic: "Created at F#{rank} by **#{player.name}**. | #{choices.map(&:name).join('-')}",
             permission_overwrites: perms
           ).id

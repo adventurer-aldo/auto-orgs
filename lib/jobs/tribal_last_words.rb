@@ -14,9 +14,9 @@ class Sunny
       # Open camps and stuff.
       council_tribes = council.tribes.map { |r| Tribe.find_by(id: r) }
       council_tribes.each do |tribed|
-        BOT.channel(tribed.channel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
+        BOT.channel(tribed.channel_id).define_overwrite(BOT.server(Setting.server_id).role(tribed.role_id), 3072, 0)
         BOT.channel(tribed.channel_id).send_message("**Open!**")
-        BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(ALVIVOR_ID).role(tribed.role_id), 3072, 0)
+        BOT.channel(tribed.cchannel_id).define_overwrite(BOT.server(Setting.server_id).role(tribed.role_id), 3072, 0)
         BOT.channel(tribed.cchannel_id).send_message("**Open!**")
       end
       Sunny.eliminate(loser)
