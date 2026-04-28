@@ -28,7 +28,7 @@ class Sunny
     return event.respond('Mention at least one user or provide at least one user ID.') if ids.empty?
 
     Setting.hosts_ids = (Setting.hosts_ids + ids).uniq
-    event.respond("Host list updated: #{ids.map { |id| "<@#{id}>" }.join(', ')}")
+    event.respond("Host list updated. Added: #{ids.map { |id| host_display_name(id) }.join(', ')}")
   end
 
   BOT.command :remove_host do |event, *args|
