@@ -1,46 +1,43 @@
 class Sunny
-  BOT.command :setup_settings do |event|
+  def self.setting_display_name(name)
+    name.to_s.gsub('_id', '').split('_').map(&:capitalize).join(' ')
+  end
+
+  def self.setting_channel_display(id)
+    channel = BOT.channel(id)
+    channel ? channel.mention : "Missing channel/category #{id}"
+  end
+
+  def self.setting_role_display(server, id)
+    role = server.role(id)
+    role ? role.name : "Missing role #{id}"
+  end
+
+  def self.setting_user_display(id)
+    user = BOT.user(id)
+    user ? user.display_name : "Missing user #{id}"
+  end
+
+  def self.add_settings_fields(embed, title, lines)
+    lines.each_slice(10).with_index do |slice, index|
+      name = index.zero? ? title : "#{title} #{index + 1}"
+      embed.add_field(name:, value: slice.join("\n"))
+    end
+  end
+
+  BOT.command :test_settings do |event|
     break unless event.user.id.host?
 
-    integer_settings = {
-      server_id: SERVER_ID,
-      alliances_category_id: ALLIANCES,
-      councils_category_id: COUNCILS,
-      ftc_category_id: FTC,
-      challenges_category_id: CHALLENGES,
-      tribes_category_id: TRIBES,
-      confessionals_category_id: CONFESSIONALS,
-      applications_category_id: APPLICATIONS,
-      modlog_channel_id: MODLOG_CHANNEL,
-      user_join_channel_id: USER_JOIN_CHANNEL,
-      user_leave_channel_id: USER_LEAVE_CHANNEL,
-      jury_channel_id: JURY_CHANNEL,
-      immunity_role_id: IMMUNITY,
-      everyone_role_id: EVERYONE,
-      castaway_role_id: CASTAWAY,
-      jury_role_id: JURY,
-      prejury_role_id: PREJURY,
-      spectator_role_id: SPECTATOR,
-      trusted_spectator_role_id: TRUSTED_SPECTATOR,
-      tribal_ping_role_id: TRIBAL_PING,
-      challenges_ping_role_id: CHALLENGES_PING,
-      announcements_ping_role_id: ANNOUNCEMENTS_PING,
-      playing_splitter_channel_id: PLAYING_SPLITTER,
-      prejury_splitter_channel_id: PRE_JURY_SPLITTER,
-      jury_splitter_channel_id: JURY_SPLITTER,
-      host_chat_channel_id: HOST_CHAT
-    }
+    channel_settings = Setting::INTEGER_SETTINGS.select { |name| name.end_with?('_channel_id') || name.end_with?('_category_id') }
+    role_settings = Setting::INTEGER_SETTINGS.select { |name| name.end_with?('_role_id') }
 
-    integer_settings.each do |name, value|
-      Setting.set_integer_setting(name.to_s, value)
+    event.channel.send_embed do |embed|
+      embed.title = 'Settings Check'
+      embed.description = "Server: #{event.server.name}"
+      add_settings_fields(embed, 'Channels & Categories', channel_settings.map { |name| "**#{setting_display_name(name)}:** #{setting_channel_display(Setting.public_send(name))}" })
+      add_settings_fields(embed, 'Roles', role_settings.map { |name| "**#{setting_display_name(name)}:** #{setting_role_display(event.server, Setting.public_send(name))}" })
+      add_settings_fields(embed, 'Hosts', Setting.hosts_ids.map { |id| setting_user_display(id) })
     end
-
-    old_archive_id = Setting.find_by(name: 'archive_category')&.values&.first
-    old_archive_id = old_archive_id ? old_archive_id.to_i : 0
-    Setting.archive_category_id = old_archive_id if old_archive_id.positive?
-    Setting.hosts_ids = HOSTS
-
-    event.respond('Settings rows have been set up from settings.rb.')
   end
 
   BOT.command :test do |event, *args|
