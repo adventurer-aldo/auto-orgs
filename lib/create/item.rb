@@ -2,8 +2,8 @@ class Sunny
   # > Item
   # > Council
 
-  def self.item_type_name(type)
-    type.to_s.split('_').map(&:capitalize).join(' ')
+  def self.item_code_name(code)
+    code.to_s.split('_').map(&:capitalize).join(' ')
   end
 
   BOT.command :items do |event, *args|
@@ -15,7 +15,8 @@ class Sunny
     event.channel.send_embed do |embed|
       embed.title = "Season #{season_id} Items"
       embed.description = items.map do |item|
-        "**#{item.name}**\nType: #{item_type_name(item.timing)}\n#{item.description}"
+        item_codes = item.functions.map { |function| item_code_name(function) }.join(', ')
+        "**#{item.name}**\nCode: #{item_codes}\n#{item.description}"
       end.join("\n\n")
     end
   end
