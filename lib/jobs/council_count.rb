@@ -92,10 +92,10 @@ class Sunny
 
         while i < max
           i += 1
-          items = Item.where(timing: 'Tallied', season_id: Setting.season).excluding(Item.where(player_id: nil)).excluding(Item.where(targets: []))
-          if items.exists?
+          items = Item.where(season_id: Setting.season).excluding(Item.where(player_id: nil)).excluding(Item.where(targets: [])).select(&:idol?)
+          if items.any?
             max += 6
-            items.map.each do |item|
+            items.each do |item|
               owner = item.player
               targets = item.targets.map { |n| Player.find_by(id: n, status: ALIVE) }
 

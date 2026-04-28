@@ -24,25 +24,6 @@ class Sunny
   BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
     break unless event.user.id.host?
 
-    event.respond "What is the type?\n**Early | Now | Tallied | Idoled | Super**"
-    type = event.user.await!(timeout: 40).message.content.downcase
-
-    event.respond("That's not immediate or queue...") unless %w[n i t s].include? type
-    break unless %w[e n i t s].include? type
-
-    case type
-    when 'e'
-      type = 'Early'
-    when 'n'
-      type = 'Now'
-    when 't'
-      type = 'Tallied'
-    when 'i'
-      type = 'Idoled'
-    when 's'
-      type = 'Super'
-    end
-
     event.respond 'What is/are the function codes?'
     functions = event.user.await!(timeout: 40).message.content.downcase.split(' ')
 
@@ -62,6 +43,7 @@ class Sunny
     description = event.user.await!(timeout: 80).message.content
 
     event.respond("**To which tribe will this be restricted to?**")
+    own_restriction = 0
     owner_role = event.user.await!(timeout: 80).message.role_mentions.first
     if !owner_role.nil?
       found_owner_role = Tribe.where(role_id: owner_role.id)
@@ -83,7 +65,7 @@ class Sunny
     event.respond('An item with this code already exists!') if condition == true
     break if condition == true
 
-    item = Item.create(code:, name:, description:, timing: type, functions:, own_restriction:, season_id: Setting.season)
+    item = Item.create(code:, name:, description:, functions:, own_restriction:, season_id: Setting.season)
     make_item_commands
     event.respond '**Your item has been created!**'
 

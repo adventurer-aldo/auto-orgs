@@ -1,7 +1,6 @@
 class Sunny
   def self.play_item(event, targets, item)
-    case item.timing
-    when 'Early'
+    if item.early?
       item.functions.each do |function| 
         council = Council.where(stage: [0], season_id: Setting.season).last
         player = item.player
@@ -49,7 +48,7 @@ class Sunny
 
         end
       end
-    when 'Now'
+    elsif item.now?
       item.functions.each do |function|
         council = Council.where(stage: [0, 1], season_id: Setting.season).last
         player = item.player

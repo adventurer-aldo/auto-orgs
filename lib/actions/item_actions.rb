@@ -79,13 +79,14 @@ class Sunny
     break unless item.exists?
 
     item = item.first
-    council = case item.timing
-              when 'Early'
-                Council.where(stage: [0]).exists?
-              when 'Now', 'Idoled'
-                Council.where(stage: [0, 1]).exists?
-              when 'Tallied'
-                Council.where(stage: [0, 1, 2]).exists?
+    council = if item.early?
+                Council.where(stage: [0], season_id: Setting.season).exists?
+              elsif item.now?
+                Council.where(stage: [0, 1], season_id: Setting.season).exists?
+              elsif item.tallied?
+                Council.where(stage: [0, 1, 2], season_id: Setting.season).exists?
+              else
+                false
               end
 
     event.respond("You're not able to play this item now!") unless council == true

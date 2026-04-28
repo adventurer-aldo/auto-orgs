@@ -43,9 +43,9 @@ class Sunny
     topic: "F#{cast_left} Tribal Council. Tribes attending: #{tribes.map(&:name).join(', ')}",
     permission_overwrites: perms)
 
-    council = Council.create(tribes: tribe, channel_id: channel.id, season_id: Setting.season_id, stage: 1)
-
-
+    starting_stage = Setting.game_stage == 1 ? 0 : 1
+    council = Council.create(tribes: tribe, channel_id: channel.id, season_id: Setting.season_id, stage: starting_stage)
+    CouncilStageChange.enqueue(council.id) if starting_stage.zero?
 
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 22)})
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 23)})
