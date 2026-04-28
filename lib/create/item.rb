@@ -66,6 +66,12 @@ class Sunny
     view
   end
 
+  def self.item_function_options
+    DEFINED_FUNCTIONS.map do |function|
+      { label: item_code_name(function), value: function }
+    end
+  end
+
   def self.item_create_button_view
     view = Discordrb::Webhooks::View.new
     view.row do |row|
@@ -191,8 +197,15 @@ class Sunny
       modal.label(label: 'Description') do |row|
         row.text_input(custom_id: 'item_description', style: :paragraph, min_length: 1, max_length: 1000, required: true)
       end
-      modal.label(label: 'Function codes') do |row|
-        row.text_input(custom_id: 'item_functions', style: :short, min_length: 1, max_length: 200, required: true, placeholder: DEFINED_FUNCTIONS.join(' '))
+      modal.label(label: 'Functions') do |row|
+        row.string_select(
+          custom_id: 'item_functions',
+          options: item_function_options,
+          placeholder: 'Choose one or more functions',
+          min_values: 1,
+          max_values: DEFINED_FUNCTIONS.size,
+          required: true
+        )
       end
       modal.label(label: 'Code') do |row|
         row.text_input(custom_id: 'item_code', style: :short, max_length: 100, required: false, placeholder: 'Leave blank to use the name')
@@ -206,7 +219,7 @@ class Sunny
       break
     end
 
-    functions = event.value('item_functions').to_s.downcase.split(/\s+/)
+    functions = event.values('item_functions') || []
     unless valid_item_functions?(functions)
       event.respond(content: "One or more function codes does not exist.\nValid function codes: `#{DEFINED_FUNCTIONS.join('`, `')}`", ephemeral: true)
       break
