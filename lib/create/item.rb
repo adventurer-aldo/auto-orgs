@@ -11,7 +11,7 @@ class Sunny
   end
 
   def self.item_tribes
-    Tribe.where(season_id: Setting.season).order(:id)
+    Tribe.where(season_id: Setting.season_id).order(:id)
   end
 
   def self.item_restriction_name(own_restriction)
@@ -133,7 +133,7 @@ class Sunny
       description: payload[:description],
       functions: payload[:functions],
       own_restriction: payload[:own_restriction],
-      season_id: Setting.season
+      season_id: Setting.season_id
     )
   end
 
@@ -174,7 +174,7 @@ class Sunny
     end
 
     pending_code = parsed[:code].to_s.empty? ? item_code_from_name(parsed[:name]) : parsed[:code]
-    code_taken = Item.where(code: pending_code, season_id: Setting.season).exists?
+    code_taken = Item.where(code: pending_code, season_id: Setting.season_id).exists?
     if code_taken
       event.respond('An item with this code already exists!')
       break
@@ -190,7 +190,7 @@ class Sunny
       break
     end
 
-    event.show_modal(title: 'Create Item', custom_id: "item_modal:#{event.channel.id}") do |modal|
+    event.show_modal(title: 'Create a new Item', custom_id: "item_modal:#{event.channel.id}") do |modal|
       modal.label(label: 'Name') do |row|
         row.text_input(custom_id: 'item_name', style: :short, min_length: 1, max_length: 100, required: true)
       end
@@ -227,7 +227,7 @@ class Sunny
 
     code = event.value('item_code').to_s.strip.gsub(' ', '_')
     code = item_code_from_name(event.value('item_name')) if code.empty?
-    if Item.where(code: code, season_id: Setting.season).exists?
+    if Item.where(code: code, season_id: Setting.season_id).exists?
       event.respond(content: 'An item with this code already exists!', ephemeral: true)
       break
     end
@@ -280,7 +280,7 @@ class Sunny
       break
     end
 
-    if Item.where(code: payload[:code], season_id: Setting.season).exists?
+    if Item.where(code: payload[:code], season_id: Setting.season_id).exists?
       @pending_items.delete(token)
       event.update_message(content: 'An item with this code already exists!', components: nil)
       break
