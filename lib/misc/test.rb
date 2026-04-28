@@ -1,45 +1,4 @@
 class Sunny
-  def self.setting_display_name(name)
-    name.to_s.gsub('_id', '').split('_').map(&:capitalize).join(' ')
-  end
-
-  def self.setting_channel_display(id)
-    channel = BOT.channel(id)
-    channel ? channel.mention : "Missing channel/category #{id}"
-  end
-
-  def self.setting_role_display(server, id)
-    role = server.role(id)
-    role ? role.name : "Missing role #{id}"
-  end
-
-  def self.setting_user_display(id)
-    user = BOT.user(id)
-    user ? user.display_name : "Missing user #{id}"
-  end
-
-  def self.add_settings_fields(embed, title, lines)
-    lines.each_slice(10).with_index do |slice, index|
-      name = index.zero? ? title : "#{title} #{index + 1}"
-      embed.add_field(name:, value: slice.join("\n"))
-    end
-  end
-
-  BOT.command :test_settings do |event|
-    break unless event.user.id.host?
-
-    channel_settings = Setting::INTEGER_SETTINGS.select { |name| name.end_with?('_channel_id') || name.end_with?('_category_id') }
-    role_settings = Setting::INTEGER_SETTINGS.select { |name| name.end_with?('_role_id') }
-
-    event.channel.send_embed do |embed|
-      embed.title = 'Settings Check'
-      embed.description = "Server: #{event.server.name}"
-      add_settings_fields(embed, 'Channels & Categories', channel_settings.map { |name| "**#{setting_display_name(name)}:** #{setting_channel_display(Setting.public_send(name))}" })
-      add_settings_fields(embed, 'Roles', role_settings.map { |name| "**#{setting_display_name(name)}:** #{setting_role_display(event.server, Setting.public_send(name))}" })
-      add_settings_fields(embed, 'Hosts', Setting.hosts_ids.map { |id| setting_user_display(id) })
-    end
-  end
-
   BOT.command :test do |event, *args|
     season = args[0] ? Season.find_by(id: args[0].to_i) : Setting.season
 
