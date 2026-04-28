@@ -1,8 +1,19 @@
 class Sunny
 
-  BOT.command :eraserhead do |event|
-    next unless event.user.id.host?
-    Search.all.update(last_search_time: 1)
+  BOT.command :test do |event|
+    players_by_season = Player.all.group_by(&:season_id).sort_by { |season_id, _players| season_id || 0 }
+
+    return event.respond('No players found.') if players_by_season.empty?
+
+    players_by_season.each do |season_id, players|
+      ranked_players = players.sort_by { |player| [player.rank.nil? ? 1 : 0, player.rank || 0, player.name] }
+      rankings = ranked_players.map do |player|
+        rank = player.rank || '?'
+        "#{rank}. #{player.name}"
+      end
+
+      event.respond("**Season #{season_id}**\n#{rankings.join("\n")}")
+    end
   end
 
   def self.get_user_circular_avatar(user_id)
@@ -53,12 +64,6 @@ class Sunny
         html_to_image(base)
   end
 
-
-  BOT.command :test do |event|
-    event.respond Setting.game_stage
-    event.respond Setting.season_id
-    event.respond Setting.season
-  end
   BOT.command :test_circle do |event|
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end
