@@ -5,7 +5,7 @@ class Setting < ActiveRecord::Base
     councils_category_id
     ftc_category_id
     challenges_category_id
-    tribes_category
+    tribes_category_id
     confessionals_category_id
     applications_category_id
     modlog_channel_id
@@ -102,11 +102,6 @@ class Setting < ActiveRecord::Base
 
   def self.archive_category=(value)
     self.archive_category_id = value
-  end
-
-  class << self
-    alias tribes_category_id tribes_category
-    alias tribes_category_id= tribes_category=
   end
 
 end

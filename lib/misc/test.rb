@@ -8,7 +8,7 @@ class Sunny
       councils_category_id: COUNCILS,
       ftc_category_id: FTC,
       challenges_category_id: CHALLENGES,
-      tribes_category: TRIBES,
+      tribes_category_id: TRIBES,
       confessionals_category_id: CONFESSIONALS,
       applications_category_id: APPLICATIONS,
       modlog_channel_id: MODLOG_CHANNEL,
