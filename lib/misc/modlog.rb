@@ -7,6 +7,10 @@ class Sunny
     "```\n#{text}\n```"
   end
 
+  def self.modlog_channel_name(channel)
+    channel ? "##{channel.name}" : '#unknown-channel'
+  end
+
   BOT.message do |event|
     next if event.from_bot?
 
@@ -23,7 +27,7 @@ class Sunny
 
     BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
       embed.title = 'Message Edited'
-      embed.description = "Channel: <##{event.channel.id}>\nMessage ID: #{event.message.id}"
+      embed.description = "Channel: #{modlog_channel_name(event.channel)}"
       embed.add_field(name: 'Before', value: modlog_block(old_content))
       embed.add_field(name: 'After', value: modlog_block(new_content))
       embed.color = '#f0ad4e'
@@ -38,7 +42,7 @@ class Sunny
 
     BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
       embed.title = 'Message Deleted'
-      embed.description = "Channel: <##{event.channel.id}>\nMessage ID: #{event.id}"
+      embed.description = "Channel: #{modlog_channel_name(event.channel)}"
       embed.add_field(name: 'Content', value: modlog_block(content))
       embed.color = '#d9534f'
     end
