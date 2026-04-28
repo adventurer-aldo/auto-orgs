@@ -262,7 +262,7 @@ class Sunny
               channel.start_typing
               sleep(3)
               channel.send_message('The winner will get to move on to the **Final 3**.')
-              channel.send_message("#{BOT.user(HOSTS.sample).mention} can take it from here.")
+              channel.send_message("#{BOT.user(Sunny.hosts.sample).mention} can take it from here.")
             else
               sleep(3)
               case council.stage

@@ -40,13 +40,13 @@ class Sunny
   end
 
   BOT.command :grid do |event|
-    return unless HOSTS.include? event.user.id
+    return unless event.user.id.host?
 
     event.respond(Setting.tribes.map { |tribe_id| generate_grid(tribe_id) }.join("\n\n"))
   end
 
   BOT.command :battleships do |event|
-    return unless HOSTS.include? event.user.id
+    return unless event.user.id.host?
 
     tribes = Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }
     event.respond('The first tribe to attack will be decided by a coinflip!')

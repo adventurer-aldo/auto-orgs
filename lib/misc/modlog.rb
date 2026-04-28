@@ -99,7 +99,7 @@ class Sunny
     edited_at = Time.now
     modlog_message_cache[event.message.id][:edited_timestamp] = edited_at
 
-    BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
+    BOT.channel(Setting.modlog_channel_id).send_embed do |embed|
       embed.title = 'Message Edited'
       embed.author = modlog_embed_author(author)
       embed.description = "Channel: #{modlog_channel_name(event.channel)}"
@@ -130,7 +130,7 @@ class Sunny
     spam_delete_count = modlog_spam_delete_count(message_info)
 
     if spam_delete_count == 3
-      BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
+      BOT.channel(Setting.modlog_channel_id).send_embed do |embed|
         embed.title = 'Possible Mention Spam Deleted'
         embed.author = modlog_embed_author(author)
         embed.description = "Channel: #{modlog_channel_name(event.channel)}"
@@ -145,7 +145,7 @@ class Sunny
       next
     end
 
-    BOT.channel(MODLOG_CHANNEL).send_embed do |embed|
+    BOT.channel(Setting.modlog_channel_id).send_embed do |embed|
       embed.title = 'Message Deleted'
       embed.author = modlog_embed_author(author)
       embed.description = "Channel: #{modlog_channel_name(event.channel)}"

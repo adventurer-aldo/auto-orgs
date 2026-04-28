@@ -22,7 +22,7 @@ class Sunny
   end
 
   BOT.command :item, description: "Creates a new item to be claimed." do |event, *args|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     event.respond "What is the type?\n**Early | Now | Tallied | Idoled | Super**"
     type = event.user.await!(timeout: 40).message.content.downcase

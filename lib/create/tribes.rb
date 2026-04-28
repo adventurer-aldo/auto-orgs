@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :tribes, description: 'Creates new tribes and automatically puts alive castaways in them.' do |event, *args|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     tribes = event.message.role_mentions
     players = Player.where(season_id: Setting.season, status: ALIVE + ['Exiled'])

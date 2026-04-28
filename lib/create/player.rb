@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :players, description: 'Registers the user as a new player in the current season.' do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     cast = if event.message.role_mentions.size.positive?
              event.message.role_mentions.first.members

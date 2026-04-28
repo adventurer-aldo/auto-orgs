@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :eliminate, description: 'Removes a castaway from the game.' do |event, *args|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     content = args.join(' ')
     enemies = Player.where(season_id: Setting.season, status: ALIVE)
@@ -26,7 +26,7 @@ class Sunny
   end
 
   BOT.command :rocks, description: 'Quick and simple goes to rocks.' do |event, *args|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     council = Council.find_by(channel_id: event.channel.id)
     break if council.id.nil?

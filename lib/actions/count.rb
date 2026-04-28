@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :tribal, description: "Changes the Tribal Council stage to 1 (after 12h) to all those who have 0." do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     if [0, 1].include? Setting.game_stage
       Council.where(stage: 0).update(stage: 1)
@@ -12,7 +12,7 @@ class Sunny
   end
 
   BOT.command :tribol, description: 'Changes the Tribal Council stage to 1 (after 12h) to all those who have 0.' do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
     Council.where(stage: 2).update(stage: 1)
     event.respond('The tribal stage has changed.')
     return
@@ -20,7 +20,7 @@ class Sunny
 
 
   BOT.command :count, description: "Counts the votes inside a Tribal Council channel." do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     event.message.delete
     CouncilCountJob.enqueue(Council.find_by(channel_id: event.channel.id).id, job_options: { run_at: Time.now })

@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :season, description: 'Creates a new season.' do |event, *args|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     newseason = Season.create(name: args.join(' '))
     Setting.season_id = newseason.id

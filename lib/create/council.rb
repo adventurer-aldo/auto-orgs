@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :council, description: 'Creates a new Tribal Council channel and sets up everything related to.' do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     event.message.delete
     tribes = event.message.role_mentions

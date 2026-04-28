@@ -76,6 +76,7 @@ class Sunny
   PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
 
   def self.hosts
-    return HOSTS
+    hosts = Setting.hosts_ids
+    hosts.empty? ? HOSTS : hosts
   end
 end

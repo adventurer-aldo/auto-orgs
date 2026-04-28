@@ -1,14 +1,91 @@
 class Setting < ActiveRecord::Base
+  INTEGER_SETTINGS = %w[
+    server_id
+    alliances_category_id
+    councils_category_id
+    ftc_category_id
+    challenges_category_id
+    tribes_category
+    confessionals_category_id
+    applications_category_id
+    modlog_channel_id
+    user_join_channel_id
+    user_leave_channel_id
+    jury_channel_id
+    immunity_role_id
+    everyone_role_id
+    castaway_role_id
+    jury_role_id
+    prejury_role_id
+    spectator_role_id
+    trusted_spectator_role_id
+    tribal_ping_role_id
+    challenges_ping_role_id
+    announcements_ping_role_id
+    playing_splitter_channel_id
+    prejury_splitter_channel_id
+    jury_splitter_channel_id
+    host_chat_channel_id
+    archive_category_id
+  ].freeze
+
+  ARRAY_SETTINGS = %w[
+    hosts_ids
+    tribes
+  ].freeze
+
+  def self.setting_row(name)
+    find_or_create_by(name:) do |setting|
+      setting.values = []
+    end
+  end
+
+  def self.integer_setting(name)
+    Array(setting_row(name).values).first.to_i
+  end
+
+  def self.set_integer_setting(name, value)
+    setting_row(name).update(values: [value])
+  end
+
+  def self.array_setting(name)
+    Array(setting_row(name).values).map(&:to_i)
+  end
+
+  def self.set_array_setting(name, value)
+    setting_row(name).update(values: Array(value))
+  end
+
+  INTEGER_SETTINGS.each do |setting_name|
+    define_singleton_method(setting_name) do
+      integer_setting(setting_name)
+    end
+
+    define_singleton_method("#{setting_name}=") do |value|
+      set_integer_setting(setting_name, value)
+    end
+  end
+
+  ARRAY_SETTINGS.each do |setting_name|
+    define_singleton_method(setting_name) do
+      array_setting(setting_name)
+    end
+
+    define_singleton_method("#{setting_name}=") do |value|
+      set_array_setting(setting_name, value)
+    end
+  end
+
   def self.game_stage
-    return find_by(name: 'game_stage').values.first.to_i
+    return integer_setting('game_stage')
   end
 
   def self.game_stage=(value)
-    find_by(name: 'game_stage').update(values: [value])
+    set_integer_setting('game_stage', value)
   end
 
   def self.season_id
-    return find_by(name: 'season_id').values.first.to_i
+    return integer_setting('season_id')
   end
 
   def self.season
@@ -16,23 +93,20 @@ class Setting < ActiveRecord::Base
   end
 
   def self.season_id=(value)
-    find_by(name: 'season_id').update(values: [value])
+    set_integer_setting('season_id', value)
   end
 
   def self.archive_category
-    return find_by(name: 'archive_category').values.first.to_i
+    archive_category_id
   end
 
   def self.archive_category=(value)
-    find_by(name: 'archive_category').update(values: [value])
+    self.archive_category_id = value
   end
 
-  def self.tribes
-    return find_by(name: 'tribes').values.map(&:to_i)
-  end
-
-  def self.tribes=(value)
-    find_by(name: 'tribes').update(values:)
+  class << self
+    alias tribes_category_id tribes_category
+    alias tribes_category_id= tribes_category=
   end
 
 end

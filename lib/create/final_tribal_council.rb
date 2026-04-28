@@ -1,6 +1,6 @@
 class Sunny
   BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
-    break unless HOSTS.include? event.user.id
+    break unless event.user.id.host?
 
     finalists = Player.where(status: ALIVE, season_id: Setting.season)
     jury_all = Player.where(status: 'Jury', season_id: Setting.season)
