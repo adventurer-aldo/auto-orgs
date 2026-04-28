@@ -98,6 +98,6 @@ class Sunny
     end
     break unless targets == []
 
-    playItem(event, (args - [args[0]]), item)
+    play_item(event, (args - [args[0]]), item)
   end
 end

@@ -1,4 +1,12 @@
 class Sunny
+  BOT.command :make_parchment do |event, *args|
+    break unless event.user.id.host?
+
+    text = args.join(' ')
+    text = event.user.display_name if text == ''
+    event.channel.send_file(generate_parchment(text), filename: 'parchment.png')
+  end
+
   BOT.command :test do |event, *args|
     season = args[0] ? Season.find_by(id: args[0].to_i) : Setting.season
 

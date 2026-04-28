@@ -1,5 +1,5 @@
 class Sunny
-  def self.playItem(event, targets, item)
+  def self.play_item(event, targets, item)
     case item.timing
     when 'Early'
       item.functions.each do |function| 
