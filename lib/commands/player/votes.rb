@@ -75,7 +75,7 @@ class Sunny
     parchments[number] = collect_vote_parchment(event, target, source_event: source_event)
     vote_record.update(votes: voted, parchments:)
     record_event('casting_vote', player: player)
-    event.respond("You're now voting **#{target.name}**.")
+    respond_to_event(event, "You're now voting **#{target.name}**.")
     new_council_votes = council.votes.reload.map(&:votes).flatten
     BOT.channel(council.channel_id).send_message("#{new_council_votes.size - new_council_votes.count(0)}/#{new_council_votes.size}") unless new_council_votes.count(0) == council_votes.count(0)
   end
