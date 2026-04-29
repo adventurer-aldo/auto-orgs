@@ -363,6 +363,7 @@ class Sunny
       loser ||= seed
       eliminate(loser)
       council.update(stage: 5)
+      after_all_councils_resolved
       destroy
     end
   end

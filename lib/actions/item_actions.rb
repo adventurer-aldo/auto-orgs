@@ -27,6 +27,7 @@ class Sunny
       end
 
       cancel_item_play(item)
+      record_and_send_event('item_stopped', player: player, item: item)
       event.respond("Cancelled playing **#{item.name}**.")
     end
 
@@ -66,6 +67,7 @@ class Sunny
 
       if Setting.confirmation?(msger.message.content.downcase)
         item.update(player_id: targets.first.id)
+        record_and_send_event("item_given:item=#{item.name}", player: player, item: item)
         event.respond("**#{item.name}** now belongs to **#{targets.first.name}**")
         BOT.channel(targets.first.submissions).send_embed do |embed|
           embed.title = "#{player.name} has sent you an item!"
@@ -110,6 +112,7 @@ class Sunny
     targets = item.targets
     unless targets == []
       cancel_item_play(item)
+      record_and_send_event('item_stopped', player: player, item: item)
       event.respond("You've cancelled playing **#{item.name}**.")
     end
     break unless targets == []

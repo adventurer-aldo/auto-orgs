@@ -13,7 +13,8 @@ class Sunny
 
   def self.handle_draft_pick(event, pick_column, pick_label)
     event.defer_update
-    return if Council.where(season_id: Setting.season_id).exists?
+    return if active_councils.exists?
+    return unless Setting.spectator_draft_is_ongoing == 1
 
     draft = SpectatorGame::Draft.find_or_create_by(user_id: event.user.id, season_id: Setting.season_id)
     new_pick = event.values.first.to_i
@@ -40,8 +41,8 @@ class Sunny
     end
   end
 
-  BOT.command :prepare_draft do |event|
-    channel = draft_channel
+  def self.prepare_draft_game(channel)
+    Setting.spectator_draft_is_ongoing = 1
 
     channel.send_embed do |embed|
       embed.title = "#{season_title} — Draft Game"
@@ -49,7 +50,7 @@ class Sunny
       embed.color = '#CB00FF'
     end
 
-    players = Player.where(season_id: Setting.season_id)
+    players = Player.where(season_id: Setting.season_id).order(:id)
 
     winner_view = Discordrb::Webhooks::View.new
     winner_view.row { |row| row.string_select(custom_id: "DraftWinnerPick", options: draft_pick_options(players)) }
@@ -66,6 +67,12 @@ class Sunny
     third_view = Discordrb::Webhooks::View.new
     third_view.row { |row| row.string_select(custom_id: "DraftThirdPick", options: draft_pick_options(players)) }
     channel.send_message("**Pick 3**", false, nil, nil, nil, nil, third_view)
+  end
+
+  BOT.command :prepare_draft do |event|
+    break unless event.user.id.host?
+
+    prepare_draft_game(draft_channel)
   end
 
   BOT.string_select(custom_id: 'DraftWinnerPick') do |event|

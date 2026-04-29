@@ -106,6 +106,7 @@ class Sunny
 
         .title-block {
           margin: 0 0 26px;
+          padding-top: 30px;
           text-align: center;
         }
 

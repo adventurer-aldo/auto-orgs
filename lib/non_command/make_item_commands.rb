@@ -39,6 +39,7 @@ class Sunny
           embed.color = event.server.role(Setting.tribal_ping_role_id).color
         end
         item.update(player_id: player.id)
+        record_and_send_event('item_found', player: player, item: item.reload)
       end
       return
     end

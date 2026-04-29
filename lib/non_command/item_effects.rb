@@ -95,6 +95,7 @@ class Sunny
           end
 
           item.update(targets: [player.id], player_id: 0)
+          record_and_send_event('item_played', player: player, item: item)
 
         end
       end
@@ -118,6 +119,7 @@ class Sunny
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
           item.update(targets: [vote_index])
+          record_and_send_event('item_played', player: player, item: item)
           event.respond("You successfuly played #{item.name}.")
 
         when 'steal_vote'
@@ -144,6 +146,7 @@ class Sunny
           end
 
           item.update(targets: [stolen_target.id, vote_index])
+          record_and_send_event('item_played', player: player, item: item)
         when 'block_vote'
           targets = []
           enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
@@ -206,6 +209,7 @@ class Sunny
           end
 
           item.update(player_id: nil, targets: targets.map(&:id))
+          record_and_send_event('item_played', player: player, item: item)
         end
       end
     else
@@ -254,6 +258,7 @@ class Sunny
           else
             event.respond("You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
             item.update(targets: targets.map(&:id))
+            record_and_send_event('item_played', player: player, item: item)
           end
 
         end

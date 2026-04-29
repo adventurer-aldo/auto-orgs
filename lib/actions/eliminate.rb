@@ -131,6 +131,7 @@ class Sunny
         eliminate(seed)
         event.respond("#{seed.name} has unfortunately been eliminated from the game.")
         council.update(stage: 5)
+        after_all_councils_resolved
       end
       break unless rocks[seeds.index(seed)].zero?
     end

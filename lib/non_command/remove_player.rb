@@ -108,6 +108,9 @@ class Sunny
     Player.where(status: ALIVE, season_id: Setting.season_id).update(status: 'In')
     alvivor_server.role(Setting.immunity_role_id).members.each { |immune| immune.on(alvivor_server).remove_role(Setting.immunity_role_id) }
     BOT.channel(Setting.spectator_draft_channel_id).send_file(get_draft_image, filename: 'Draft.png')
+    record_and_send_event('eliminated', player: loser)
+    SpectatorGame::Elimination.where(season_id: Setting.season_id, episode_id: current_episode.id, player_id: loser.id).each { |pick| mark_spectator_game_lost(pick) }
     # BOT.channel(Setting.spectator_elimination_channel_id).send_file(get_eliminator_image, filename: "Eliminator.png")
+    after_all_councils_resolved
   end
 end

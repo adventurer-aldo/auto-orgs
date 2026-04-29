@@ -1,19 +1,35 @@
 class Sunny
   POTATO_CHANNEL = 1415061119562809426
   BURNED_ROLE_ID = 1399650936682450995
+  POTATO_TOTAL_DURATION = 24 * 60 * 60
+
+  def self.next_potato_delay
+    total = Challenges::Participant.size
+    return 0 if total <= 1
+
+    POTATO_TOTAL_DURATION / [total - 1, 1].max
+  end
 
   BOT.command :hot_potato do |event|
     break unless event.user.id.host?
     
     players = Player.where(status: ALIVE, season_id: Setting.season_id)
+    if players.size <= 1
+      event.respond('Hot Potato needs at least two alive castaways.')
+      break
+    end
+    Challenges::Participant.destroy_all
     players.each do |player|
       Challenges::Participant.create(player_id: player.id)
     end
     target = players.sample()
-    Challenges::Potato.all.first.update(player_id: target.id)
-    PotatoJob.enqueue
+    potato = Challenges::Potato.first || Challenges::Potato.create
+    potato.update(player_id: target.id)
+    QueJob.destroy_by(job_class: "Sunny::PotatoJob")
+    QueJob.destroy_by(job_class: "PotatoJob")
+    PotatoJob.enqueue(job_options: { run_at: Time.now + next_potato_delay })
 
-    event.respond(":potato: **Hot Potato** has begun!\nAfter a not-so-random amount of time, the Potato will explode and take down the player holding it.")
+    event.respond(":potato: **Hot Potato** has begun!\nThere will be #{players.size - 1} Hot Potatoes over 24 hours, evenly split until only one castaway remains.")
     event.channel.start_typing
     sleep(2)
     event.respond("The castaway, selected at random, to hold the :potato: :potato: **Hot Potato** first is...")
@@ -116,8 +132,9 @@ class Sunny
       Challenges::Potato.all.last.update(player_id: player.id)
       channel.send_message("A new :potato: **Hot Potato** appeared and dropped on #{BOT.user(player.user_id).mention}'s hands!\nPass the potato with `!pass (TARGET'S NAME)` before it blows up!")
       BOT.user(unlucky.user_id).on(channel.server.id).add_role(BURNED_ROLE_ID)
+      QueJob.destroy_by(job_class: "Sunny::PotatoJob")
       QueJob.destroy_by(job_class: "PotatoJob")
-      PotatoJob.enqueue
+      PotatoJob.enqueue(job_options: { run_at: Time.now + next_potato_delay })
     end
     
     list = participants.map { |participant| Player.find_by(id: participant.player_id).name }.join("\n")

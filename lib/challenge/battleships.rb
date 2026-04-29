@@ -22,6 +22,49 @@ class Sunny
     end
   end
 
+  def self.active_battleship_tribes
+    Setting.tribes.filter_map { |tribe_id| Tribe.find_by(id: tribe_id) }.select do |tribe|
+      tribe.battleships.exists?
+    end
+  end
+
+  def self.tribe_sunk?(tribe)
+    ships = tribe.battleships.map(&:squares)
+    return false if ships.empty?
+
+    attacks = tribe.damages.map(&:square)
+    (ships.flatten - attacks).empty?
+  end
+
+  def self.remaining_battleship_tribes
+    active_battleship_tribes.reject { |tribe| tribe_sunk?(tribe) }
+  end
+
+  def self.resolve_battleship_target(event, attacker, args)
+    candidates = remaining_battleship_tribes.reject { |tribe| tribe.id == attacker.id }
+    return candidates.first if candidates.one?
+
+    mentioned = event.message.role_mentions.filter_map do |role|
+      Tribe.find_by(role_id: role.id, season_id: Setting.season_id)
+    end
+    mentioned &= candidates
+    return mentioned.first if mentioned.one?
+
+    text = args.join(' ').downcase
+    name_matches = candidates.select { |tribe| text.include?(tribe.name.downcase) || text.include?(tribe.id.to_s) }
+    return name_matches.first if name_matches.one?
+
+    nil
+  end
+
+  def self.next_battleship_turn(after_tribe)
+    remaining = remaining_battleship_tribes
+    return nil if remaining.size <= 1
+
+    index = remaining.index { |tribe| tribe.id == after_tribe.id } || -1
+    remaining[(index + 1) % remaining.size]
+  end
+
   def self.valid_position?(pos)
     !!pos.match(/^[a-gA-G](7|[1-6])$/)
   end
@@ -48,7 +91,7 @@ class Sunny
   BOT.command :battleships do |event|
     return unless event.user.id.host?
 
-    tribes = Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }
+    tribes = Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id) }.compact
     event.respond('The first tribe to attack will be decided by a coinflip!')
     event.channel.start_typing
     sleep(3)
@@ -131,20 +174,26 @@ class Sunny
 
     break unless event.user.id.player? || event.user.id.host?
 
-    position = args.join('').downcase
+    position_arg = args.find { |arg| valid_position?(arg.to_s) }
+    position = position_arg.to_s.downcase
     event.respond("Invalid attack position: #{position}") unless valid_position?(position)
     return unless valid_position?(position)
 
-    player = Player.find_by(user_id: event.user.id, status: ALIVE).tribe
-    enemy = Tribe.where.not(id: player.id).last
+    player_record = Player.find_by(user_id: event.user.id, status: ALIVE, season_id: Setting.season_id)
+    player = player_record&.tribe
+    break unless player
+    enemy = resolve_battleship_target(event, player, args - [position_arg])
     turn = Challenges::Battleships::Turn.all.last
 
     return unless event.channel.id == player.cchannel_id || event.user.id.host?
 
     event.respond("Wait! It's not your turn yet!") unless turn.current_tribe == player.id
     return unless turn.current_tribe == player.id
-
-    turn.update(current_tribe: enemy.id)
+    unless enemy
+      choices = remaining_battleship_tribes.reject { |tribe| tribe.id == player.id }.map { |tribe| "**#{tribe.name}**" }
+      event.respond("Choose which tribe to attack: #{choices.join(', ')}")
+      return
+    end
 
     ships = enemy.battleships.all.map { |ship| ship.squares }
     attacks = enemy.damages.all.map { |damage| damage.square }
@@ -173,7 +222,8 @@ class Sunny
 
     attacks.push(position)
     enemy.damages.create(square: position)
-    if (ships.flatten - attacks).empty?
+    enemy_sunk = (ships.flatten - attacks).empty?
+    if enemy_sunk
       # Challenges::Battleships::Ship.destroy_all
       # Challenges::Battleships::Damage.destroy_all
       # Challenges::Battleships::Turn.destroy_all
@@ -186,11 +236,17 @@ class Sunny
       BOT.channel(BATTLESHIP_CHANNEL).send_message("And as such...")
       BOT.channel(BATTLESHIP_CHANNEL).start_typing
       sleep(3)
-      BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(player.role_id).mention} HAVE WON IMMUNITY!**")
-      BOT.channel(BATTLESHIP_CHANNEL).send_message("The other hosts will take it from here.")
-      return
+      remaining = remaining_battleship_tribes
+      if remaining.one?
+        winner = remaining.first
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("**#{event.server.role(winner.role_id).mention} HAVE WON IMMUNITY!**")
+        BOT.channel(BATTLESHIP_CHANNEL).send_message("The other hosts will take it from here.")
+        return
+      end
     end
-    BOT.channel(BATTLESHIP_CHANNEL).send_message("**Your turn now, #{event.server.role(enemy.role_id).mention()}!**")
+    next_turn = enemy_sunk ? next_battleship_turn(enemy) : enemy
+    turn.update(current_tribe: next_turn.id) if next_turn
+    BOT.channel(BATTLESHIP_CHANNEL).send_message("**Your turn now, #{event.server.role(next_turn.role_id).mention()}!**") if next_turn
     return
   end
 end

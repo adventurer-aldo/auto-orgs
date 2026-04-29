@@ -54,6 +54,7 @@ class Sunny
     end
 
     created = register_players(cast, event.server)
+    prompt_spectator_games(event.channel)
     return "New entries in Season #{Setting.season_id}'s cast:\n#{created.join("\n")}"
   end
 
@@ -66,5 +67,27 @@ class Sunny
 
     created = register_players(event.values.map { |user| user.on(event.server) }, event.server)
     event.update_message(content: "New entries in Season #{Setting.season_id}'s cast:\n#{created.join("\n")}", components: nil)
+    prompt_spectator_games(event.channel)
+  end
+
+  BOT.button(custom_id: 'spectator_start_draft') do |event|
+    break unless event.user.id.host?
+
+    event.defer_update
+    prepare_draft_game(draft_channel)
+  end
+
+  BOT.button(custom_id: 'spectator_start_elimination') do |event|
+    break unless event.user.id.host?
+
+    event.defer_update
+    prepare_elimination_game
+  end
+
+  BOT.button(custom_id: 'spectator_start_bootlist') do |event|
+    break unless event.user.id.host?
+
+    event.defer_update
+    prepare_bootlist_game(event)
   end
 end

@@ -56,28 +56,51 @@ class Sunny
     break unless event.user.id.host?
 
     players = []
+    immunity_sources = {}
 
     unless event.message.mentions.empty?
       event.message.mentions.each do |user|
-        players << Player.find_by(user_id: user.id, season_id: Setting.season_id, status: ALIVE)
+        player = Player.find_by(user_id: user.id, season_id: Setting.season_id, status: ALIVE)
+        players << player
+        immunity_sources[player&.id] = :individual if player
       end
     end
 
     unless event.message.role_mentions.empty?
       event.message.role_mentions.each do |role|
+        tribe = Tribe.find_by(role_id: role.id, season_id: Setting.season_id)
         role.members.each do |member|
-          players << Player.find_by(user_id: member.id, season_id: Setting.season_id, status: ALIVE)
+          player = Player.find_by(user_id: member.id, season_id: Setting.season_id, status: ALIVE)
+          players << player
+          immunity_sources[player&.id] = tribe if player && tribe
         end
       end
     end
 
-    players.delete(nil)
+    players = players.compact.uniq
 
     players.each do |player|
       next player if player.nil?
 
       player.update(status: 'Immune')
       BOT.user(player.user_id).on(event.server).add_role(Setting.immunity_role_id)
+      source = immunity_sources[player.id]
+      tribe_immunity = source.is_a?(Tribe)
+      title = tribe_immunity ? 'Tribe Immunity' : 'Individual Immunity'
+      description = if tribe_immunity
+                      "You have earned Immunity as part of **#{source.name}** tribe during the F#{finale_count}.\nYour tribe will not be going to Tribal Council."
+                    else
+                      "You have earned Individual Immunity during the F#{finale_count}.\nYou are safe from votes at Tribal Council."
+                    end
+
+      BOT.channel(player.confessional).send_embed do |embed|
+        embed.title = title
+        embed.description = description
+        embed.color = event.server.role(source.role_id).color if tribe_immunity
+      end
+
+      event_key = tribe_immunity ? "tribe_immunity:tribe=#{source.name}|finale=#{finale_count}" : "individual_immunity:finale=#{finale_count}"
+      record_and_send_event(event_key, player: player)
     end
 
     if players.empty?

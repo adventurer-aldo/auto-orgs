@@ -1,4 +1,35 @@
 class Sunny
+  def self.announce_buff(player, server)
+    return unless player&.tribe
+
+    BOT.channel(player.confessional).send_embed do |embed|
+      embed.title = "#{player.tribe.name} Buff"
+      embed.description = "You have drawn a **#{player.tribe.name}** buff."
+      embed.color = server.role(player.tribe.role_id).color
+    end
+    record_event("tribe_buff:tribe=#{player.tribe.name}", player: player)
+  rescue StandardError
+    nil
+  end
+
+  def self.send_tribe_sorting_events(server)
+    return if Setting.events_channel_id.zero?
+
+    Setting.tribes.each do |tribe_id|
+      tribe = Tribe.find_by(id: tribe_id, season_id: Setting.season_id)
+      next unless tribe
+
+      members = tribe.players.where(season_id: Setting.season_id, status: ALIVE).order(:name).map(&:name)
+      BOT.channel(Setting.events_channel_id).send_embed do |embed|
+        embed.title = "#{tribe.name} Tribe"
+        embed.description = members.empty? ? 'No active members.' : members.join("\n")
+        embed.color = server.role(tribe.role_id).color
+      end
+    end
+  rescue StandardError
+    nil
+  end
+
   BOT.command :tribes, description: 'Creates new tribes and automatically puts alive castaways in them.' do |event, *args|
     break unless event.user.id.host?
 
@@ -65,6 +96,7 @@ class Sunny
           sleep(1)
           event.respond "**Tribe #{tribes[rand].mention}!**"
           player.update(tribe_id: Tribe.where(role_id: tribes[rand].id).last.id)
+          announce_buff(player.reload, event.server)
           @buffs.delete_at(@buffs.index(rand))
           event.channel.start_typing
           sleep(2)
@@ -78,6 +110,7 @@ class Sunny
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
         end
+        send_tribe_sorting_events(event.server)
         create_dms(event)
         return "And that's about it. Go meet your new tribemates!"
     elsif tribes.size == 1
@@ -153,6 +186,7 @@ class Sunny
 
         players.each do |player|
           player.update(tribe_id: Tribe.where(season_id: Setting.season_id, role_id: tribes[0].id).last.id)
+          announce_buff(player.reload, event.server)
           member = BOT.user(player.user_id).on(event.server)
           member.remove_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
           member.add_role(player.tribe.role_id)
@@ -170,6 +204,7 @@ class Sunny
         event.channel.start_typing
         sleep(5)
         create_dms(event)
+        send_tribe_sorting_events(event.server)
         event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'
       end
 

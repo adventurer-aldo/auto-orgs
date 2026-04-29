@@ -1,12 +1,16 @@
 class Sunny
   @wordles = File.readlines('./lib/challenge/wordles.txt', chomp: true)
   @guessles = File.readlines('./lib/challenge/guessles.txt', chomp: true)
-  @uada_id = 25
-  @habiti_id = 26
-  
-  @uada_words = ['epoch', 'trite', 'quoth', 'wooer', 'mango', 'buxom', 'wryly']
-  @habiti_words = ['query', 'crypt', 'foyer', 'plumb', 'squib', 'modal', 'myrrh']
 
+  def self.wordle_word_value(word)
+    column = %w[word text value answer].find { |name| word.has_attribute?(name) }
+    column ? word[column].to_s.downcase : ''
+  end
+
+  def self.wordle_targets_for(tribe)
+    opposing_tribe_ids = Setting.tribes - [tribe.id]
+    Challenges::Wordle::Word.where(tribe_id: opposing_tribe_ids).order(:id).map { |word| wordle_word_value(word) }.reject(&:empty?)
+  end
   
   BOT.message(in: Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id }) do |event|
     player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
@@ -17,9 +21,12 @@ class Sunny
 
     challenge = Challenges::Tribal.find_by(tribe_id: tribe.id)
 
-    return if challenge.stage > 6
+    return if challenge.nil?
 
-    target_words = tribe.id == @uada_id ? @habiti_words : @uada_words
+    target_words = wordle_targets_for(tribe)
+    return if target_words.empty?
+    return if challenge.stage >= target_words.size
+
     target = target_words[challenge.stage]
     
     guess = event.message.content.downcase
@@ -58,9 +65,9 @@ class Sunny
 
     event.respond(result.join, false, nil, nil, nil, event.message)
     if guess == target.downcase
-      BOT.channel(1409959696349139025).send_message("#{['After', 'With about', 'With', 'Using'].sample} #{challenge.reload.end_time} guesses, **#{tribe.name}** guessed a word correctly! #{(challenge.stage + 1)}/6")
+      BOT.channel(1409959696349139025).send_message("#{['After', 'With about', 'With', 'Using'].sample} #{challenge.reload.end_time} guesses, **#{tribe.name}** guessed a word correctly! #{(challenge.stage + 1)}/#{target_words.size}")
       event.respond "The word was **#{target.capitalize}**. Your team guessed it correctly!"
-      if (challenge.stage + 1) > 6 
+      if (challenge.stage + 1) >= target_words.size
         event.respond "Congratulations! Your tribe has guessed the final word chosen by the other tribe!" 
       else
         event.respond "You can now attempt to guess the next word..."

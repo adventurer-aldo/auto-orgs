@@ -30,6 +30,11 @@ class Setting < ActiveRecord::Base
     spectator_draft_channel_id
     spectator_elimination_channel_id
     spectator_bootlist_channel_id
+    spectator_draft_is_ongoing
+    spectator_elimination_is_ongoing
+    spectator_bootlist_is_ongoing
+    events_channel_id
+    episode_title_voting_channel_id
     archive_category_id
   ].freeze
 
