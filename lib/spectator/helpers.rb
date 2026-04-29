@@ -106,7 +106,7 @@ class Sunny
     return unless Setting.spectator_bootlist_is_ongoing == 1
     return unless Player.where(season_id: Setting.season_id, status: ALIVE).size <= 1
 
-    winner = unique_lowest(SpectatorGame::Bootlist.where(season_id: Setting.season_id).to_a)
+    winner = unique_lowest(SpectatorGame::Bootlist.user_scores)
     return unless winner
 
     Setting.spectator_bootlist_is_ongoing = 0

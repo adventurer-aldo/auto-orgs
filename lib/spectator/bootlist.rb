@@ -13,8 +13,8 @@ class Sunny
     players.first(25).map { |player| { label: player.name[0, 100], value: player.id.to_s } }
   end
 
-  def self.bootlist_values(record)
-    record.respond_to?(:values) ? record.values : []
+  def self.bootlist_values_for(user_id)
+    SpectatorGame::Bootlist.entries_for_user(user_id).pluck(:player_id)
   end
 
   def self.bootlist_player_lines(values)
@@ -26,6 +26,19 @@ class Sunny
 
   def self.bootlist_summary(values)
     "**Your Bootlist**\n#{bootlist_player_lines(values).join("\n")}"
+  end
+
+  def self.create_bootlist_submission(user_id, values)
+    SpectatorGame::Bootlist.transaction do
+      values.each_with_index do |player_id, index|
+        SpectatorGame::Bootlist.create(
+          user_id: user_id,
+          player_id: player_id,
+          rank: index + 1,
+          season_id: Setting.season_id
+        )
+      end
+    end
   end
 
   def self.bootlist_confirmation_view(token)
@@ -128,12 +141,7 @@ class Sunny
       break
     end
 
-    bootlist = SpectatorGame::Bootlist.create(user_id: event.user.id, season_id: Setting.season_id)
-    unless set_model_value(bootlist, %w[rankings picks bootlist player_ids players], payload[:values])
-      pending_bootlists.delete(token)
-      event.update_message(content: 'Bootlist table needs an array column named rankings, picks, bootlist, player_ids, or players.', components: nil)
-      break
-    end
+    create_bootlist_submission(event.user.id, payload[:values])
 
     pending_bootlists.delete(token)
     event.update_message(content: "#{bootlist_summary(payload[:values])}\n\n**Submitted.**", components: nil)
@@ -160,6 +168,6 @@ class Sunny
       break
     end
 
-    event.respond(content: bootlist_summary(bootlist_values(bootlist)), ephemeral: true)
+    event.respond(content: bootlist_summary(bootlist_values_for(event.user.id)), ephemeral: true)
   end
 end

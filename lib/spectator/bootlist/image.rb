@@ -1,53 +1,39 @@
 class Sunny
-  def self.actual_boot_order_player_ids
-    eliminated_events = Event.where('summary = ? OR summary LIKE ?', 'eliminated', 'eliminated:%')
-                             .where.not(player_id: nil)
-
-    if Event.column_names.include?('episode_id')
-      eliminated_events = eliminated_events.joins('LEFT JOIN episodes ON episodes.id = events.episode_id')
-                                           .order('episodes.number ASC NULLS LAST, events.id ASC')
-    else
-      eliminated_events = eliminated_events.order(:id)
-    end
-
-    eliminated_events.filter_map do |event_row|
-      player = Player.find_by(id: event_row.player_id, season_id: Setting.season_id)
-      player&.id
-    end.uniq
-  end
-
-  def self.bootlist_pick_cell(player_id, actual_player_id, escape_html)
-    player = Player.find_by(id: player_id, season_id: Setting.season_id)
+  def self.bootlist_pick_cell(pick, escape_html)
+    player = pick&.player
     return '<td class="pick empty"></td>' unless player
 
-    matched = actual_player_id == player.id
-    missed = actual_player_id && actual_player_id != player.id
+    matched = player.rank.to_i == pick.rank.to_i if player.rank
+    missed = player.rank && !matched
     status_class = matched ? ' hit' : missed ? ' miss' : ''
+    actual = player.rank ? " - #{ordinal(player.rank)}" : ''
 
     %Q(
       <td class="pick#{status_class}">
         <div class="pick-wrap">
           #{draft_castaway_avatar(player)}
-          <span>#{escape_html.call(player.name)}</span>
+          <span>#{escape_html.call(player.name)}#{actual}</span>
         </div>
       </td>)
   end
 
   def self.get_bootlist_image
     escape_html = ->(text) { text.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;') }
-    bootlists = SpectatorGame::Bootlist.where(season_id: Setting.season_id).sort_by { |bootlist| bootlist.score || 0 }
-    actual_order = actual_boot_order_player_ids
-    max_slots = [bootlists.map { |bootlist| bootlist.values.size }.max.to_i, actual_order.size, 1].max
+    bootlists = SpectatorGame::Bootlist.where(season_id: Setting.season_id).includes(:player).to_a
+    grouped_bootlists = bootlists.group_by(&:user_id)
+    scores = SpectatorGame::Bootlist.user_scores.index_by(&:user_id)
+    max_slots = [bootlists.map(&:rank).compact.max.to_i, 1].max
 
     headers = (1..max_slots).map { |slot| "<th>#{ordinal(slot)}</th>" }.join
-    rows = bootlists.map do |bootlist|
-      spectator = draft_spectator_name(bootlist.user_id)
+    rows = grouped_bootlists.sort_by { |user_id, _picks| scores[user_id]&.score || 0 }.map do |user_id, picks|
+      spectator = draft_spectator_name(user_id)
+      picks_by_rank = picks.index_by(&:rank)
 
       %Q(
         <tr>
           <td class="spectator">#{escape_html.call(spectator)}</td>
-          #{(0...max_slots).map { |index| bootlist_pick_cell(bootlist.values[index], actual_order[index], escape_html) }.join}
-          <td class="score">#{bootlist.score}</td>
+          #{(1..max_slots).map { |rank| bootlist_pick_cell(picks_by_rank[rank], escape_html) }.join}
+          <td class="score">#{scores[user_id]&.score || 0}</td>
         </tr>)
     end.join
 
