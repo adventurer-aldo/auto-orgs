@@ -223,9 +223,9 @@ class Sunny
           sleep(2)
           case Setting.game_stage
           when 0
-            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from #{season_title} is...**")
+            channel.send_message("**The #{COUNTING[total - rank]} castaway eliminated from #{Setting.season_title} is...**")
           when 1
-            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from #{season_title} and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.season_id).size].downcase} member of the Jury is...**")
+            channel.send_message("**#{COUNTING[total - rank]} castaway eliminated from #{Setting.season_title} and #{COUNTING[Player.where(status: 'Jury', season_id: Setting.season_id).size].downcase} member of the Jury is...**")
           end
           sleep(5)
           lame = ' (NO PARCHMENT)'
