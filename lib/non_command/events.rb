@@ -1,14 +1,14 @@
 class Sunny
   EVENT_SUMMARIES = {
-    tribe_buff: '%{player} drew a %{tribe} buff.',
+    tribe_buff: '%{player} drew a buff from %{tribe}.',
     tribe_immunity: '%{player} earned immunity as part of %{tribe} during the F%{finale}.',
     individual_immunity: '%{player} earned individual immunity during the F%{finale}.',
     item_found: '%{player} found %{item}.',
     item_received: '%{player} received %{item} from %{from}.',
-    item_played: '%{player} played %{item}%{details}.',
-    item_stopped: '%{player} stopped playing %{item}.',
+    item_played: '%{player} decided to play %{item}%{details}.',
+    item_stopped: '%{player} decided to not play %{item}.',
     casting_vote: '%{player} cast a vote.',
-    eliminated: '%{player} was eliminated.',
+    eliminated: '%{player} has been eliminated from the game.',
     item_given: '%{player} gave %{item} to %{target}.'
   }.freeze
 
@@ -54,17 +54,17 @@ class Sunny
 
     case key
     when :item_found
-      "#{item_type} Found!"
+      "#{item_type} was found!"
     when :item_received
-      "#{item_type} Received!"
+      "#{item_type} has been received by a castaway"
     when :item_given
-      "#{item_type} Given!"
+      "#{item_type} was given away!"
     when :item_played
-      "#{item_type} Played!"
+      "#{item_type} has been queued to be played!"
     when :item_stopped
-      "#{item_type} Play Cancelled!"
+      "#{item_type} has been removed from the queue to be played!"
     when :tribe_buff
-      'Buff Drawn!'
+      'A buff has been drawn!'
     when :tribe_immunity
       'Tribal Immunity Won!'
     when :individual_immunity
@@ -72,9 +72,9 @@ class Sunny
     when :casting_vote
       'Vote Cast!'
     when :eliminated
-      'Torch Snuffed!'
+      'Torch snuffed...'
     else
-      'Something Happened!'
+      'Something happened!'
     end
   end
 

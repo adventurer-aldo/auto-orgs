@@ -140,7 +140,7 @@ class Sunny
 
   def self.confirm_give_flow(event, player, item, target)
     warning = item.targets.empty? ? '' : "\nGiving it away will cancel the current play."
-    event.channel.send_message("Give **#{item.name}** to **#{target.name}**?#{warning}\nType `yes` to confirm.")
+    event.channel.send_message("Give **#{item.name}** to **#{target.name}**?#{warning}\nPlease confirm.")
     confirmation = event.user.await!(timeout: 60)
 
     unless confirmation && Setting.confirmation?(confirmation.message.content)
@@ -149,6 +149,22 @@ class Sunny
     end
 
     execute_give_flow(event, { player_id: player.id, item_id: item.id, target_id: target.id })
+  end
+
+  def self.play_confirmation_message(item, action, names)
+    return "Cancel your current play of **#{item.name}**?" if action == :cancel
+    return "Play **#{item.name}**?" if names.empty?
+
+    case play_item_function(item)
+    when 'extra_vote'
+      "Use **#{item.name}** to cast an extra vote against **#{names.first}**?"
+    when 'steal_vote'
+      "Use **#{item.name}** to steal **#{names[0]}**'s vote and cast it against **#{names[1]}**?"
+    when 'block_vote', 'idol'
+      "Play **#{item.name}** on **#{names.join('**, **')}**?"
+    else
+      "Play **#{item.name}** on **#{names.join('**, **')}**?"
+    end
   end
 
   def self.execute_give_flow(event, payload)
@@ -240,14 +256,7 @@ class Sunny
 
   def self.confirm_play_flow(event, player, item, action:, targets:)
     names = targets.map { |target_id| Player.find_by(id: target_id)&.name }.compact
-    message = if action == :cancel
-                "Cancel your current play of **#{item.name}**?"
-              elsif names.empty?
-                "Play **#{item.name}**?"
-              else
-                "Play **#{item.name}** involving **#{names.join('**, **')}**?"
-              end
-    event.channel.send_message("#{message}\nType `yes` to confirm.")
+    event.channel.send_message("#{play_confirmation_message(item, action, names)}\nPlease confirm.")
     confirmation = event.user.await!(timeout: 60)
 
     unless confirmation && Setting.confirmation?(confirmation.message.content)
