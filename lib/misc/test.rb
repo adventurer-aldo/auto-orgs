@@ -1,100 +1,71 @@
+require 'securerandom'
+
 class Sunny
-  def self.legacy_prompt(event, text)
-    event.respond(text)
-    event.user.await!.message.content.strip
+  def self.pending_legacy_item_plays
+    @pending_legacy_item_plays ||= {}
   end
 
-  def self.legacy_yes?(text)
-    Setting.confirmation?(text)
-  end
-
-  def self.legacy_blank?(text)
-    text.to_s.strip.empty? || text.to_s.strip == '-'
-  end
-
-  def self.legacy_snowflake(text)
-    text.to_s.scan(/\d+/).first&.to_i || 0
-  end
-
-  def self.legacy_snowflakes(text)
-    text.to_s.scan(/\d+/).map(&:to_i).select(&:positive?)
-  end
-
-  def self.legacy_member(event, text)
-    user_id = legacy_snowflake(text)
-    return event.server.member(user_id) if user_id.positive?
-
-    query = text.downcase
-    event.server.members.find do |member|
-      [member.display_name, member.username, member.name].compact.any? { |name| name.downcase.include?(query) }
-    end
-  end
-
-  def self.legacy_member_rows(event, text)
-    rows = []
-    used_ids = []
-    text.to_s.scan(/<@!?(\d+)>/).flatten.map(&:to_i).each do |user_id|
-      member = event.server.member(user_id)
-      rows << {
-        user_id: user_id,
-        name: member&.display_name,
-        member: member
+  def self.legacy_item_play_item_options
+    Item.where.not(season_id: Setting.season_id).order(:season_id, :name).first(25).map do |item|
+      {
+        label: item.name[0, 100],
+        value: item.id.to_s,
+        description: "S#{item.season_id} | #{Array(item.functions).join(', ')}"[0, 100]
       }
-      used_ids << user_id
     end
+  end
 
-    remaining_text = text.gsub(/<@!?\d+>/, ' ')
-    remaining_text.scan(/\b\d{15,25}\b/).map(&:to_i).each do |user_id|
-      next if used_ids.include?(user_id)
-
-      member = event.server.member(user_id)
-      rows << {
-        user_id: user_id,
-        name: member&.display_name,
-        member: member
+  def self.legacy_item_play_player_options(season_id)
+    Player.where(season_id: season_id).order(:name).first(25).map do |player|
+      {
+        label: player.name[0, 100],
+        value: player.id.to_s,
+        description: "Player ID #{player.id}"
       }
-      used_ids << user_id
     end
+  end
 
-    remaining = remaining_text.gsub(/\b\d{15,25}\b/, ' ').split(',').map(&:strip).reject(&:empty?)
-    remaining = [text.strip] if rows.empty? && remaining.empty? && !text.strip.match?(/\A\d+\z/)
-    remaining.each do |query|
-      next if legacy_snowflakes(query).any?
-
-      member = legacy_member(event, query)
-      next unless member && !used_ids.include?(member.id)
-
-      rows << {
-        user_id: member.id,
-        name: member.display_name,
-        member: member
-      }
-      used_ids << member.id
+  def self.legacy_item_play_item_view(token)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.string_select(
+        custom_id: "legacy_item_play_item:#{token}",
+        options: legacy_item_play_item_options,
+        placeholder: 'Choose an old-season item',
+        min_values: 1,
+        max_values: 1
+      )
     end
-
-    rows
+    view
   end
 
-  def self.legacy_player(season_id, text)
-    id = legacy_snowflake(text)
-    return Player.find_by(id: id, season_id: season_id) if id.positive?
-
-    query = text.downcase
-    matches = Player.where(season_id: season_id).select { |player| player.name.downcase.include?(query) }
-    exact = matches.select { |player| player.name.downcase == query }
-    matches = exact unless exact.empty?
-    matches.size == 1 ? matches.first : nil
+  def self.legacy_item_play_owner_view(token, season_id)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.string_select(
+        custom_id: "legacy_item_play_owner:#{token}",
+        options: legacy_item_play_player_options(season_id),
+        placeholder: 'Choose who played it',
+        min_values: 1,
+        max_values: 1
+      )
+    end
+    view
   end
 
-  def self.legacy_item_type(text)
-    normalized = text.downcase.gsub(/[^a-z0-9]+/, '_').gsub(/\A_+|_+\z/, '')
-    return normalized if DEFINED_FUNCTIONS.include?(normalized)
-
-    nil
-  end
-
-  def self.legacy_played_attributes(item)
-    item.has_attribute?('played') ? { played: true } : {}
+  def self.legacy_item_play_target_view(token, season_id)
+    options = [{ label: 'No target', value: 'none', description: 'This play did not target another castaway' }] + legacy_item_play_player_options(season_id)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.string_select(
+        custom_id: "legacy_item_play_targets:#{token}",
+        options: options.first(25),
+        placeholder: 'Choose target(s), or No target',
+        min_values: 1,
+        max_values: [options.size, 25].min
+      )
+    end
+    view
   end
 
   BOT.command :test do |event, *args|
@@ -271,201 +242,85 @@ class Sunny
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end
 
-  BOT.command :import_season_one do |event|
-    break unless event.user.id.host?
-
-    season_name = legacy_prompt(event, 'Season 1 name?')
-
-    player_rows = []
-    loop do
-      member_text = legacy_prompt(event, 'Give one or more user mentions, user ids, or display names for Season 1 players.')
-      member_rows = legacy_member_rows(event, member_text)
-      if member_rows.empty?
-        event.respond("I couldn't match any users from that.")
-        next
-      end
-
-      member_rows.each do |member_row|
-        name = member_row[:name]
-        name = legacy_prompt(event, "Display name for departed user id **#{member_row[:user_id]}**?") if name.to_s.empty?
-        confessional_id = legacy_snowflake(legacy_prompt(event, "Confessional channel for **#{name}**? Mention it, paste the id, or leave blank."))
-        submissions_id = legacy_snowflake(legacy_prompt(event, "Submissions channel for **#{name}**? Mention it, paste the id, or leave blank."))
-        player_rows << {
-          user_id: member_row[:user_id],
-          name: name,
-          confessional: confessional_id,
-          submissions: submissions_id,
-          status: 'Out',
-          tribe_role_id: nil,
-          rank: nil
-        }
-      end
-
-      break if legacy_yes?(legacy_prompt(event, 'Done adding players?'))
-    end
-
-    tribe_rows = []
-    event.respond('Tribe sorting phase.')
-    loop do
-      role_text = legacy_prompt(event, 'Give a tribe role mention/id/name, or leave blank if there are no more tribes.')
-      break if legacy_blank?(role_text)
-
-      role_id = legacy_snowflake(role_text)
-      role = role_id.positive? ? event.server.role(role_id) : event.server.roles.find { |server_role| server_role.name.downcase.include?(role_text.downcase) }
-      unless role
-        event.respond("I couldn't find that role.")
-        next
-      end
-
-      camp_id = legacy_snowflake(legacy_prompt(event, "Camp channel for **#{role.name}**? Mention it, paste the id, or leave blank."))
-      challenge_id = legacy_snowflake(legacy_prompt(event, "Challenge channel for **#{role.name}**? Mention it, paste the id, or leave blank."))
-      voice_id = legacy_snowflake(legacy_prompt(event, "Voice channel for **#{role.name}**? Paste the id or leave blank."))
-      tribe_rows << {
-        name: role.name,
-        role_id: role.id,
-        channel_id: camp_id,
-        cchannel_id: challenge_id,
-        vchannel_id: voice_id
-      }
-    end
-
-    player_rows.each do |player_row|
-      next if tribe_rows.empty?
-
-      tribe_text = legacy_prompt(event, "Which tribe was **#{player_row[:name]}** on? Give tribe name/role id, or leave blank.")
-      next if legacy_blank?(tribe_text)
-
-      tribe_row = tribe_rows.find { |row| row[:role_id] == legacy_snowflake(tribe_text) || row[:name].downcase.include?(tribe_text.downcase) }
-      player_row[:tribe_role_id] = tribe_row[:role_id] if tribe_row
-    end
-
-    player_rows.each do |player_row|
-      rank_text = legacy_prompt(event, "Rank for **#{player_row[:name]}**? Leave blank if unknown.")
-      next if legacy_blank?(rank_text)
-
-      player_row[:rank] = rank_text.to_i
-      player_row[:status] = rank_text.to_i == 1 ? 'Winner' : 'Out'
-    end
-
-    player_summary = player_rows.map do |row|
-      tribe_name = tribe_rows.find { |tribe_row| tribe_row[:role_id] == row[:tribe_role_id] }&.dig(:name) || 'No tribe'
-      "#{row[:name]} - #{tribe_name} - #{row[:rank] ? ordinal(row[:rank]) : 'No rank'}"
-    end
-    event.respond("Import Season 1?\n**Season:** #{season_name}\n**Players:**\n#{player_summary.join("\n")}\n**Tribes:** #{tribe_rows.map { |row| row[:name] }.join(', ')}\nType `yes` to create these records.")
-    unless legacy_yes?(event.user.await!.message.content)
-      event.respond('Season 1 import cancelled.')
-      break
-    end
-
-    season = Season.find_or_initialize_by(id: 1)
-    season.name = season_name
-    season.save!
-    tribes_by_role_id = {}
-    tribe_rows.each do |row|
-      tribe = Tribe.find_or_initialize_by(season_id: season.id, role_id: row[:role_id])
-      tribe.assign_attributes(row)
-      tribe.save!
-      tribes_by_role_id[row[:role_id]] = tribe
-    end
-    player_rows.each do |row|
-      player = Player.find_or_initialize_by(user_id: row[:user_id], season_id: season.id)
-      player.name = row[:name]
-      player.confessional = row[:confessional]
-      player.submissions = row[:submissions]
-      player.status = row[:status]
-      player.rank = row[:rank]
-      player.tribe_id = tribes_by_role_id[row[:tribe_role_id]]&.id
-      player.save!
-    end
-
-    event.respond('Season 1 import saved.')
-  end
-
-  BOT.command :mark_old_items_played do |event|
-    break unless event.user.id.host?
-
-    unless Item.column_names.include?('played')
-      event.respond('The items table does not have a `played` column yet.')
-      break
-    end
-
-    items = Item.where.not(season_id: Setting.season_id)
-    count = items.update_all(played: true)
-    event.respond("Marked #{count} old item#{count == 1 ? '' : 's'} as played.")
-  end
-
-  BOT.command :legacy_items do |event|
-    break unless event.user.id.host?
-
-    created = []
-    loop do
-      season_id = legacy_prompt(event, 'Season id for this item?').to_i
-      season = Season.find_by(id: season_id)
-      unless season
-        event.respond('Season not found.')
-        next
-      end
-
-      name = legacy_prompt(event, 'Item name?')
-      type = nil
-      until type
-        type = legacy_item_type(legacy_prompt(event, "Item type? Valid: #{DEFINED_FUNCTIONS.join(', ')}"))
-        event.respond('That item type is not valid.') unless type
-      end
-
-      item = Item.create(
-        season_id: season.id,
-        name: name,
-        code: item_code_from_name(name),
-        description: 'Legacy item.',
-        functions: [type],
-        own_restriction: 0,
-        targets: [],
-        player_id: nil
-      )
-      item.update(played: false) if item.has_attribute?('played')
-      created << item
-      break unless legacy_yes?(legacy_prompt(event, 'Add another legacy item?'))
-    end
-
-    event.respond("Created legacy items:\n#{created.map { |item| "Season #{item.season_id}: #{item.name} (#{item.functions.join(', ')})" }.join("\n")}")
-  end
-
   BOT.command :legacy_item_plays do |event|
     break unless event.user.id.host?
 
-    items = Item.where.not(season_id: Setting.season_id).order(:season_id, :name).to_a
-    if items.empty?
+    if legacy_item_play_item_options.empty?
       event.respond('No legacy items found outside the latest season.')
       break
     end
 
-    loop do
-      event.respond("Legacy items:\n#{items.first(40).map { |item| "**#{item.id}** - S#{item.season_id} #{item.name} (#{Array(item.functions).join(', ')})" }.join("\n")}")
-      item = Item.find_by(id: legacy_prompt(event, 'Which item id do you want to sort? Leave blank to stop.').to_i)
-      break unless item && item.season_id != Setting.season_id
+    token = SecureRandom.hex(8)
+    pending_legacy_item_plays[token] = { user_id: event.user.id }
+    event.channel.send_message('Choose the legacy item to sort.', false, nil, nil, nil, nil, legacy_item_play_item_view(token))
+  end
 
-      owner = legacy_player(item.season_id, legacy_prompt(event, "Who owned/played **#{item.name}**? Give castaway name or mention/id."))
-      unless owner
-        event.respond("I couldn't find exactly one player for that owner.")
-        next
-      end
-
-      targets = []
-      target_text = legacy_prompt(event, 'Who was it played on? Separate multiple names with commas, or leave blank.')
-      unless legacy_blank?(target_text)
-        target_text.split(',').each do |piece|
-          target = legacy_player(item.season_id, piece.strip)
-          targets << target.id if target
-        end
-      end
-
-      item.update({ player_id: owner.id, targets: targets }.merge(legacy_played_attributes(item)))
-      record_event("item_played#{targets.empty? ? '' : ":details= on #{targets.map { |id| Player.find_by(id: id)&.name }.compact.join(', ')}"}", player: owner, item: item)
-      event.respond("Sorted **#{item.name}** as played by **#{owner.name}**#{targets.empty? ? '' : " on #{targets.map { |id| Player.find_by(id: id)&.name }.compact.join(', ')}"}.")
-      break unless legacy_yes?(legacy_prompt(event, 'Sort another legacy item play?'))
+  BOT.string_select(custom_id: /\Alegacy_item_play_item:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_legacy_item_plays[token]
+    if payload.nil? || payload[:user_id] != event.user.id || !event.user.id.host?
+      event.respond(content: 'This legacy item sorting flow is no longer available to you.', ephemeral: true)
+      break
     end
 
-    event.respond('Legacy item play sorting finished.')
+    item = Item.find_by(id: event.values.first.to_i)
+    unless item && item.season_id != Setting.season_id
+      pending_legacy_item_plays.delete(token)
+      event.update_message(content: 'That legacy item no longer exists.', components: nil)
+      break
+    end
+    if legacy_item_play_player_options(item.season_id).empty?
+      pending_legacy_item_plays.delete(token)
+      event.update_message(content: "Season #{item.season_id} has no players to choose from.", components: nil)
+      break
+    end
+
+    payload[:item_id] = item.id
+    event.update_message(content: "Who played **#{item.name}**?", components: legacy_item_play_owner_view(token, item.season_id))
+  end
+
+  BOT.string_select(custom_id: /\Alegacy_item_play_owner:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_legacy_item_plays[token]
+    if payload.nil? || payload[:user_id] != event.user.id || !event.user.id.host?
+      event.respond(content: 'This legacy item sorting flow is no longer available to you.', ephemeral: true)
+      break
+    end
+
+    item = Item.find_by(id: payload[:item_id])
+    owner = Player.find_by(id: event.values.first.to_i, season_id: item&.season_id)
+    unless item && owner
+      pending_legacy_item_plays.delete(token)
+      event.update_message(content: 'That legacy item or owner no longer exists.', components: nil)
+      break
+    end
+
+    payload[:owner_id] = owner.id
+    event.update_message(content: "Who was **#{item.name}** played on?", components: legacy_item_play_target_view(token, item.season_id))
+  end
+
+  BOT.string_select(custom_id: /\Alegacy_item_play_targets:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_legacy_item_plays.delete(token)
+    if payload.nil? || payload[:user_id] != event.user.id || !event.user.id.host?
+      event.respond(content: 'This legacy item sorting flow is no longer available to you.', ephemeral: true)
+      break
+    end
+
+    item = Item.find_by(id: payload[:item_id])
+    owner = Player.find_by(id: payload[:owner_id], season_id: item&.season_id)
+    unless item && owner
+      event.update_message(content: 'That legacy item or owner no longer exists.', components: nil)
+      break
+    end
+
+    target_ids = event.values.reject { |value| value == 'none' }.map(&:to_i)
+    targets = Player.where(id: target_ids, season_id: item.season_id).to_a
+    item.update(player_id: owner.id, targets: targets.map(&:id), played: true)
+    record_event("item_played#{targets.empty? ? '' : ":details= on #{targets.map(&:name).join(', ')}"}", player: owner, item: item)
+    event.update_message(
+      content: "Sorted **#{item.name}** as played by **#{owner.name}**#{targets.empty? ? '' : " on #{targets.map(&:name).join(', ')}"}.",
+      components: nil
+    )
   end
 end

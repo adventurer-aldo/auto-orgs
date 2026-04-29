@@ -82,10 +82,8 @@ class Sunny
     received_ids = item_event_ids(player, %w[item_received])
     played_ids = item_event_ids(player, %w[item_played])
     current_ids = Item.where(season_id: player.season_id, player_id: player.id).map(&:id)
-    had_ids = (found_ids + received_ids + current_ids).uniq
-    fallback_played_ids = Item.where(id: had_ids).select do |item|
-      item.has_attribute?('played') ? item.played : !Array(item.targets).empty?
-    end.map(&:id)
+    had_ids = (found_ids + received_ids + played_ids + current_ids).uniq
+    fallback_played_ids = Item.where(id: had_ids, played: true).map(&:id)
     played_ids = (played_ids + fallback_played_ids).uniq
 
     {

@@ -36,6 +36,7 @@ class Setting < ActiveRecord::Base
     events_channel_id
     episode_title_voting_channel_id
     archive_category_id
+    message_logging_is_enabled
   ].freeze
 
   ARRAY_SETTINGS = %w[

@@ -2,8 +2,12 @@ class Sunny
   BOT.command :prune, description: 'Cleans up a channel.' do |event|
     break unless event.user.id.host?
 
-    event.channel.prune(100)
+    suppress_message_logging do
+      event.channel.prune(100)
+    end
     return
+  rescue StandardError => e
+    event.respond("Prune failed: #{e.message}")
   end
 
   BOT.command :update, description: 'Updates the item list so that new codes can be found.' do |event|

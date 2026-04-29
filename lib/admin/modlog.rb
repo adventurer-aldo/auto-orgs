@@ -29,6 +29,20 @@ class Sunny
     @modlog_message_cache ||= {}
   end
 
+  def self.message_logging_enabled?
+    return false if @message_logging_suppressed
+
+    row = Setting.find_by(name: 'message_logging_is_enabled')
+    row.nil? || Setting.message_logging_is_enabled == 1
+  end
+
+  def self.suppress_message_logging
+    @message_logging_suppressed = true
+    yield
+  ensure
+    @message_logging_suppressed = false
+  end
+
   def self.modlog_spam_deletes
     @modlog_spam_deletes ||= {}
   end
@@ -75,6 +89,7 @@ class Sunny
 
   BOT.message do |event|
     next if event.from_bot?
+    next unless message_logging_enabled?
 
     modlog_cache_message(event)
 
@@ -89,6 +104,7 @@ class Sunny
 
   BOT.message_edit do |event|
     next if event.from_bot?
+    next unless message_logging_enabled?
 
     modlog_cache_message(event)
     author = modlog_message_cache[event.message.id][:author]
@@ -120,6 +136,8 @@ class Sunny
   end
 
   BOT.message_delete do |event|
+    next unless message_logging_enabled?
+
     message = Message.find_by(message_id: event.id, server_id: event.server&.id)
     message_info = modlog_message_cache.delete(event.id)
     author = message_info&.dig(:author)
@@ -157,5 +175,21 @@ class Sunny
     end
 
     message&.destroy
+  end
+
+  BOT.command :message_logging do |event, *args|
+    break unless event.user.id.host?
+
+    value = args.first.to_s.downcase
+    case value
+    when 'on', 'enable', 'enabled', '1', 'true'
+      Setting.message_logging_is_enabled = 1
+      event.respond('Message logging is now enabled.')
+    when 'off', 'disable', 'disabled', '0', 'false'
+      Setting.message_logging_is_enabled = 0
+      event.respond('Message logging is now disabled.')
+    else
+      event.respond("Message logging is currently **#{message_logging_enabled? ? 'enabled' : 'disabled'}**. Use `!message_logging on` or `!message_logging off`.")
+    end
   end
 end

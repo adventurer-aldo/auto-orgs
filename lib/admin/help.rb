@@ -8,6 +8,7 @@ class Sunny
       ['!remove_host USER_ID', 'Remove host permissions from a user.'],
       ['!set_parchment_url URL', 'Set the default parchment image.'],
       ['!set_archive CATEGORY_ID', 'Set the archive category.'],
+      ['!message_logging on|off', 'Enable or disable edit/delete message logging.'],
       ['!add_roles @user @role', 'Add one or more roles to mentioned users.'],
       ['!remove_roles @role', 'Remove mentioned roles from every member who has them.'],
       ['!delete_roles @role|ROLE_ID', 'Delete unused roles after confirming.'],

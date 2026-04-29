@@ -11,10 +11,6 @@ class Sunny
     end
   end
 
-  def self.item_played_attributes(item, played)
-    item.has_attribute?('played') ? { played: played } : {}
-  end
-
   def self.add_item_vote(vote, target_id, parchment)
     voted = Array(vote.votes)
     parchments = Array(vote.parchments)
@@ -51,7 +47,7 @@ class Sunny
   def self.cancel_item_play(item)
     council = Council.where(stage: [0, 1], season_id: Setting.season_id).last
     player = item.player
-    return item.update(targets: []) unless council && player
+    return item.update(targets: [], played: false) unless council && player
 
     if item.functions.include?('extra_vote')
       vote = Vote.find_by(council_id: council.id, player_id: player.id)
@@ -62,7 +58,7 @@ class Sunny
       remove_item_vote_at(owner_vote, owner_vote_index) if owner_vote
     end
 
-    item.update({ targets: [] }.merge(item_played_attributes(item, false)))
+    item.update(targets: [], played: false)
   end
 
   def self.play_item(event, targets, item)
@@ -110,7 +106,7 @@ class Sunny
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
-          item.update({ targets: [player.id], player_id: 0 }.merge(item_played_attributes(item, true)))
+          item.update(targets: [player.id], player_id: 0, played: true)
           record_and_send_event("item_played#{item_play_details(item, targets: [player], extra: ', leaving Tribal Council without voting or being voted for')}", player: player, item: item)
 
         end
@@ -134,7 +130,7 @@ class Sunny
             embed.description = 'They have cast one additional vote during this tribal council.'
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
-          item.update({ targets: [vote_index] }.merge(item_played_attributes(item, true)))
+          item.update(targets: [vote_index], played: true)
           record_and_send_event("item_played#{item_play_details(item, extra: " to cast an extra vote on #{target.name}")}", player: player, item: item)
           event.respond("You successfuly played #{item.name}.")
 
@@ -164,7 +160,7 @@ class Sunny
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
-          item.update({ targets: [stolen_target.id, vote_index] }.merge(item_played_attributes(item, true)))
+          item.update(targets: [stolen_target.id, vote_index], played: true)
           record_and_send_event("item_played#{item_play_details(item, extra: stolen_detail)}", player: player, item: item)
         when 'block_vote'
           targets = []
@@ -227,7 +223,7 @@ class Sunny
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
 
-          item.update({ player_id: nil, targets: targets.map(&:id) }.merge(item_played_attributes(item, true)))
+          item.update(player_id: nil, targets: targets.map(&:id), played: true)
           record_and_send_event("item_played#{item_play_details(item, extra: " on #{targets.map(&:name).join(', ')}, blocking one vote")}", player: player, item: item)
         end
       end
@@ -276,7 +272,7 @@ class Sunny
             event.respond('Playing this item failed!')
           else
             event.respond("You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
-            item.update({ targets: targets.map(&:id) }.merge(item_played_attributes(item, true)))
+            item.update(targets: targets.map(&:id), played: true)
             record_and_send_event("item_played#{item_play_details(item, targets: targets)}", player: player, item: item)
           end
 
