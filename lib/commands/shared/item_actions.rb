@@ -66,15 +66,6 @@ class Sunny
     view
   end
 
-  def self.item_confirmation_view(token, action, label)
-    view = Discordrb::Webhooks::View.new
-    view.row do |row|
-      row.button(custom_id: "#{action}_confirm:#{token}", label: label, style: :danger)
-      row.button(custom_id: "#{action}_cancel:#{token}", label: 'Cancel', style: :secondary)
-    end
-    view
-  end
-
   def self.resolve_player_argument(content, players)
     text = content.to_s.strip
     return nil if text.empty?
@@ -148,17 +139,23 @@ class Sunny
   end
 
   def self.confirm_give_flow(event, player, item, target)
-    token = SecureRandom.hex(8)
-    pending_item_gives[token] = { user_id: event.user.id, player_id: player.id, item_id: item.id, target_id: target.id }
     warning = item.targets.empty? ? '' : "\nGiving it away will cancel the current play."
-    event.channel.send_message("Give **#{item.name}** to **#{target.name}**?#{warning}", false, nil, nil, nil, nil, item_confirmation_view(token, 'give', 'Give Item'))
+    event.channel.send_message("Give **#{item.name}** to **#{target.name}**?#{warning}\nType `yes` to confirm.")
+    confirmation = event.user.await!(timeout: 60)
+
+    unless confirmation && Setting.confirmation?(confirmation.message.content)
+      event.channel.send_message('Giving an item cancelled.')
+      return
+    end
+
+    execute_give_flow(event, { player_id: player.id, item_id: item.id, target_id: target.id })
   end
 
   def self.execute_give_flow(event, payload)
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: payload[:item_id], player_id: player&.id, season_id: Setting.season_id)
     target = Player.find_by(id: payload[:target_id], season_id: Setting.season_id, status: ALIVE)
-    return event.update_message(content: 'Giving an item failed.', components: nil) unless player && item && target
+    return event.channel.send_message('Giving an item failed.') unless player && item && target
 
     unless item.targets.empty?
       cancel_item_play(item)
@@ -168,7 +165,7 @@ class Sunny
     item.update(player_id: target.id)
     record_and_send_event("item_given:target=#{target.name}", player: player, item: item)
     record_and_send_event("item_received:from=#{player.name}", player: target, item: item)
-    event.update_message(content: "**#{item.name}** now belongs to **#{target.name}**.", components: nil)
+    event.channel.send_message("**#{item.name}** now belongs to **#{target.name}**.")
     BOT.channel(target.submissions).send_embed do |embed|
       embed.title = "#{player.name} has sent you an item!"
       embed.description = "**#{item.name}**\n#{item.description}\n**Code:** `#{item.code}`"
@@ -242,8 +239,6 @@ class Sunny
   end
 
   def self.confirm_play_flow(event, player, item, action:, targets:)
-    token = SecureRandom.hex(8)
-    pending_item_plays[token] = { user_id: event.user.id, player_id: player.id, item_id: item.id, action: action, targets: targets }
     names = targets.map { |target_id| Player.find_by(id: target_id)&.name }.compact
     message = if action == :cancel
                 "Cancel your current play of **#{item.name}**?"
@@ -252,22 +247,30 @@ class Sunny
               else
                 "Play **#{item.name}** involving **#{names.join('**, **')}**?"
               end
-    event.channel.send_message(message, false, nil, nil, nil, nil, item_confirmation_view(token, 'play', action == :cancel ? 'Cancel Play' : 'Play Item'))
+    event.channel.send_message("#{message}\nType `yes` to confirm.")
+    confirmation = event.user.await!(timeout: 60)
+
+    unless confirmation && Setting.confirmation?(confirmation.message.content)
+      event.channel.send_message('Playing an item cancelled.')
+      return
+    end
+
+    execute_play_flow(event, { player_id: player.id, item_id: item.id, action: action, targets: targets })
   end
 
   def self.execute_play_flow(event, payload)
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: payload[:item_id], player_id: player&.id, season_id: Setting.season_id)
-    return event.update_message(content: 'Playing this item failed.', components: nil) unless player && item
+    return event.channel.send_message('Playing this item failed.') unless player && item
 
     if payload[:action] == :cancel
       cancel_item_play(item)
       record_and_send_event('item_stopped', player: player, item: item)
-      event.update_message(content: "You've cancelled playing **#{item.name}**.", components: nil)
+      event.channel.send_message("You've cancelled playing **#{item.name}**.")
       return
     end
 
-    event.update_message(content: "Playing **#{item.name}**...", components: nil)
+    event.channel.send_message("Playing **#{item.name}**...")
     play_item(event, Array(payload[:targets]).map(&:to_s), item, confirmed: true)
   end
 
@@ -355,22 +358,6 @@ class Sunny
     confirm_give_flow(event, player, item, target)
   end
 
-  BOT.button(custom_id: /\Agive_confirm:/) do |event|
-    token = event.custom_id.split(':', 2).last
-    payload = pending_item_gives.delete(token)
-    break event.respond(content: 'This give confirmation is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
-
-    execute_give_flow(event, payload)
-  end
-
-  BOT.button(custom_id: /\Agive_cancel:/) do |event|
-    token = event.custom_id.split(':', 2).last
-    payload = pending_item_gives.delete(token)
-    break event.respond(content: 'This give confirmation is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
-
-    event.update_message(content: 'Giving an item cancelled.', components: nil)
-  end
-
   BOT.string_select(custom_id: /\Aplay_item:/) do |event|
     token = event.custom_id.split(':', 2).last
     payload = pending_item_plays.delete(token)
@@ -417,19 +404,4 @@ class Sunny
     end
   end
 
-  BOT.button(custom_id: /\Aplay_confirm:/) do |event|
-    token = event.custom_id.split(':', 2).last
-    payload = pending_item_plays.delete(token)
-    break event.respond(content: 'This play confirmation is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
-
-    execute_play_flow(event, payload)
-  end
-
-  BOT.button(custom_id: /\Aplay_cancel:/) do |event|
-    token = event.custom_id.split(':', 2).last
-    payload = pending_item_plays.delete(token)
-    break event.respond(content: 'This play confirmation is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
-
-    event.update_message(content: 'Playing an item cancelled.', components: nil)
-  end
 end
