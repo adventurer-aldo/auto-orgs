@@ -4,6 +4,8 @@ class Sunny
 
     def run(id)
       council = Council.find_by(id:)
+      return destroy if council.nil? || council.stage == 5
+
       channel = BOT.channel(council.channel_id)
 
       channel.send_message("2 hours have now passed. **Immunity** is no longer transferable.")

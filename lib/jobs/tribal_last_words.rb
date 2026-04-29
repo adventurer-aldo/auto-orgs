@@ -6,6 +6,8 @@ class Sunny
     # 1 == ROCKS
     def run(id, council_id, rocks=false)
       council = Council.find_by(id: council_id)
+      return destroy if council.nil? || council.stage == 5
+
       loser = Player.find_by(id:)
       channel = BOT.channel(council.channel_id)
       channel.send_message("**#{loser.name}...The #{rocks ? 'rocks have' : 'tribe has'} spoken.**")

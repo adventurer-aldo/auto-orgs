@@ -5,6 +5,8 @@ class Sunny
     def run(council_id)
 
       council = Council.find_by(id: council_id)
+      return destroy if council.nil? || council.stage == 5
+
       council.votes.select { |vote| vote.votes.include?(0) }.map(&:player).each do |player|
         BOT.channel(player.submissions).send_message([
           "Reminder to vote",
