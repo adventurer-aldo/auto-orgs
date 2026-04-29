@@ -1,5 +1,5 @@
-require_relative 'item/helpers'
-require_relative 'item/interactions'
+require_relative 'items/helpers'
+require_relative 'items/interactions'
 
 class Sunny
   # > Item
