@@ -11,13 +11,20 @@ class Sunny
     "#{number}#{suffix}"
   end
 
-  BOT.command :cast do |event|
-    players = Player.where(season_id: Setting.season_id).order(:rank, :name)
+  BOT.command(:cast, aliases: [:castlist]) do |event, *args|
+    season_id = args.first&.to_i&.positive? ? args.first.to_i : Setting.season_id
+    season = Season.find_by(id: season_id)
+    unless season
+      event.respond("Season #{season_id} doesn't exist.")
+      break
+    end
+
+    players = Player.where(season_id: season.id).order(:rank, :name)
     lines = players.map do |player|
       rank = player.rank ? "#{ordinal(player.rank)} - " : ''
       "#{rank}#{player.name}#{ALIVE.include?(player.status) ? '' : " (#{player.status})"}"
     end
-    event.respond("**Season #{Setting.season_id} Castaways:**\n#{lines.join("\n")}")
+    event.respond("**Season #{season.id} Castaways:**\n#{lines.join("\n")}")
   end
 
   BOT.command :vote_count do |event|
