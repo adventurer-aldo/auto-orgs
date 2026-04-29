@@ -194,6 +194,13 @@ class Sunny
       </td>)
   end
 
+  def self.draft_spectator_name(user_id)
+    user = BOT.user(user_id)
+    user.on(Setting.server_id)&.display_name || user.username
+  rescue StandardError
+    'Deleted User'
+  end
+
   def self.get_draft_image
     escape_html = ->(text) { text.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;') }
     drafts = SpectatorGame::Draft.where(season_id: Setting.season).sort_by { |draft| draft.score || 0 }
@@ -204,7 +211,7 @@ class Sunny
       pick_1 = Player.find_by(id: draft.pick_1)
       pick_2 = Player.find_by(id: draft.pick_2)
       pick_3 = Player.find_by(id: draft.pick_3)
-      spectator = BOT.user(draft.user_id).on(Setting.server_id).display_name
+      spectator = draft_spectator_name(draft.user_id)
 
       %Q(
         <tr>
