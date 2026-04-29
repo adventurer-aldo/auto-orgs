@@ -53,6 +53,7 @@ class Sunny
 
     starting_stage = Setting.game_stage == 1 ? 0 : 1
     council = Council.create(tribes: tribe, channel_id: channel.id, season_id: Setting.season_id, stage: starting_stage)
+    create_joint_dms(event) if tribe.size > 1
     CouncilStageChange.enqueue(council.id) if starting_stage.zero?
 
     VoteReminderJob.enqueue(council.id, job_options: { run_at: Time.now + (60 * 60 * 22)})

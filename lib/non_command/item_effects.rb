@@ -1,4 +1,16 @@
 class Sunny
+  def self.item_play_details(item, targets: [], extra: nil)
+    names = Array(targets).compact.map { |target| target.respond_to?(:name) ? target.name : Player.find_by(id: target)&.name }.compact
+    return ":details=#{extra}" if extra
+    return '' if names.empty?
+
+    if item.functions.include?('idol')
+      ":details= on #{names.join(', ')}, nulling any votes cast on #{names.join(' or ')}"
+    else
+      ":details= on #{names.join(', ')}"
+    end
+  end
+
   def self.add_item_vote(vote, target_id, parchment)
     voted = Array(vote.votes)
     parchments = Array(vote.parchments)
@@ -95,7 +107,7 @@ class Sunny
           end
 
           item.update(targets: [player.id], player_id: 0)
-          record_and_send_event('item_played', player: player, item: item)
+          record_and_send_event("item_played#{item_play_details(item, targets: [player], extra: ', leaving Tribal Council without voting or being voted for')}", player: player, item: item)
 
         end
       end
@@ -119,7 +131,7 @@ class Sunny
             embed.color = event.server.role(Setting.tribal_ping_role_id).color
           end
           item.update(targets: [vote_index])
-          record_and_send_event('item_played', player: player, item: item)
+          record_and_send_event("item_played#{item_play_details(item, extra: " to cast an extra vote on #{target.name}")}", player: player, item: item)
           event.respond("You successfuly played #{item.name}.")
 
         when 'steal_vote'
@@ -136,6 +148,9 @@ class Sunny
           parchment = collect_vote_parchment(event, vote_target)
           owner_vote = Vote.find_by(council_id: council.id, player_id: player.id)
           vote_index = add_item_vote(owner_vote, vote_target.id, parchment)
+          stolen_vote = Vote.find_by(council_id: council.id, player_id: stolen_target.id)
+          stolen_previous_target = Player.find_by(id: Array(stolen_vote&.votes).last)
+          stolen_detail = " on #{stolen_target.name}, removing the vote they had previously#{stolen_previous_target ? " cast on #{stolen_previous_target.name}" : ' cast'} to gain an extra parchment against #{vote_target.name}"
 
           event.respond("You used **#{item.name}** on **#{stolen_target.name}**")
 
@@ -146,7 +161,7 @@ class Sunny
           end
 
           item.update(targets: [stolen_target.id, vote_index])
-          record_and_send_event('item_played', player: player, item: item)
+          record_and_send_event("item_played#{item_play_details(item, extra: stolen_detail)}", player: player, item: item)
         when 'block_vote'
           targets = []
           enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
@@ -209,7 +224,7 @@ class Sunny
           end
 
           item.update(player_id: nil, targets: targets.map(&:id))
-          record_and_send_event('item_played', player: player, item: item)
+          record_and_send_event("item_played#{item_play_details(item, extra: " on #{targets.map(&:name).join(', ')}, blocking one vote")}", player: player, item: item)
         end
       end
     else
@@ -258,7 +273,7 @@ class Sunny
           else
             event.respond("You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
             item.update(targets: targets.map(&:id))
-            record_and_send_event('item_played', player: player, item: item)
+            record_and_send_event("item_played#{item_play_details(item, targets: targets)}", player: player, item: item)
           end
 
         end

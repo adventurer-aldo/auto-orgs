@@ -6,7 +6,8 @@ class Sunny
   end
 
   def self.title_vote_content(source_message, votes)
-    author = source_message.author&.distinct || source_message.author&.username || 'Unknown'
+    player = Player.find_by(user_id: source_message.author&.id, season_id: Setting.season_id)
+    author = player&.name || source_message.author&.distinct || source_message.author&.username || 'Unknown'
     <<~TEXT
       **#{votes} titleworthy vote#{votes == 1 ? '' : 's'}**
       #{source_message.content}
@@ -16,13 +17,27 @@ class Sunny
     TEXT
   end
 
+  def self.titleworthy_voter?(user)
+    return true if user.id.host?
+
+    member = user.on(BOT.server(Setting.server_id))
+    role_ids = member&.roles&.map(&:id) || []
+    [Setting.spectator_role_id, Setting.trusted_spectator_role_id].any? { |role_id| role_id.positive? && role_ids.include?(role_id) }
+  end
+
+  def self.titleworthy_vote_weight(user)
+    user.id.host? ? 3 : 1
+  end
+
   def self.update_episode_title_vote(event)
     return if Setting.episode_title_voting_channel_id.zero?
     return unless titleworthy_reaction?(event.emoji)
 
     source_message = event.message
-    users = source_message.reacted_with(event.emoji, limit: nil).select { |user| spectator_user?(user) }
-    votes = users.size
+    return unless Player.exists?(user_id: source_message.author&.id, season_id: Setting.season_id)
+
+    users = source_message.reacted_with(event.emoji, limit: nil).select { |user| titleworthy_voter?(user) }
+    votes = users.sum { |user| titleworthy_vote_weight(user) }
 
     title_vote = EpisodeTitleVote.find_by(source_message_id: source_message.id)
     return if title_vote && title_vote.votes == votes
@@ -46,5 +61,15 @@ class Sunny
 
   BOT.reaction_remove do |event|
     update_episode_title_vote(event)
+  end
+
+  BOT.message_edit do |event|
+    title_vote = EpisodeTitleVote.find_by(source_message_id: event.message.id)
+    next unless title_vote
+
+    posted = BOT.channel(Setting.episode_title_voting_channel_id).load_message(title_vote.message_id)
+    posted&.edit(title_vote_content(event.message, title_vote.votes))
+  rescue StandardError => e
+    warn "Episode title vote edit failed: #{e.class}: #{e.message}"
   end
 end

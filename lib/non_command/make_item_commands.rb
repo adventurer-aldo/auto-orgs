@@ -7,13 +7,14 @@ class Sunny
     item_command_codes << item_code
 
     BOT.command item_code.to_sym do |event|
-      break unless event.user.id.player?
+      break unless event.user.id.player? || event.user.id.host?
 
       item = Item.find_by(code: item_code, season_id: Setting.season_id)
       break unless item
 
-      player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
+      player = item_command_player(event, statuses: ALIVE + ['Exiled'])
       break unless player && %w[In Immune Idoled Exiled].include?(player.status)
+      break if event.user.id.host? && ![player.confessional, player.submissions].include?(event.channel.id)
 
       event.channel.start_typing
       sleep(2)

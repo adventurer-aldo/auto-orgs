@@ -68,6 +68,7 @@ class Sunny
     base = %Q(
       <main class="draft-page">
         <section class="title-block">
+          <span class="title-dot">.</span>
           <h1>Alvivor Draft</h1>
         </section>
 
@@ -108,6 +109,13 @@ class Sunny
           margin: 0 0 26px;
           padding-top: 30px;
           text-align: center;
+        }
+
+        .title-dot {
+          color: #fbfaf6;
+          display: block;
+          font-size: 1px;
+          line-height: 1;
         }
 
         .title-block h1 {

@@ -4,11 +4,12 @@ class Sunny
     tribe_immunity: '%{player} earned immunity as part of %{tribe} during the F%{finale}.',
     individual_immunity: '%{player} earned individual immunity during the F%{finale}.',
     item_found: '%{player} found %{item}.',
-    item_played: '%{player} played %{item}.',
+    item_received: '%{player} received %{item} from %{from}.',
+    item_played: '%{player} played %{item}%{details}.',
     item_stopped: '%{player} stopped playing %{item}.',
     casting_vote: '%{player} cast a vote.',
     eliminated: '%{player} was eliminated.',
-    item_given: '%{player} gave %{item}.'
+    item_given: '%{player} gave %{item} to %{target}.'
   }.freeze
 
   def self.record_event(summary, player: nil, item: nil)
@@ -34,6 +35,9 @@ class Sunny
 
     player = Player.find_by(id: event_row.player_id)&.name || data[:player] || 'A castaway'
     item = Item.find_by(id: event_row.item_id)&.name || data[:item] || 'an item'
+    data[:details] ||= ''
+    data[:target] ||= 'someone'
+    data[:from] ||= 'someone'
     template = EVENT_SUMMARIES[key.to_sym]
     return event_row.summary unless template
 

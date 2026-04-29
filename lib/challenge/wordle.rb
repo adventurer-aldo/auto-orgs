@@ -1,6 +1,6 @@
 class Sunny
-  @wordles = File.readlines('./lib/challenge/wordles.txt', chomp: true)
-  @guessles = File.readlines('./lib/challenge/guessles.txt', chomp: true)
+  @wordles = File.readlines('./texts/wordles.txt', chomp: true)
+  @guessles = File.readlines('./texts/guessles.txt', chomp: true)
 
   def self.wordle_word_value(word)
     column = %w[word text value answer].find { |name| word.has_attribute?(name) }

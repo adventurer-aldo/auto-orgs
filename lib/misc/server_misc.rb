@@ -1,9 +1,4 @@
 class Sunny
-  BOT.command(:set_archive) do |event, *args|
-    Setting.archive_category_id = args.join.to_i
-    return "#{BOT.channel(args.join('').to_i).mention} has been set as the **Archive Category!**"
-  end
-  
 BOT.command :snowflake do |event, *args|
     event.respond "Please provide exactly two message IDs." if args.size != 2
     break if args.size != 2

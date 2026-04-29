@@ -1,11 +1,22 @@
 class Sunny
+  def self.item_command_player(event, statuses: ALIVE)
+    if event.user.id.host?
+      Player.find_by(submissions: event.channel.id, season_id: Setting.season_id, status: statuses) ||
+        Player.find_by(confessional: event.channel.id, season_id: Setting.season_id, status: statuses)
+    else
+      Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: statuses)
+    end
+  end
+
   BOT.command :give, description: 'Give an item.' do |event, *args|
-    break unless event.user.id.player?
+    break unless event.user.id.player? || event.user.id.host?
 
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
+    player = item_command_player(event)
+    break unless player
+
     item = Item.where(code: args[0], player_id: player.id, season_id: Setting.season_id)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
@@ -31,7 +42,7 @@ class Sunny
       event.respond("Cancelled playing **#{item.name}**.")
     end
 
-    enemies = Player.where(season_id: Setting.season_id, status: ALIVE).excluding(Player.where(user_id: event.user.id))
+    enemies = Player.where(season_id: Setting.season_id, status: ALIVE).where.not(id: player.id)
     text = enemies.map do |en|
       "**#{en.id}** — #{en.name}"
     end
@@ -39,7 +50,7 @@ class Sunny
     event.channel.send_embed do |embed|
       embed.title = 'Who would you like to give it to?'
       embed.description = text.join("\n")
-      embed.color = event.server.role(Tribe.find_by(id: player.tribe).role_id).color
+      embed.color = event.server.role(player.tribe.role_id).color
     end
 
     msg = event.user.await!(timeout: 60)
@@ -67,7 +78,8 @@ class Sunny
 
       if Setting.confirmation?(msger.message.content.downcase)
         item.update(player_id: targets.first.id)
-        record_and_send_event("item_given:item=#{item.name}", player: player, item: item)
+        record_and_send_event("item_given:target=#{targets.first.name}", player: player, item: item)
+        record_and_send_event("item_received:from=#{player.name}", player: targets.first, item: item)
         event.respond("**#{item.name}** now belongs to **#{targets.first.name}**")
         BOT.channel(targets.first.submissions).send_embed do |embed|
           embed.title = "#{player.name} has sent you an item!"
@@ -87,7 +99,9 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
+    player = item_command_player(event)
+    break unless player
+
     item = player.items.where(code: args[0])
 
     break unless [player.confessional, player.submissions].include? event.channel.id

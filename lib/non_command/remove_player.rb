@@ -63,6 +63,7 @@ class Sunny
       user.remove_role(Setting.castaway_role_id)
       user.add_role(Setting.prejury_role_id)
     end
+    archive_player_dms(loser, alvivor_server, eliminated: true)
 
     alliances = loser.alliances
     if !alliances.empty?
