@@ -48,7 +48,10 @@ class Sunny
         players = players.shuffle.to_a
         splitting_players = players.first(@buffs.size)
         exiled_players = players - splitting_players
-        exiled_players.each { |player| player.update(status: 'Exiled') }
+        exiled_players.each do |player|
+          player.update(status: 'Exiled')
+          BOT.user(player.user_id).on(event.server).add_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
+        end
         event.respond "First up, #{splitting_players[0].name}. Come here!"
         splitting_players.each do |player|
           event.channel.start_typing
@@ -69,7 +72,9 @@ class Sunny
         end
 
         splitting_players.each do |player|
-          BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
+          member = BOT.user(player.user_id).on(event.server)
+          member.remove_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
+          member.add_role(player.tribe.role_id)
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
         end
@@ -148,7 +153,9 @@ class Sunny
 
         players.each do |player|
           player.update(tribe_id: Tribe.where(season_id: Setting.season_id, role_id: tribes[0].id).last.id)
-          BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
+          member = BOT.user(player.user_id).on(event.server)
+          member.remove_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
+          member.add_role(player.tribe.role_id)
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
           event.channel.start_typing

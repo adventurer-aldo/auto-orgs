@@ -1,52 +1,4 @@
 class Sunny
-  def self.item_vote_target(event, player, council, prompt)
-    enemies = Vote.where(council_id: council.id).excluding(Vote.where(player_id: player.id)).map(&:player).filter { |n| n&.status == 'In' }
-    enemies.delete(nil)
-
-    event.channel.send_embed do |embed|
-      embed.title = prompt
-      embed.description = enemies.map { |en| "**#{en.id}** — #{en.name}" }.join("\n")
-      embed.color = event.server.role(player.tribe.role_id).color
-    end
-
-    await = event.user.await!(timeout: 80)
-    event.respond("You didn't pick a target...") if await.nil?
-    return nil if await.nil?
-
-    content = await.message.content
-    text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
-    id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
-
-    if text_attempt.size == 1
-      Player.find_by(name: text_attempt[0], season_id: Setting.season_id, status: ALIVE)
-    elsif id_attempt.size == 1
-      Player.find_by(id: id_attempt[0])
-    else
-      event.respond("There's no single castaway that matches that.") unless content == ''
-      nil
-    end
-  end
-
-  def self.item_vote_parchment(event, target)
-    event.respond('Time to upload a parchment! Right in your next message!')
-    file = URI.parse(Setting.parchment_url).open
-    BOT.send_file(event.channel, file, filename: 'parchment.png')
-    image = event.user.await!(timeout: 600)
-
-    if image && !image.message.attachments.empty?
-      parch = image.message.attachments.first.url
-      return parch if parch =~ /.*\.[pj][np]g/
-    elsif image
-      parch = image.message.content[/https:\/\/cdn\.discordapp\.com\/attachments.*\.[pj][np]g/]
-      parch ||= image.message.content[/https:\/\/media\.discordapp\.net\/attachments.*\.[pj][np]g/]
-      return parch unless parch.nil?
-    end
-
-    event.respond "I couldn't find a parchment there... Guess I'll make one for you."
-    source_message = event.channel.send_file generate_parchment(target.name)
-    source_message.attachments.first&.url || '0'
-  end
-
   def self.add_item_vote(vote, target_id, parchment)
     voted = Array(vote.votes)
     parchments = Array(vote.parchments)
@@ -152,11 +104,11 @@ class Sunny
         player = item.player
         case function
         when 'extra_vote'
-          target = item_vote_target(event, player, council, "Who would you like to cast your extra vote against?")
+          target = prompt_vote_target(event, player, council, prompt: "Who would you like to cast your extra vote against?")
           event.respond('Playing this item failed!') if target.nil?
           break if target.nil?
 
-          parchment = item_vote_parchment(event, target)
+          parchment = collect_vote_parchment(event, target)
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
           vote_index = add_item_vote(vote, target.id, parchment)
 
@@ -169,45 +121,17 @@ class Sunny
           event.respond("You successfuly played #{item.name}.")
 
         when 'steal_vote'
-          enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player)
-          enemies.delete(nil)
-
-          text = enemies.map do |en|
-            "**#{en.id}** — #{en.name}"
-          end
-
-          event.channel.send_embed do |embed|
-            embed.title = "Who would you like to play #{item.name} on?"
-            embed.description = text.join("\n")
-            embed.color = event.server.role(player.tribe.role_id).color
-          end
-
-          await = event.user.await!(timeout: 80)
-
-          event.respond("You didn't pick a target...") if await.nil?
-          break if await.nil?
-
-          content = await.message.content
-
-          text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
-          id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
-          stolen_target = nil
-          if text_attempt.size == 1
-            stolen_target = Player.find_by(name: text_attempt[0], season_id: Setting.season_id, status: ALIVE)
-          elsif id_attempt.size == 1
-            stolen_target = Player.find_by(id: id_attempt[0])
-          elsif content != ''
-            event.respond("There's no single castaway that matches that.")
-          end
+          enemies = vote_targets_for(council, player, require_allowed_vote: true)
+          stolen_target = prompt_vote_target(event, player, council, prompt: "Who would you like to play #{item.name} on?", targets: enemies)
 
           event.respond('Playing this item failed!') if stolen_target.nil?
           break if stolen_target.nil?
 
-          vote_target = item_vote_target(event, player, council, "Who would you like to cast the stolen vote against?")
+          vote_target = prompt_vote_target(event, player, council, prompt: "Who would you like to cast the stolen vote against?")
           event.respond('Playing this item failed!') if vote_target.nil?
           break if vote_target.nil?
 
-          parchment = item_vote_parchment(event, vote_target)
+          parchment = collect_vote_parchment(event, vote_target)
           owner_vote = Vote.find_by(council_id: council.id, player_id: player.id)
           vote_index = add_item_vote(owner_vote, vote_target.id, parchment)
 

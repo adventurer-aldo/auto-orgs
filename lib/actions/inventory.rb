@@ -2,7 +2,7 @@ class Sunny
   BOT.command :inventory, description: 'Shows your items and current votes.' do |event|
     break unless event.user.id.player? || event.user.id.host?
 
-    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id) : Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
+    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id) : Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
     break if player.nil?
 
     break unless [player.confessional, player.submissions].include? event.channel.id
@@ -15,22 +15,19 @@ class Sunny
     council = Council.where(id: vote.map(&:council_id), stage: Array(0..3))
     if vote.exists? && council.exists?
       council = council.first
-      vote = Vote.where(council_id: council.id).and(vote).first.votes
-      vote.map! do |parch|
-        if parch.zero?
-          if vote.size == 1
-            'No One'
-          elsif vote.size > 1
-            "Vote #{vote.index(parch) + 1}: No One"
-          end
-        elsif vote.size == 1
-          Player.find_by(id: parch).name
-        elsif vote.size > 1
-          "Vote #{vote.index(parch) + 1} : #{Player.find_by(id: parch).name}"
-        end
+      vote_record = Vote.where(council_id: council.id).and(vote).first
+      votes = Array(vote_record.votes)
+      parchments = Array(vote_record.parchments)
+      vote_lines = votes.each_with_index.map do |target_id, index|
+        target = target_id.zero? ? 'No One' : Player.find_by(id: target_id)&.name || "Unknown (#{target_id})"
+        prefix = votes.size == 1 ? '' : "Vote #{index + 1}: "
+        parchment = parchments[index]
+        parchment_text = parchment && parchment != '0' ? "\nParchment: #{parchment}" : "\nParchment: Not submitted"
+
+        "#{prefix}#{target}#{parchment_text}"
       end
 
-      text << "\n\n**For the Tribal Council, currently voting:**\n#{vote.join("\n")}"
+      text << "\n\n**For the Tribal Council, currently voting:**\n#{vote_lines.join("\n")}"
     end
 
     event.channel.send_embed do |embed|

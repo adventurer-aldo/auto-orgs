@@ -17,6 +17,7 @@ class Setting < ActiveRecord::Base
     castaway_role_id
     jury_role_id
     prejury_role_id
+    exile_role_id
     spectator_role_id
     trusted_spectator_role_id
     tribal_ping_role_id

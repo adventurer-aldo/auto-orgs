@@ -1,13 +1,14 @@
 class Sunny
   def self.eliminate(loser)
     Buddy.all.update(can_change: true)
-    rank = Player.where(season_id: Setting.season, status: ALIVE).size
+    rank = Player.where(season_id: Setting.season_id, status: ALIVE).size
     tribe = loser.tribe
     alvivor_server = BOT.server(Setting.server_id)
     if Setting.game_stage == 1
       loser.update(status: 'Jury', rank:)
       user = BOT.user(loser.user_id).on(alvivor_server)
       user.remove_role(tribe.role_id) if tribe
+      user.remove_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
       user.remove_role(Setting.castaway_role_id)
       user.add_role(Setting.jury_role_id)
       BOT.channel(Setting.jury_channel_id).send_message("Welcome in the newest member of the jury, #{BOT.user(loser.user_id).mention}...")
@@ -16,6 +17,7 @@ class Sunny
       user = BOT.user(loser.user_id).on(alvivor_server)
 
       user.remove_role(tribe.role_id) if tribe
+      user.remove_role(Setting.exile_role_id) if Setting.exile_role_id.positive?
       user.remove_role(Setting.castaway_role_id)
       user.add_role(Setting.prejury_role_id)
     end
@@ -81,7 +83,7 @@ class Sunny
     subm = BOT.channel(loser.submissions)
     subm.name = "#{rank}#{addendum}-" + subm.name
     subm.sort_after(conf)
-    Player.where(status: ALIVE, season_id: Setting.season).update(status: 'In')
+    Player.where(status: ALIVE, season_id: Setting.season_id).update(status: 'In')
     alvivor_server.role(Setting.immunity_role_id).members.each { |immune| immune.on(alvivor_server).remove_role(Setting.immunity_role_id) }
     BOT.channel(1125132585882898462).send_file(get_draft_image, filename: 'Draft.png')
     # BOT.channel(1393731026882269398).send_file(get_eliminator_image, filename: "Eliminator.png")
