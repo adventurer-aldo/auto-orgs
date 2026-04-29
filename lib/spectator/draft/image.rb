@@ -68,7 +68,7 @@ class Sunny
     base = %Q(
       <main class="draft-page">
         <section class="title-block">
-          <span class="title-dot">.</span>
+          <p class="title-dot">!.</p>
           <h1>Alvivor Draft</h1>
         </section>
 
