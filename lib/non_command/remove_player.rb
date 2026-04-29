@@ -1,4 +1,46 @@
 class Sunny
+  def self.user_overwrite?(server, overwrite_id)
+    overwrite_id != Setting.everyone_role_id && server.role(overwrite_id).nil?
+  end
+
+  def self.remove_alliance_member_permissions(channel, server, user_id)
+    channel.permission_overwrites.each do |overwrite_id, _perms|
+      next unless user_overwrite?(server, overwrite_id)
+
+      member = server.member(overwrite_id)
+      next unless member
+
+      if overwrite_id == user_id
+        channel.delete_overwrite(member)
+      else
+        channel.define_overwrite(member, 3072, 0)
+      end
+    end
+  end
+
+  def self.archive_alliance_channel(channel, server)
+    channel.parent = Setting.archive_category
+    BOT.send_message(channel.id, ':ballot_box_with_check: **This alliance no longer serves a purpose. This channel has been archived!**')
+    channel.permission_overwrites.each do |overwrite_id, _perms|
+      next unless user_overwrite?(server, overwrite_id)
+      member = server.member(overwrite_id)
+      next unless member
+
+      channel.define_overwrite(member, 1088, 2048)
+    end
+  end
+
+  def self.alliance_no_longer_serves_purpose?(alliance, tribe)
+    alliance.reload
+    remaining_players = alliance.associations.map(&:player).compact
+    return true if remaining_players.size <= 2
+    return false unless tribe
+
+    tribe_player_ids = tribe.players.where(season_id: Setting.season_id, status: ALIVE).map(&:id).sort
+    remaining_player_ids = remaining_players.map(&:id).sort
+    tribe_player_ids == remaining_player_ids
+  end
+
   def self.eliminate(loser)
     Buddy.all.update(can_change: true)
     rank = Player.where(season_id: Setting.season_id, status: ALIVE).size
@@ -28,37 +70,17 @@ class Sunny
         begin
           alliance.associations.destroy_by(player_id: loser.id)
           channel = BOT.channel(alliance.channel_id)
-          if alliance.reload.associations.size < 3 || (alliance.reload.associations.size == loser.tribe.players.size && Setting.game_stage == 1)
-            channel.parent = Setting.archive_category
-            BOT.send_message(channel.id, ':ballot_box_with_check: **This alliance no longer serves a purpose. This channel has been archived!**')
-            channel.permission_overwrites.each do |role, _perms|
-              unless role == Setting.everyone_role_id || alvivor_server.role(role).nil? == false
-                channel.define_overwrite(alvivor_server.member(role), 1088, 2048)
-              end
-            end
+          remove_alliance_member_permissions(channel, alvivor_server, loser.user_id)
+          if alliance_no_longer_serves_purpose?(alliance, tribe)
+            archive_alliance_channel(channel, alvivor_server)
             alliance.destroy
           else
             BOT.send_message(channel.id, ":broken_heart: **#{loser.name} removed...**")
-            channel.permission_overwrites.each do |role, _perms|
-              unless role == Setting.everyone_role_id || alvivor_server.role(role).nil? == false
-                unless role == loser.user_id
-                  channel.define_overwrite(alvivor_server.member(role), 3072, 0)
-                else
-                  channel.define_overwrite(alvivor_server.member(loser.user_id), 0, 3072)
-                end
-              end
-
-            end
           end
         rescue ActiveRecord::RecordNotUnique
           channel = BOT.channel(alliance.channel_id)
-          channel.parent = Setting.archive_category
-          BOT.send_message(channel.id, ':ballot_box_with_check: **This channel has been archived!**')
-          channel.permission_overwrites.each do |role, _perms|
-            unless role == Setting.everyone_role_id || alvivor_server.role(role).nil? == false
-              channel.define_overwrite(alvivor_server.member(role), 1088, 2048)
-            end
-          end
+          remove_alliance_member_permissions(channel, alvivor_server, loser.user_id)
+          archive_alliance_channel(channel, alvivor_server)
           alliance.destroy
         end
       end

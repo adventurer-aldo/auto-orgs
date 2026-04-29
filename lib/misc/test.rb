@@ -1,10 +1,47 @@
 class Sunny
   BOT.command :test do |event, *args|
+    break unless event.user.id.host?
+
+    players = Player.all
+    updated = []
+    failed = []
+    players.each do |player|
+      begin
+        upload_player_image(player, BOT.user(player.user_id).avatar_url)
+        updated << player.name
+      rescue StandardError => e
+        failed << "#{player.name}: #{e.message}"
+      end
+    end
+
+    response = ["Attached current Discord avatars for #{updated.size} players."]
+    response << "Failed:\n#{failed.join("\n")}" if failed.any?
+    event.respond(response.join("\n"))
+  end
+
+  BOT.command :cast_image do |event, *args|
     season = args[0] ? Season.find_by(id: args[0].to_i) : Setting.season
 
     return event.respond('Season not found.') if season.nil?
 
     event.channel.send_file(Sunny.get_season_cast_image(season), filename: "season-#{season.id}.png")
+  end
+
+  BOT.command :get_image do |event, *args|
+    query = args.join(' ')
+    return event.respond('Give me a player id or name.') if query.empty?
+
+    player = if query.to_i.positive?
+               Player.find_by(id: query.to_i)
+             else
+               matches = Player.where('LOWER(name) LIKE ?', "%#{query.downcase}%")
+               matches.size == 1 ? matches.first : nil
+             end
+
+    return event.respond("There's no single player that matches that.") unless player
+    return event.respond("There's no image attached for this player") unless Shrine.storages[:store].exists?(player.image_storage_id)
+
+    event.channel.send_file(Shrine.storages[:store].open(player.image_storage_id), filename: "player-#{player.id}.png")
   end
 
   def self.get_season_cast_image(season)
@@ -13,8 +50,7 @@ class Sunny
     escape_html = ->(text) { text.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&quot;') }
 
     avatars = players.map do |player|
-      user = BOT.user(player.user_id)
-      avatar_url = user.avatar_url
+      avatar_url = player_image_or_avatar_url(player)
       %Q(
         <div class="player">
           <img class="avatar" src="#{avatar_url}">

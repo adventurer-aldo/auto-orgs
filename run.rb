@@ -8,6 +8,7 @@ require 'pg'
 require 'que'
 require "json"
 require 'shrine'
+require 'tempfile'
 require "net/http"
 require 'require_all'
 require 'que/active_record/model'

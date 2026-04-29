@@ -27,11 +27,18 @@ class Player < ActiveRecord::Base
   has_many :alliance_associatons, class_name: 'Alliances::Association'
   has_many :alliances, through: :alliance_associatons
   has_many :buddies, foreign_key: 'player_id'
-  has_many :searches, foreign_key: 'player_id'
   has_many :challenges, class_name: 'Challenges::Individual', foreign_key: 'player_id'
   has_many :fibbages, class_name: 'Challenges::Fibbage', foreign_key: 'player_id'
   has_many :items, foreign_key: 'player_id'
   has_many :mazes, foreign_key: 'player_id'
   has_many :participants, class_name: 'Challenges::Participant', foreign_key: 'player_id'
   has_many :votes, foreign_key: 'player_id'
+
+  def image_storage_id
+    "players/#{id}/image.png"
+  end
+
+  def image_url
+    Shrine.storages[:store].url(image_storage_id)
+  end
 end
