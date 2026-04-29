@@ -29,7 +29,7 @@ class Sunny
   end
 
   def self.acknowledge_selection(event, message)
-    event.respond(content: message, ephemeral: true)
+    event.update_message(content: message, components: nil)
   rescue StandardError
     event.channel.send_message(message)
   end
