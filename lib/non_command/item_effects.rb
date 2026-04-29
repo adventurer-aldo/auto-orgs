@@ -265,7 +265,7 @@ class Sunny
         case function
         when 'idol'
           council = Council.where(season_id: Setting.season_id, stage: [0, 1, 2]).last
-          enemies = Vote.where(council_id: council.id).map(&:player).map { |n| Player.find_by(id: n, status: 'In') }
+          enemies = Vote.where(council_id: council.id).filter_map(&:player).select { |target| target.status == 'In' }
           enemies.delete(nil)
 
           text = enemies.map do |en|
