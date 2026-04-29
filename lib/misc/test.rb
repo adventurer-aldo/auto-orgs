@@ -211,33 +211,6 @@ class Sunny
     return a
   end
 
-  BOT.command :eliminator do |event|
-    event.channel.send_file(Sunny.get_eliminator_image, filename: 'eliminator.png')
-  end
-
-  def self.get_eliminator_image
-        base = %Q(
-      <table class="table table-primary">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">Spectator</th>
-          <th scope="col">Episode 1</th>
-        </tr>
-      </thead>
-      <tbody>
-      #{SpectatorGame::Elimination.where(season_id: Setting.season_id).map do |elim|
-          player = Player.find_by(id: elim.player_id)
-          %Q(
-            <tr>
-              <th scope="row">#{BOT.user(elim.user_id).on(Setting.server_id).display_name}</th>
-              <td>#{player&.name}</td>
-            </tr>)
-        end.join('')}
-      </tbody>
-    </table>)
-        html_to_image(base)
-  end
-
   BOT.command :test_circle do |event|
     event.channel.send_file(get_user_circular_avatar(event.user.id), filename: "You.png")
   end

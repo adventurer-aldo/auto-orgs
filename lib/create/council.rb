@@ -3,9 +3,6 @@ class Sunny
     break unless event.user.id.host?
 
     event.message.delete
-    Setting.spectator_draft_is_ongoing = 0
-    Setting.spectator_elimination_is_ongoing = 0
-    Setting.spectator_bootlist_is_ongoing = 0
     tribes = event.message.role_mentions
     event.respond('Input at least one tribe!') if tribes.empty?
     break if tribes.empty?

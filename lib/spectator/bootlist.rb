@@ -1,10 +1,48 @@
+require 'securerandom'
+
 class Sunny
+  def self.pending_bootlists
+    @pending_bootlists ||= {}
+  end
+
   def self.bootlist_channel
     channel_from_setting(:spectator_bootlist_channel_id)
   end
 
   def self.bootlist_options(players)
     players.first(25).map { |player| { label: player.name[0, 100], value: player.id.to_s } }
+  end
+
+  def self.bootlist_values(record)
+    record.respond_to?(:values) ? record.values : []
+  end
+
+  def self.bootlist_player_lines(values)
+    values.each_with_index.map do |player_id, index|
+      player = Player.find_by(id: player_id, season_id: Setting.season_id)
+      "#{index + 1}. #{player&.name || "Missing player #{player_id}"}"
+    end
+  end
+
+  def self.bootlist_summary(values)
+    "**Your Bootlist**\n#{bootlist_player_lines(values).join("\n")}"
+  end
+
+  def self.bootlist_confirmation_view(token)
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.button(custom_id: "bootlist_submit:#{token}", label: 'Submit', style: :success)
+      row.button(custom_id: "bootlist_cancel:#{token}", label: 'Cancel', style: :secondary)
+    end
+    view
+  end
+
+  def self.bootlist_check_view
+    view = Discordrb::Webhooks::View.new
+    view.row do |row|
+      row.button(custom_id: 'bootlist_check', label: 'Check My Bootlist', style: :secondary)
+    end
+    view
   end
 
   def self.prepare_bootlist_game(event)
@@ -39,6 +77,7 @@ class Sunny
       )
     end
     channel.send_message('Choose everyone in your predicted order.', false, nil, nil, nil, nil, view)
+    channel.send_message('Already submitted?', false, nil, nil, nil, nil, bootlist_check_view)
     channel.send_message('Discord selects can only hold 25 names, so hosts should collect larger casts manually for now.') if players.size > 25
   end
 
@@ -68,12 +107,59 @@ class Sunny
       break
     end
 
-    bootlist = SpectatorGame::Bootlist.create(user_id: event.user.id, season_id: Setting.season_id)
-    unless set_model_value(bootlist, %w[rankings picks bootlist player_ids players], values)
-      event.send_message(content: 'Bootlist table needs an array column named rankings, picks, bootlist, player_ids, or players.', ephemeral: true)
+    token = SecureRandom.hex(8)
+    pending_bootlists[token] = { user_id: event.user.id, values: values }
+
+    event.send_message(content: bootlist_summary(values), ephemeral: true, components: bootlist_confirmation_view(token))
+  end
+
+  BOT.button(custom_id: /\Abootlist_submit:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_bootlists[token]
+
+    if payload.nil? || payload[:user_id] != event.user.id
+      event.respond(content: 'This bootlist draft is no longer available.', ephemeral: true)
       break
     end
 
-    event.send_message(content: 'Your bootlist has been submitted.', ephemeral: true)
+    if SpectatorGame::Bootlist.exists?(user_id: event.user.id, season_id: Setting.season_id)
+      pending_bootlists.delete(token)
+      event.update_message(content: 'You already submitted a bootlist.', components: nil)
+      break
+    end
+
+    bootlist = SpectatorGame::Bootlist.create(user_id: event.user.id, season_id: Setting.season_id)
+    unless set_model_value(bootlist, %w[rankings picks bootlist player_ids players], payload[:values])
+      pending_bootlists.delete(token)
+      event.update_message(content: 'Bootlist table needs an array column named rankings, picks, bootlist, player_ids, or players.', components: nil)
+      break
+    end
+
+    pending_bootlists.delete(token)
+    event.update_message(content: "#{bootlist_summary(payload[:values])}\n\n**Submitted.**", components: nil)
+  end
+
+  BOT.button(custom_id: /\Abootlist_cancel:/) do |event|
+    token = event.custom_id.split(':', 2).last
+    payload = pending_bootlists[token]
+
+    if payload.nil? || payload[:user_id] != event.user.id
+      event.respond(content: 'This bootlist draft is no longer available.', ephemeral: true)
+      break
+    end
+
+    pending_bootlists.delete(token)
+    event.update_message(content: 'Bootlist submission cancelled.', components: nil)
+  end
+
+  BOT.button(custom_id: 'bootlist_check') do |event|
+    bootlist = SpectatorGame::Bootlist.find_by(user_id: event.user.id, season_id: Setting.season_id)
+
+    unless bootlist
+      event.respond(content: 'You have not submitted a bootlist yet.', ephemeral: true)
+      break
+    end
+
+    event.respond(content: bootlist_summary(bootlist_values(bootlist)), ephemeral: true)
   end
 end

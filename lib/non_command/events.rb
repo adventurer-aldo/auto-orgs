@@ -13,11 +13,14 @@ class Sunny
   }.freeze
 
   def self.record_event(summary, player: nil, item: nil)
-    Event.create(
+    attributes = {
       summary: summary,
       player_id: player&.id,
       item_id: item&.id
-    )
+    }
+    attributes[:episode_id] = current_episode&.id if Event.column_names.include?('episode_id') && Setting.season_id.positive?
+
+    Event.create(attributes)
   rescue ActiveRecord::StatementInvalid
     nil
   end

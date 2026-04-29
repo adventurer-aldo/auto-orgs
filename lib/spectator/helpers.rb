@@ -58,6 +58,71 @@ class Sunny
     record.update(status: 0) if record.class.column_names.include?('status')
   end
 
+  def self.unique_lowest(records)
+    grouped = records.group_by { |record| record.score || 0 }
+    return nil if grouped.empty?
+
+    winners = grouped[grouped.keys.min]
+    winners.one? ? winners.first : nil
+  end
+
+  def self.spectator_game_winner_name(user_id)
+    user = BOT.user(user_id)
+    user.on(Setting.server_id)&.display_name || user.username
+  rescue StandardError
+    'Deleted User'
+  end
+
+  def self.announce_spectator_game_winner(channel, user_id, game_name)
+    channel&.send_message("**#{spectator_game_winner_name(user_id)} cannot be beaten by anyone else... #{spectator_game_winner_name(user_id)} has won the #{game_name}!**")
+  end
+
+  def self.completed_drafts
+    SpectatorGame::Draft.where(season_id: Setting.season_id).select { |draft| completed_draft?(draft) }
+  end
+
+  def self.close_draft_game_if_won
+    return unless Setting.spectator_draft_is_ongoing == 1
+    return unless Player.where(season_id: Setting.season_id, status: ALIVE).size <= 1
+
+    winner = unique_lowest(completed_drafts)
+    return unless winner
+
+    Setting.spectator_draft_is_ongoing = 0
+    announce_spectator_game_winner(draft_channel, winner.user_id, 'Draft Game')
+  end
+
+  def self.close_elimination_game_if_won
+    return unless Setting.spectator_elimination_is_ongoing == 1
+
+    active = spectator_active_scope(SpectatorGame::Elimination).to_a
+    return unless active.one?
+
+    Setting.spectator_elimination_is_ongoing = 0
+    announce_spectator_game_winner(elimination_channel, active.first.user_id, 'Elimination Game')
+  end
+
+  def self.close_bootlist_game_if_won
+    return unless Setting.spectator_bootlist_is_ongoing == 1
+    return unless Player.where(season_id: Setting.season_id, status: ALIVE).size <= 1
+
+    winner = unique_lowest(SpectatorGame::Bootlist.where(season_id: Setting.season_id).to_a)
+    return unless winner
+
+    Setting.spectator_bootlist_is_ongoing = 0
+    announce_spectator_game_winner(bootlist_channel, winner.user_id, 'Bootlist Game')
+  end
+
+  def self.update_spectator_games_after_elimination
+    draft_channel&.send_file(get_draft_image, filename: 'Draft.png') if Setting.spectator_draft_is_ongoing == 1
+    elimination_channel&.send_file(get_eliminator_image, filename: 'Eliminator.png') if Setting.spectator_elimination_is_ongoing == 1
+    bootlist_channel&.send_file(get_bootlist_image, filename: 'Bootlist.png') if Setting.spectator_bootlist_is_ongoing == 1
+
+    close_draft_game_if_won
+    close_elimination_game_if_won
+    close_bootlist_game_if_won
+  end
+
   def self.spectator_game_prompt_view
     view = Discordrb::Webhooks::View.new
     view.row do |row|
