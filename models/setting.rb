@@ -34,6 +34,10 @@ class Setting < ActiveRecord::Base
     tribes
   ].freeze
 
+  STRING_SETTINGS = %w[
+    parchment_url
+  ].freeze
+
   def self.setting_row(name)
     find_or_create_by(name:) do |setting|
       setting.values = []
@@ -56,6 +60,14 @@ class Setting < ActiveRecord::Base
     setting_row(name).update(values: Array(value))
   end
 
+  def self.string_setting(name)
+    Array(setting_row(name).values).first.to_s
+  end
+
+  def self.set_string_setting(name, value)
+    setting_row(name).update(values: [value.to_s])
+  end
+
   INTEGER_SETTINGS.each do |setting_name|
     define_singleton_method(setting_name) do
       integer_setting(setting_name)
@@ -74,6 +86,25 @@ class Setting < ActiveRecord::Base
     define_singleton_method("#{setting_name}=") do |value|
       set_array_setting(setting_name, value)
     end
+  end
+
+  STRING_SETTINGS.each do |setting_name|
+    define_singleton_method(setting_name) do
+      string_setting(setting_name)
+    end
+
+    define_singleton_method("#{setting_name}=") do |value|
+      set_string_setting(setting_name, value)
+    end
+  end
+
+  def self.hosts
+    hosts_ids.filter_map { |id| Sunny::BOT.user(id) }
+  end
+
+  def self.confirmation?(text)
+    normalized = text.to_s.downcase.gsub(/[.!?]/, '').strip
+    %w[yes yea yeah yeh yuh yup y ye heck\ yeah yep yessir indeed yessey yess].include?(normalized)
   end
 
   def self.game_stage

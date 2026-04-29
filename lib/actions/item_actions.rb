@@ -5,8 +5,8 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
-    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
+    item = Item.where(code: args[0], player_id: player.id, season_id: Setting.season_id)
 
     break unless [player.confessional, player.submissions].include? event.channel.id
 
@@ -15,7 +15,22 @@ class Sunny
 
     item = item.first
 
-    enemies = Player.where(season_id: Setting.season, status: ALIVE).excluding(Player.where(user_id: event.user.id))
+    unless item.targets.empty?
+      event.respond("You're already using **#{item.name}**. Giving it away will cancel that play. Are you sure?")
+      confirmation = event.user.await!(timeout: 60)
+      event.respond('Giving an item failed.') if confirmation.nil?
+      break if confirmation.nil?
+
+      unless Setting.confirmation?(confirmation.message.content)
+        event.respond('I guess not...')
+        break
+      end
+
+      cancel_item_play(item)
+      event.respond("Cancelled playing **#{item.name}**.")
+    end
+
+    enemies = Player.where(season_id: Setting.season_id, status: ALIVE).excluding(Player.where(user_id: event.user.id))
     text = enemies.map do |en|
       "**#{en.id}** — #{en.name}"
     end
@@ -36,7 +51,7 @@ class Sunny
     text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
     id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
     if text_attempt.size == 1
-      targets << Player.find_by(name: text_attempt[0], season_id: Setting.season, status: ALIVE)
+      targets << Player.find_by(name: text_attempt[0], season_id: Setting.season_id, status: ALIVE)
     elsif id_attempt.size == 1
       targets << Player.find_by(id: id_attempt[0])
     else
@@ -49,7 +64,7 @@ class Sunny
       event.respond('Took too long to confirm. Take your time to think about this one.') unless msger
       break unless msger
 
-      if CONFIRMATIONS.include? msger.message.content.downcase
+      if Setting.confirmation?(msger.message.content.downcase)
         item.update(player_id: targets.first.id)
         event.respond("**#{item.name}** now belongs to **#{targets.first.name}**")
         BOT.channel(targets.first.submissions).send_embed do |embed|
@@ -70,7 +85,7 @@ class Sunny
     event.respond("You didn't write a code!") if args[0].nil?
     break if args[0].nil?
 
-    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
+    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
     item = player.items.where(code: args[0])
 
     break unless [player.confessional, player.submissions].include? event.channel.id
@@ -80,11 +95,11 @@ class Sunny
 
     item = item.first
     council = if item.early?
-                Council.where(stage: [0], season_id: Setting.season).exists?
+                Council.where(stage: [0], season_id: Setting.season_id).exists?
               elsif item.now?
-                Council.where(stage: [0, 1], season_id: Setting.season).exists?
+                Council.where(stage: [0, 1], season_id: Setting.season_id).exists?
               elsif item.tallied?
-                Council.where(stage: [0, 1, 2], season_id: Setting.season).exists?
+                Council.where(stage: [0, 1, 2], season_id: Setting.season_id).exists?
               else
                 false
               end
@@ -94,8 +109,8 @@ class Sunny
 
     targets = item.targets
     unless targets == []
+      cancel_item_play(item)
       event.respond("You've cancelled playing **#{item.name}**.")
-      item.update(targets: [])
     end
     break unless targets == []
 

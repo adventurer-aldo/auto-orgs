@@ -1,6 +1,23 @@
 class Sunny
+  def self.ordinal(number)
+    return "#{number}th" if (11..13).include?(number % 100)
+
+    suffix = case number % 10
+             when 1 then 'st'
+             when 2 then 'nd'
+             when 3 then 'rd'
+             else 'th'
+             end
+    "#{number}#{suffix}"
+  end
+
   BOT.command :cast do |event|
-    event.respond("**Castaways currently in the game:**\n" + Player.where(status: ALIVE, season_id: Setting.season).pluck(:name).join("\n"))
+    players = Player.where(season_id: Setting.season_id).order(:rank, :name)
+    lines = players.map do |player|
+      rank = player.rank ? "#{ordinal(player.rank)} - " : ''
+      "#{rank}#{player.name}#{ALIVE.include?(player.status) ? '' : " (#{player.status})"}"
+    end
+    event.respond("**Season #{Setting.season_id} Castaways:**\n#{lines.join("\n")}")
   end
 
   BOT.command :vote_count do |event|

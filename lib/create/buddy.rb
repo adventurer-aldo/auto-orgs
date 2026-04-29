@@ -3,7 +3,7 @@ class Sunny
   BOT.command :unbuddy do |event|
     break unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
     buddies = player.buddies
 
     break unless event.channel.id == player.confessional || event.channel.id == player.submissions
@@ -22,15 +22,15 @@ class Sunny
   BOT.command :buddy do |event|
     break unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
     buddies = player.buddies
 
     break unless event.channel.id == player.confessional || event.channel.id == player.submissions
 
     # Check if you can get new buddies.
-    if buddies.map(&:can_change).include?(true) || buddies.size < 2 
-      if buddies.size < 2
-        acceptable_mentions = event.message.mentions.uniq.filter { |user| user.on(Setting.server_id).role?(Setting.trusted_spectator_role_id) }.filter { |user| !buddies.map(&:user_id).include?(user.id)}[0..1]
+    if buddies.map(&:can_change).include?(true) || buddies.size < 3
+      if buddies.size < 3
+        acceptable_mentions = event.message.mentions.uniq.filter { |user| user.on(Setting.server_id).role?(Setting.trusted_spectator_role_id) }.filter { |user| !buddies.map(&:user_id).include?(user.id)}[0...(3 - buddies.size)]
 
         event.respond "You didn't mention anybody eligible!" if acceptable_mentions.size < 1
         return if acceptable_mentions.size < 1
@@ -42,9 +42,9 @@ class Sunny
           BOT.channel(player.confessional).define_overwrite(BOT.user(new_buddy.user_id), allow, deny)
         end
 
-        # If the number of buddies exceeds 2, delete the extras.
-        if (acceptable_mentions + buddies).size > 2
-          (acceptable_mentions.map(&:id) + buddies.map(&:user_id))[2..-1].each do |old_buddy_user_id|
+        # If the number of buddies exceeds 3, delete the extras.
+        if (acceptable_mentions + buddies).size > 3
+          (acceptable_mentions.map(&:id) + buddies.map(&:user_id))[3..-1].each do |old_buddy_user_id|
             Buddy.destroy_by(player_id: player.id, user_id: old_buddy_user_id)
             BOT.channel(player.confessional).delete_overwrite(old_buddy_user_id)
           end

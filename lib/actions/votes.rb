@@ -92,7 +92,7 @@ class Sunny
         image = nil
         if event.message.attachments.empty?
           event.respond('Time to upload a parchment! Right in your next message!')
-          file = URI.parse(PARCHMENT).open
+          file = URI.parse(Setting.parchment_url).open
           BOT.send_file(event.channel, file, filename: 'parchment.png')
           image = event.user.await!(timeout: 600)
         else

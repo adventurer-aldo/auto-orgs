@@ -46,6 +46,15 @@ class Sunny
       vote_count = {}
       parchments = {}
 
+      Item.where(season_id: Setting.season_id).where.not(player_id: nil).where.not(targets: []).each do |item|
+        if item.functions.include?('steal_vote')
+          stolen_vote = Vote.find_by(council_id: council.id, player_id: item.targets.first)
+          Sunny.remove_last_item_vote(stolen_vote) if stolen_vote
+        end
+
+        item.update(player_id: nil, targets: []) if (item.functions & %w[extra_vote steal_vote]).any?
+      end
+
       voters = council.votes
       voters.each do |vote|
         sub = vote.votes.map do |mapping|
@@ -262,7 +271,7 @@ class Sunny
               channel.start_typing
               sleep(3)
               channel.send_message('The winner will get to move on to the **Final 3**.')
-              channel.send_message("#{BOT.user(Sunny.hosts.sample).mention} can take it from here.")
+              channel.send_message("#{Setting.hosts.sample&.mention} can take it from here.")
             else
               sleep(3)
               case council.stage

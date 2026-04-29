@@ -10,17 +10,22 @@ class Sunny
     tribe = []
     confirm = []
     perms = [Sunny.true_spectate, Sunny.deny_every_spectate, Sunny.prejury_spectate]
-    cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.season).size
+    cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.season_id).size
     tribes.each do |tribed|
-      if Tribe.where(role_id: tribed.id, season_id: Setting.season).exists?
+      if Tribe.where(role_id: tribed.id, season_id: Setting.season_id).exists?
         # Close camps and challenges
-        closing_tribe = Tribe.find_by(role_id: tribed.id, season_id: Setting.season)
+        closing_tribe = Tribe.find_by(role_id: tribed.id, season_id: Setting.season_id)
+        if Sunny.active_council_tribe_ids.include?(closing_tribe.id)
+          event.respond("**#{closing_tribe.name}** is already attending an active Tribal Council.")
+          confirm << false
+          next
+        end
         BOT.channel(closing_tribe.channel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
         BOT.channel(closing_tribe.channel_id).send_message("**Closed for Tribal Council.**")
         BOT.channel(closing_tribe.cchannel_id).define_overwrite(event.server.role(closing_tribe.role_id), 1088, 2048)
         BOT.channel(closing_tribe.cchannel_id).send_message("**Closed for Tribal Council.**")
         # Yeah End
-        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.season).order(id: :desc)&.first&.id
+        tribe_query = Tribe.where(role_id: tribed.id, season_id: Setting.season_id).order(id: :desc)&.first&.id
         if Setting.tribes.include? tribe_query
           tribe += [tribe_query]
           perms += [Discordrb::Overwrite.new(tribed.id, allow: 3072)]
@@ -85,7 +90,7 @@ class Sunny
       sleep(1)
       BOT.send_message(channel.id, 'It is ultimately every castaway for itself, but you can decide in unison who you want gone. For that, you must use the `!vote` command in your submissions channel.')
     end
-    file = URI.parse(PARCHMENT).open
+    file = URI.parse(Setting.parchment_url).open
     BOT.send_file(channel.id, file, filename: 'parchment.png')
     channel.send_embed do |embed|
       embed.title = 'Castaways attending Tribal Council:'
@@ -96,7 +101,7 @@ class Sunny
     players.each do |player|
       Vote.create(council_id: council.id, player_id: player.id, parchments: ['0'])
       BOT.channel(player.submissions).send_embed do |embed|
-        embed.title = "You're participating in the F#{Player.where(status: ALIVE, season_id: Setting.season).size} Tribal Council in #{player.tribe.name}"
+        embed.title = "You're participating in the F#{Player.where(status: ALIVE, season_id: Setting.season_id).size} Tribal Council in #{player.tribe.name}"
         embed.description = "The castaways participating are:\n\n#{players.map(&:name).sort.join("\n")}\n\nUse the `!vote` command to cast your vote!"
         embed.color = tribes.map(&:color).sample
       end

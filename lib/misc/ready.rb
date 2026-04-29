@@ -2,10 +2,6 @@ class Sunny
   BOT.ready do
     BOT.send_message(Setting.host_chat_channel_id, '# <a:torch:1400359863393062952> Hello! Our fruity world! <a:torch:1400359863393062952>')
     BOT.game = 'Resting'
-    #make_item_commands
-    # Add Ons
-    # hayden = Player.find_by(user_id: 198321560153489408, season_id: 2)
-    # Search.where(player_id: hayden.id).update(player_id: Player.find_by(user_id: 198321560153489408, season_id: 3).id)
   end
 
   BOT.command :store do |event, *args|

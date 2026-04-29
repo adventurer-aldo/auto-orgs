@@ -42,7 +42,7 @@ class Sunny
     event.respond("Are you sure you want to transfer immunity to **#{target.name}**?")
     confirmation = event.user.await!(timeout: 60)
     return event.respond('Immunity transfer cancelled.') if confirmation.nil?
-    return event.respond('I guess not...') unless CONFIRMATIONS.include? confirmation.message.content.downcase
+    return event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content.downcase)
 
     player.update(status: 'In')
     target.update(status: 'Immune')

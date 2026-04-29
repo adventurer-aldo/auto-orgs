@@ -24,12 +24,13 @@ class Sunny
   end
 
   BOT.command :alliance, description: 'Make an alliance with other players on your tribe.' do |event, *args|
-    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season, status: ALIVE)
+    player = event.user.id.host? ? Player.find_by(submissions: event.channel.id, status: ALIVE) : Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: ALIVE)
     tribe = player.tribe
     break unless event.user.id.host? || (event.user.id.player? && event.server.role(tribe.role_id).members.size > 3)
     break unless [player.confessional, player.submissions].include? event.channel.id
 
-    enemies = Player.where(tribe_id: [tribe.id] + Council.last.tribes, season_id: Setting.season, status: ALIVE).excluding(Player.where(id: player.id))
+    active_tribes = Sunny.active_councils.select { |council| council.tribes.include?(tribe.id) }.flat_map(&:tribes)
+    enemies = Player.where(tribe_id: ([tribe.id] + active_tribes).uniq, season_id: Setting.season_id, status: ALIVE).excluding(Player.where(id: player.id))
     options = enemies.map(&:id)
     options_text = enemies.map(&:name)
     text = enemies.map { |enemy| "**#{enemy.id}** — #{enemy.name}" }
@@ -74,9 +75,8 @@ class Sunny
 
     event.respond("**You're about to make an alliance with #{choices.map(&:name).join(', ')}. Are you sure?**")
     event.user.await!(timeout: 70) do |await|
-      case await.message.content.downcase
-      when *%w[yes yeah yeh yuh yup y ye heck\ yeah yep yessir indeed yessey yess]
-        rank = Player.where(season_id: Setting.season, status: ALIVE).size
+      if Setting.confirmation?(await.message.content)
+        rank = Player.where(season_id: Setting.season_id, status: ALIVE).size
         choices << player
         choices.sort_by!(&:id)
 
@@ -98,7 +98,7 @@ class Sunny
 
         BOT.send_message(alliance.channel_id, event.server.role(tribe.role_id).mention.to_s)
         event.respond("**Your alliance is done! Check out #{BOT.channel(alliance.channel_id).mention}**")
-      when *%w[no nah nop nay noo nope nuh nuh-uh]
+      else
         event.respond('I guess not...')
       end
     end

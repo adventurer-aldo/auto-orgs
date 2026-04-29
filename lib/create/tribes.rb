@@ -3,9 +3,10 @@ class Sunny
     break unless event.user.id.host?
 
     tribes = event.message.role_mentions
-    players = Player.where(season_id: Setting.season, status: ALIVE + ['Exiled'])
+    players = Player.where(season_id: Setting.season_id, status: ALIVE + ['Exiled'])
     if tribes.size > 1
-      if (players.size % tribes.size).zero?
+      exile_count = players.size % tribes.size
+      event.respond("This split is uneven. **#{exile_count} player#{exile_count == 1 ? '' : 's'} will be left in Exile.**") if exile_count.positive?
         @set_tribes = []
         tribes.each do |tribe|
           # > Voice Channel for the Tribe
@@ -29,7 +30,7 @@ class Sunny
           channel_id: chan.id,
           vchannel_id: vchan.id,
           cchannel_id: cchan.id,
-          season_id: Setting.season).id
+          season_id: Setting.season_id).id
         end
         Setting.tribes = @set_tribes
 
@@ -44,9 +45,12 @@ class Sunny
         event.respond 'Come and take your buffs, survivors!'
         event.channel.start_typing
         sleep(1)
-        players = players.shuffle
-        event.respond "First up, #{players[0].name}. Come here!"
-        players.each do |player|
+        players = players.shuffle.to_a
+        splitting_players = players.first(@buffs.size)
+        exiled_players = players - splitting_players
+        exiled_players.each { |player| player.update(status: 'Exiled') }
+        event.respond "First up, #{splitting_players[0].name}. Come here!"
+        splitting_players.each do |player|
           event.channel.start_typing
           sleep(1)
           event.respond "**#{BOT.user(player.user_id).mention} takes a buff...**"
@@ -64,22 +68,19 @@ class Sunny
           event.respond '.'
         end
 
-        players.each do |player|
+        splitting_players.each do |player|
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
         end
-        create_dms
+        create_dms(event)
         return "And that's about it. Go meet your new tribemates!"
-      else
-        return "There's not enough castaways to split equally amongst those roles."
-      end
     elsif tribes.size == 1
       event.respond "You've only selected one tribe. **This will start Merge.**\nAre you sure about it?"
       @confirm = false
       loop do
         event.message.await!(timeout: 30) do |confirm_event|
-          if confirm_event.message.content.downcase == 'yes'
+          if Setting.confirmation?(confirm_event.message.content)
             @confirm = true
             @merge = true
           elsif confirm_event.message.content.downcase == 'no'
@@ -139,14 +140,14 @@ class Sunny
             channel_id: chan.id,
             vchannel_id: vchan.id,
             cchannel_id: cchan.id,
-            season_id: Setting.season
+            season_id: Setting.season_id
           ).id
         end
         Setting.tribes = @set_tribes
         Setting.game_stage = 1
 
         players.each do |player|
-          player.update(tribe_id: Tribe.where(season: Setting.season, role_id: tribes[0].id).last.id)
+          player.update(tribe_id: Tribe.where(season_id: Setting.season_id, role_id: tribes[0].id).last.id)
           BOT.user(player.user_id).on(event.server).add_role(player.tribe.role_id)
           BOT.channel(player.confessional).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-confessional'
           BOT.channel(player.submissions).name = player.tribe.name.gsub(/[a-zA-Z0-9\s]+/, "") + player.name + '-submissions'
@@ -161,7 +162,7 @@ class Sunny
         event.respond '.'
         event.channel.start_typing
         sleep(5)
-        create_dms
+        create_dms(event)
         event.respond 'Congratulations, and welcome to the beginning of the **Endgame**.'
       end
 

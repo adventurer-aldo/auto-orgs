@@ -5,7 +5,7 @@ class Sunny
   end
 
   BOT.command :test_store do |event|
-    return Shrine.storages[:store].upload(URI.parse(PARCHMENT), "parchmentoa.jpg")
+    return Shrine.storages[:store].upload(URI.parse(Setting.parchment_url), "parchmentoa.jpg")
   end
 
   BOT.command :trivia do |event|

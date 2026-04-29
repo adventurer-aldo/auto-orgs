@@ -5,34 +5,35 @@ class Sunny
 
     category = event.server.create_channel('Joint Tribal 🏝️ 1-on-1s', 4)
 
-    players = Council.last.tribes.map { |id| Tribe.find_by(id: id).players.where(status: ALIVE) }.flatten
-    players.each_with_index do |player, i|
-      ((i + 1)...players.size).each do |j|
-        other_player = players[j]
-        # Connect player with other_player
-        event.respond "#{player.name} connects with #{other_player.name}"
-        existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
-        if existing_match.empty?
-          event.server.create_channel("#{player.name}-#{other_player.name}",
-            parent: category,
-            topic: "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
-            permission_overwrites: [ Sunny.deny_every_spectate, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
-            Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
-        else
-          chan = existing_match.first
-          chan.parent = category
-          chan.topic = "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Joint Tribal Council!"
-          chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
-          if chan_overwrites.map { |overwrite| overwrite.allow.defined_permissions.include?(:send_messages)  }.include?(false)
-            [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
-            chan.send_message("**Temporarily unlocked** 🔓")
+    Sunny.active_councils.where.not(tribes: []).each do |council|
+      players = council.tribes.map { |id| Tribe.find_by(id: id).players.where(status: ALIVE) }.flatten
+      players.each_with_index do |player, i|
+        ((i + 1)...players.size).each do |j|
+          other_player = players[j]
+          event.respond "#{player.name} connects with #{other_player.name}"
+          existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{other_player.name.downcase}", "#{other_player.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
+          if existing_match.empty?
+            event.server.create_channel("#{player.name}-#{other_player.name}",
+              parent: category,
+              topic: "#{player.name} and #{other_player.name} will be chatting here for the duration of the Joint Tribal Council!",
+              permission_overwrites: [ Sunny.deny_every_spectate, Discordrb::Overwrite.new(other_player.user_id, type: 'member', allow: 3072),
+              Discordrb::Overwrite.new(player.user_id, type: 'member', allow: 3072)])
+          else
+            chan = existing_match.first
+            chan.parent = category
+            chan.topic = "#{player.name} and #{other_player.name} will be chatting privately here while they participate in the Joint Tribal Council!"
+            chan_overwrites = chan.member_overwrites.select { |overwrite| [player.user_id, other_player.user_id].include?(overwrite.id) }
+            if chan_overwrites.map { |overwrite| overwrite.allow.defined_permissions.include?(:send_messages)  }.include?(false)
+              [player.user_id, other_player.user_id].each { |user_id| chan.define_overwrite(event.server.member(user_id), 3072, 0) }
+              chan.send_message("**Temporarily unlocked** 🔓")
+            end
           end
         end
       end
     end
   end
 
-  def self.create_dms
+  def self.create_dms(event)
 
     tribes = Setting.tribes.map { |id| Tribe.find_by(id: id) }
     tribes.each do |tribe|
@@ -41,7 +42,7 @@ class Sunny
       category.sort_after(Setting.tribes_category_id)
       index = 0
       players = tribe.players.where(status: ALIVE)
-      outsiders = Player.where(status: ALIVE, season_id: Setting.season).where.not(tribe_id: tribe.id)
+      outsiders = Player.where(status: ALIVE, season_id: Setting.season_id).where.not(tribe_id: tribe.id)
       players.each_with_index do |player, i|
         outsiders.each do |outsider|
           existing_match = event.server.channels.select { |channel| ["#{player.name.downcase}-#{outsider.name.downcase}", "#{outsider.name.downcase}-#{player.name.downcase}"].include?(channel.name) }
@@ -88,7 +89,7 @@ class Sunny
   BOT.command :create_dms do |event|
     break unless event.user.id.host?
 
-    create_dms
+    create_dms(event)
   end
 
 end

@@ -1,7 +1,7 @@
 class Sunny
   def self.generate_parchment(text)
     parch = Tempfile.new(["parchment", ".jpg"])
-    parch.write URI.parse(PARCHMENT).read
+    parch.write URI.parse(Setting.parchment_url).read
     parch.rewind
 
     color = PARCHMENT_COLORS.sample
