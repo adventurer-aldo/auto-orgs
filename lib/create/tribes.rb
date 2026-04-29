@@ -48,11 +48,13 @@ class Sunny
             parent: Setting.tribes_category_id,
             topic: tribe.name + "'s Challenges channel. This is where you'll submit challenges-related stuff or play in them if needed.",
             permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
+            *Sunny.debug_spectator_denies,
             Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           chan = event.server.create_channel(tribe.name + '-camp',
           parent: Setting.tribes_category_id,
           topic: tribe.name + "'s Camp. Hang around and plan with all your tribemates here. You'll be together for a while, so best make use of it!",
           permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
+          *Sunny.debug_spectator_denies,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")
 
@@ -163,11 +165,13 @@ class Sunny
           parent: Setting.tribes_category_id,
           topic: "#{tribe.name}'s Camp. Hang around, discuss and/or play around with your friends and enemies. You'll be together for the rest of your journey...",
           permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
+          *Sunny.debug_spectator_denies,
           Discordrb::Overwrite.new(tribe.id, allow: 3072)])
           cchan = event.server.create_channel(tribe.name + '-challenges',
             parent: Setting.tribes_category_id,
             topic: "#{tribe.name}'s Challenges channel. This is where you'll team up or pit against each other when needed...",
             permission_overwrites: [Sunny.true_spectate, Sunny.deny_every_spectate,
+            *Sunny.debug_spectator_denies,
             Discordrb::Overwrite.new(tribe.id, allow: 3072)])
 
           chan.send_message("Welcome to your new camp, #{tribe.mention}!\nMeet your tribemates!")

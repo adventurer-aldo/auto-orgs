@@ -1,4 +1,6 @@
 class Sunny
+  PARCHMENT_COLORS = %w[red black green blue yellow pink purple cyan violet white]
+
   def self.generate_parchment(text)
     parch = Tempfile.new(["parchment", ".jpg"])
     parch.write URI.parse(Setting.parchment_url).read

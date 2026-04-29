@@ -80,7 +80,7 @@ class Sunny
         choices << player
         choices.sort_by!(&:id)
 
-        perms = [Sunny.true_spectate, Sunny.deny_every_spectate]
+        perms = [Sunny.true_spectate, Sunny.deny_every_spectate] + Sunny.debug_spectator_denies
         choices.each { |n| perms << Discordrb::Overwrite.new(n.user_id, type: 'member', allow: 3072) }
 
         alliance = Alliances::Group.create!(

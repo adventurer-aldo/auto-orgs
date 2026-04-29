@@ -6,6 +6,7 @@ class Sunny
       players: ['!players @user...', 'Register castaways for the current season. With no mentions, opens a user picker.'],
       tribes: ['!tribes @role @role...', 'Split alive castaways into the mentioned tribe roles.'],
       ftc: ['!ftc', 'Begin Final Tribal Council.'],
+      ftc_votecount: ['!ftc_votecount', 'Reveal each FTC jury vote with its parchment, then post the final count. Requires game stage 2.'],
       episode_title: ['!episode_title @quote_owner quote text', 'Set the current episode title and open the next episode.'],
       add_image: ['!add_image [player_id]', 'Attach the uploaded image to a castaway. With no ID, opens a castaway picker.'],
       cast_image: ['!cast_image [season_id]', 'Post the season cast image.']
@@ -41,7 +42,8 @@ class Sunny
       update: ['!update', 'Refresh generated item commands.'],
       reset: ['!reset', 'Delete current season data after confirmation.'],
       set_parchment_url: ['!set_parchment_url URL', 'Set the default parchment image URL.'],
-      message_logging: ['!message_logging on|off', 'Enable or disable edit/delete message logging.']
+      message_logging: ['!message_logging on|off', 'Enable or disable edit/delete message logging.'],
+      debug: ['!debug [on|off]', 'Toggle runtime debug mode. While on, newly-created channels do not grant spectator visibility.']
     },
     'Roles And Channels' => {
       add_roles: ['!add_roles @user... @role...', 'Add mentioned roles to mentioned users.'],

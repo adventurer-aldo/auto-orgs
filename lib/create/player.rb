@@ -16,7 +16,7 @@ class Sunny
           parent: Setting.confessionals_category_id,
           topic: "#{person.display_name}'s Confessional. This is where you'll talk to the spectators about your game!",
           permission_overwrites: [Discordrb::Overwrite.new(person.id, type: 'member', allow: 3072),
-          Sunny.true_spectate, Sunny.deny_every_spectate]).id,
+          Sunny.true_spectate, Sunny.deny_every_spectate, *Sunny.debug_spectator_denies]).id,
       submissions: server.create_channel("#{person.display_name}-submissions",
           parent: Setting.confessionals_category_id,
           topic: 'Your Submissions channel. Submit challenge scores, check your inventory and play your items!',

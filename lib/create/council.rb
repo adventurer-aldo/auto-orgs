@@ -9,7 +9,7 @@ class Sunny
 
     tribe = []
     confirm = []
-    perms = [Sunny.true_spectate, Sunny.deny_every_spectate, Sunny.prejury_spectate]
+    perms = [Sunny.true_spectate, Sunny.deny_every_spectate, Sunny.prejury_spectate] + Sunny.debug_spectator_denies
     cast_left = Player.where(status: ALIVE + ['Exiled'], season_id: Setting.season_id).size
     tribes.each do |tribed|
       if Tribe.where(role_id: tribed.id, season_id: Setting.season_id).exists?
