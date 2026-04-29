@@ -76,9 +76,12 @@ class Sunny
   end
 
   def self.resolve_player_argument(content, players)
-    return nil if content.to_s.strip.empty?
+    text = content.to_s.strip
+    return nil if text.empty?
 
-    resolve_vote_target(content, players)
+    players.find { |player| player.id == text.to_i } ||
+      players.find { |player| player.name.downcase == text.downcase } ||
+      players.select { |player| player.name.downcase.include?(text.downcase) }.then { |matches| matches.one? ? matches.first : nil }
   end
 
   def self.give_targets_for(player)
