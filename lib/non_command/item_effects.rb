@@ -70,13 +70,13 @@ class Sunny
         case function
         when 'safety_without_power'
           unless confirmed
-            event.respond('Are you sure?')
+            respond_to_event(event, 'Are you sure?')
             confirmation = event.user.await!(timeout: 50)
 
-            event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
+            respond_to_event(event, "You didn't confirm. Try again if you want to play it.") if confirmation.nil?
             break if confirmation.nil?
 
-            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            respond_to_event(event, 'I guess not...') unless Setting.confirmation?(confirmation.message.content)
             break unless Setting.confirmation?(confirmation.message.content)
           end
 
@@ -101,7 +101,7 @@ class Sunny
             end
           end
           vote.destroy
-          event.respond("You successfuly played #{item.name}.")
+          respond_to_event(event, "You successfuly played #{item.name}.")
 
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name}!"
@@ -122,15 +122,15 @@ class Sunny
         when 'extra_vote'
           target = resolve_vote_target(target_args.first.to_s, vote_targets_for(council, player)) if target_args.first
           target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to cast your extra vote against?")
-          event.respond('Playing this item failed!') if target.nil?
+          respond_to_event(event, 'Playing this item failed!') if target.nil?
           break if target.nil?
 
           unless confirmed
-            event.respond("You're about to use **#{item.name}** to cast an extra vote against **#{target.name}**. Are you sure?")
+            respond_to_event(event, "You're about to use **#{item.name}** to cast an extra vote against **#{target.name}**. Are you sure?")
             confirmation = event.user.await!(timeout: 50)
-            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            respond_to_event(event, "You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
             break if confirmation.nil?
-            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            respond_to_event(event, 'I guess not...') unless Setting.confirmation?(confirmation.message.content)
             break unless Setting.confirmation?(confirmation.message.content)
           end
 
@@ -145,27 +145,27 @@ class Sunny
           end
           item.update(targets: [vote_index], played: true)
           record_and_send_event("item_played#{item_play_details(item, extra: " to cast an extra vote on #{target.name}")}", player: player, item: item)
-          event.respond("You successfuly played #{item.name}.")
+          respond_to_event(event, "You successfuly played #{item.name}.")
 
         when 'steal_vote'
           enemies = vote_targets_for(council, player, require_allowed_vote: true)
           stolen_target = resolve_vote_target(target_args[0].to_s, enemies) if target_args[0]
           stolen_target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to play #{item.name} on?", targets: enemies)
 
-          event.respond('Playing this item failed!') if stolen_target.nil?
+          respond_to_event(event, 'Playing this item failed!') if stolen_target.nil?
           break if stolen_target.nil?
 
           vote_target = resolve_vote_target(target_args[1].to_s, vote_targets_for(council, player)) if target_args[1]
           vote_target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to cast the stolen vote against?")
-          event.respond('Playing this item failed!') if vote_target.nil?
+          respond_to_event(event, 'Playing this item failed!') if vote_target.nil?
           break if vote_target.nil?
 
           unless confirmed
-            event.respond("You're about to steal **#{stolen_target.name}**'s vote and cast it against **#{vote_target.name}**. Are you sure?")
+            respond_to_event(event, "You're about to steal **#{stolen_target.name}**'s vote and cast it against **#{vote_target.name}**. Are you sure?")
             confirmation = event.user.await!(timeout: 50)
-            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            respond_to_event(event, "You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
             break if confirmation.nil?
-            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            respond_to_event(event, 'I guess not...') unless Setting.confirmation?(confirmation.message.content)
             break unless Setting.confirmation?(confirmation.message.content)
           end
 
@@ -176,7 +176,7 @@ class Sunny
           stolen_previous_target = Player.find_by(id: Array(stolen_vote&.votes).last)
           stolen_detail = " on #{stolen_target.name}, removing the vote they had previously#{stolen_previous_target ? " cast on #{stolen_previous_target.name}" : ' cast'} to gain an extra parchment against #{vote_target.name}"
 
-          event.respond("You used **#{item.name}** on **#{stolen_target.name}**")
+          respond_to_event(event, "You used **#{item.name}** on **#{stolen_target.name}**")
 
           BOT.channel(council.channel_id).send_embed do |embed|
             embed.title = "#{player.name} used #{item.name} on #{stolen_target.name}!"
@@ -206,7 +206,7 @@ class Sunny
 
             await = event.user.await!(timeout: 80)
 
-            event.respond("You didn't pick a target in time...") if await.nil?
+            respond_to_event(event, "You didn't pick a target in time...") if await.nil?
             break if await.nil?
 
             content = await.message.content
@@ -218,25 +218,25 @@ class Sunny
             elsif id_attempt.size == 1
               targets << Player.find_by(id: id_attempt[0])
             elsif content != ''
-              event.respond("There's no single castaway that matches that.")
+              respond_to_event(event, "There's no single castaway that matches that.")
             end
           end
 
-          event.respond('Playing this item failed!') if targets.empty?
+          respond_to_event(event, 'Playing this item failed!') if targets.empty?
           break if targets.empty?
 
           unless confirmed
-            event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
+            respond_to_event(event, "You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
             confirmation = event.user.await!(timeout: 50)
 
-            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            respond_to_event(event, "You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
             break if confirmation.nil?
 
-            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            respond_to_event(event, 'I guess not...') unless Setting.confirmation?(confirmation.message.content)
             break unless Setting.confirmation?(confirmation.message.content)
           end
 
-          event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")
+          respond_to_event(event, "You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")
           Vote.where(council_id: council.id, player_id: targets.map(&:id)).each do |vote_block|
             a = vote_block.votes
             a.delete_at(a.size - 1)
@@ -287,7 +287,7 @@ class Sunny
 
             await = event.user.await!(timeout: 80)
 
-            event.respond("You didn't pick a target...") if await.nil?
+            respond_to_event(event, "You didn't pick a target...") if await.nil?
             break if await.nil?
 
 
@@ -300,14 +300,14 @@ class Sunny
             elsif id_attempt.size == 1
               targets << Player.find_by(id: id_attempt[0])
             elsif content != ''
-              event.respond("There's no single castaway that matches that.")
+              respond_to_event(event, "There's no single castaway that matches that.")
             end
           end
 
           if targets == []
-            event.respond('Playing this item failed!')
+            respond_to_event(event, 'Playing this item failed!')
           else
-            event.respond("You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
+            respond_to_event(event, "You're now using **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name,'yourself')}**\nPlay it again if you want to cancel it.")
             item.update(targets: targets.map(&:id), played: true)
             record_and_send_event("item_played#{item_play_details(item, targets: targets)}", player: player, item: item)
           end

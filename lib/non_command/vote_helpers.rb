@@ -1,4 +1,10 @@
 class Sunny
+  def self.respond_to_event(event, content, ephemeral: false)
+    event.respond(content)
+  rescue ArgumentError
+    event.respond(content: content, ephemeral: ephemeral)
+  end
+
   def self.vote_targets_for(council, player, require_allowed_vote: false)
     vote_scope = Vote.where(council_id: council.id)
     vote_scope = vote_scope.excluding(Vote.where(player_id: player.id)) if player
@@ -28,11 +34,11 @@ class Sunny
     end
 
     await = event.user.await!(timeout: timeout)
-    event.respond("You didn't pick a target...") if await.nil?
+    respond_to_event(event, "You didn't pick a target...") if await.nil?
     return nil if await.nil?
 
     target = resolve_vote_target(await.message.content, targets)
-    event.respond("There's no single castaway that matches that.") if target.nil? && await.message.content != ''
+    respond_to_event(event, "There's no single castaway that matches that.") if target.nil? && await.message.content != ''
     target
   end
 
@@ -49,22 +55,22 @@ class Sunny
   def self.collect_vote_parchment(event, target, source_event: nil)
     source_parchment = parchment_from_message(source_event.message) if source_event
     if source_parchment
-      event.respond('**Got your parchment!**')
+      respond_to_event(event, '**Got your parchment!**')
       return source_parchment
     end
 
-    event.respond('Time to upload a parchment! Right in your next message!')
+    respond_to_event(event, 'Time to upload a parchment! Right in your next message!')
     file = URI.parse(Setting.parchment_url).open
     BOT.send_file(event.channel, file, filename: 'parchment.png')
     image = event.user.await!(timeout: 600)
 
     parchment = parchment_from_message(image.message) if image
     if parchment
-      event.respond('**Got your parchment!**')
+      respond_to_event(event, '**Got your parchment!**')
       return parchment
     end
 
-    event.respond "I couldn't find a parchment there... Guess I'll make one for you."
+    respond_to_event(event, "I couldn't find a parchment there... Guess I'll make one for you.")
     source_message = event.channel.send_file generate_parchment(target.name)
     source_message.attachments.first&.url || '0'
   end
