@@ -61,21 +61,24 @@ class Sunny
     item.update(targets: [], played: false)
   end
 
-  def self.play_item(event, targets, item)
+  def self.play_item(event, targets, item, confirmed: false)
+    target_args = Array(targets)
     if item.early?
       item.functions.each do |function| 
         council = Council.where(stage: [0], season_id: Setting.season_id).last
         player = item.player
         case function
         when 'safety_without_power'
-          event.respond('Are you sure?')
-          confirmation = event.user.await!(timeout: 50)
+          unless confirmed
+            event.respond('Are you sure?')
+            confirmation = event.user.await!(timeout: 50)
 
-          event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
-          break if confirmation.nil?
+            event.respond("You didn't confirm. Try again if you want to play it.") if confirmation.nil?
+            break if confirmation.nil?
 
-          event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
-          break unless Setting.confirmation?(confirmation.message.content)
+            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            break unless Setting.confirmation?(confirmation.message.content)
+          end
 
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
 
@@ -117,9 +120,19 @@ class Sunny
         player = item.player
         case function
         when 'extra_vote'
-          target = prompt_vote_target(event, player, council, prompt: "Who would you like to cast your extra vote against?")
+          target = resolve_vote_target(target_args.first.to_s, vote_targets_for(council, player)) if target_args.first
+          target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to cast your extra vote against?")
           event.respond('Playing this item failed!') if target.nil?
           break if target.nil?
+
+          unless confirmed
+            event.respond("You're about to use **#{item.name}** to cast an extra vote against **#{target.name}**. Are you sure?")
+            confirmation = event.user.await!(timeout: 50)
+            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            break if confirmation.nil?
+            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            break unless Setting.confirmation?(confirmation.message.content)
+          end
 
           parchment = collect_vote_parchment(event, target)
           vote = Vote.find_by(council_id: council.id, player_id: player.id)
@@ -136,14 +149,25 @@ class Sunny
 
         when 'steal_vote'
           enemies = vote_targets_for(council, player, require_allowed_vote: true)
-          stolen_target = prompt_vote_target(event, player, council, prompt: "Who would you like to play #{item.name} on?", targets: enemies)
+          stolen_target = resolve_vote_target(target_args[0].to_s, enemies) if target_args[0]
+          stolen_target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to play #{item.name} on?", targets: enemies)
 
           event.respond('Playing this item failed!') if stolen_target.nil?
           break if stolen_target.nil?
 
-          vote_target = prompt_vote_target(event, player, council, prompt: "Who would you like to cast the stolen vote against?")
+          vote_target = resolve_vote_target(target_args[1].to_s, vote_targets_for(council, player)) if target_args[1]
+          vote_target ||= prompt_vote_target(event, player, council, prompt: "Who would you like to cast the stolen vote against?")
           event.respond('Playing this item failed!') if vote_target.nil?
           break if vote_target.nil?
+
+          unless confirmed
+            event.respond("You're about to steal **#{stolen_target.name}**'s vote and cast it against **#{vote_target.name}**. Are you sure?")
+            confirmation = event.user.await!(timeout: 50)
+            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            break if confirmation.nil?
+            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            break unless Setting.confirmation?(confirmation.message.content)
+          end
 
           parchment = collect_vote_parchment(event, vote_target)
           owner_vote = Vote.find_by(council_id: council.id, player_id: player.id)
@@ -166,45 +190,51 @@ class Sunny
           targets = []
           enemies = Vote.where(council_id: council.id, allowed: Array(1..10)).excluding(Vote.where(player_id: player.id)).map(&:player).map { |n| Player.find_by(id: n) }
           enemies.delete(nil)
+          target = resolve_vote_target(target_args.first.to_s, enemies) if target_args.first
+          targets << target if target
 
-          text = enemies.map do |en|
-            "**#{en.id}** — #{en.name}"
-          end
+          if targets.empty?
+            text = enemies.map do |en|
+              "**#{en.id}** — #{en.name}"
+            end
 
-          event.channel.send_embed do |embed|
-            embed.title = "Who would you like to play #{item.name} on?"
-            embed.description = text.join("\n")
-            embed.color = event.server.role(player.tribe.role_id).color
-          end
+            event.channel.send_embed do |embed|
+              embed.title = "Who would you like to play #{item.name} on?"
+              embed.description = text.join("\n")
+              embed.color = event.server.role(player.tribe.role_id).color
+            end
 
-          await = event.user.await!(timeout: 80)
+            await = event.user.await!(timeout: 80)
 
-          event.respond("You didn't pick a target in time...") if await.nil?
-          break if await.nil?
+            event.respond("You didn't pick a target in time...") if await.nil?
+            break if await.nil?
 
-          content = await.message.content
+            content = await.message.content
 
-          text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
-          id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
-          if text_attempt.size == 1
-            targets << Player.find_by(name: text_attempt[0], season_id: Setting.season_id, status: ALIVE)
-          elsif id_attempt.size == 1
-            targets << Player.find_by(id: id_attempt[0])
-          elsif content != ''
-            event.respond("There's no single castaway that matches that.")
+            text_attempt = enemies.map(&:name).filter { |nome| nome.downcase.include? content.downcase }
+            id_attempt = enemies.map(&:id).filter { |id| id == content.to_i }
+            if text_attempt.size == 1
+              targets << Player.find_by(name: text_attempt[0], season_id: Setting.season_id, status: ALIVE)
+            elsif id_attempt.size == 1
+              targets << Player.find_by(id: id_attempt[0])
+            elsif content != ''
+              event.respond("There's no single castaway that matches that.")
+            end
           end
 
           event.respond('Playing this item failed!') if targets.empty?
           break if targets.empty?
 
-          event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
-          confirmation = event.user.await!(timeout: 50)
+          unless confirmed
+            event.respond("You're about to use **#{item.name}** on **#{targets.map(&:name).join(', ')}**. Are you sure?")
+            confirmation = event.user.await!(timeout: 50)
 
-          event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
-          break if confirmation.nil?
+            event.respond("You didn't confirm in time. Try again if you want to play it.") if confirmation.nil?
+            break if confirmation.nil?
 
-          event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
-          break unless Setting.confirmation?(confirmation.message.content)
+            event.respond('I guess not...') unless Setting.confirmation?(confirmation.message.content)
+            break unless Setting.confirmation?(confirmation.message.content)
+          end
 
           event.respond("You used **#{item.name}** on **#{targets.map(&:name).join('**, **').gsub(player.name, 'yourself')}**")
           Vote.where(council_id: council.id, player_id: targets.map(&:id)).each do |vote_block|
@@ -243,6 +273,12 @@ class Sunny
           end
 
           allowed_targets.times do 
+            target = resolve_vote_target(target_args.first.to_s, enemies) if target_args.first
+            if target
+              targets << target
+              next
+            end
+
             event.channel.send_embed do |embed|
               embed.title = "Who would you like to play #{item.name} on?"
               embed.description = text.join("\n")
