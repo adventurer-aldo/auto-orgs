@@ -1,10 +1,10 @@
 class Sunny
   def self.respond_to_event(event, content, ephemeral: false)
+    event.channel.send_message(content)
+  rescue StandardError
     event.respond(content)
   rescue ArgumentError
     event.respond(content: content, ephemeral: ephemeral)
-  rescue StandardError
-    event.channel.send_message(content)
   end
 
   def self.vote_targets_for(council, player, require_allowed_vote: false)
