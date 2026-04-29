@@ -51,4 +51,10 @@ class Sunny
     active_councils.flat_map(&:tribes).uniq
   end
 
+  def self.season_title
+    season = Setting.season
+    name = season.respond_to?(:name) && season.name.to_s != '' ? ": #{season.name}" : ''
+    "Alvivor S#{Setting.season_id}#{name}"
+  end
+
 end

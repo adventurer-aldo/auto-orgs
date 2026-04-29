@@ -4,17 +4,17 @@ class Sunny
 
     return event.respond('Immunity can only be transferred after the merge.') unless Setting.game_stage == 1
 
-    council = Council.where(season_id: Setting.season, stage: 0).last
+    council = Council.where(season_id: Setting.season_id, stage: 0).last
     return event.respond('Immunity is not transferable right now.') if council.nil?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season, status: 'Immune')
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id, status: 'Immune')
     return event.respond("You don't currently have transferable immunity.") if player.nil?
     return event.respond('Use this in your confessional or submissions channel.') unless [player.confessional, player.submissions].include? event.channel.id
 
     member = event.user.on(event.server)
     return event.respond("You don't currently have the Immunity role.") unless member.role?(Setting.immunity_role_id)
 
-    targets = Player.where(status: ALIVE, season_id: Setting.season).excluding(Player.where(id: player.id))
+    targets = Player.where(status: ALIVE, season_id: Setting.season_id).excluding(Player.where(id: player.id))
     content = args.join(' ')
     if content == ''
       event.channel.send_embed do |embed|
@@ -32,7 +32,7 @@ class Sunny
     text_attempt = targets.map(&:name).filter { |name| name.downcase.include? content.downcase }
     id_attempt = targets.map(&:id).filter { |id| id == content.to_i }
     target = if text_attempt.size == 1
-               Player.find_by(name: text_attempt.first, season_id: Setting.season, status: ALIVE)
+               Player.find_by(name: text_attempt.first, season_id: Setting.season_id, status: ALIVE)
              elsif id_attempt.size == 1
                Player.find_by(id: id_attempt.first)
              end
@@ -59,14 +59,14 @@ class Sunny
 
     unless event.message.mentions.empty?
       event.message.mentions.each do |user|
-        players << Player.find_by(user_id: user.id, season_id: Setting.season, status: ALIVE)
+        players << Player.find_by(user_id: user.id, season_id: Setting.season_id, status: ALIVE)
       end
     end
 
     unless event.message.role_mentions.empty?
       event.message.role_mentions.each do |role|
         role.members.each do |member|
-          players << Player.find_by(user_id: member.id, season_id: Setting.season, status: ALIVE)
+          players << Player.find_by(user_id: member.id, season_id: Setting.season_id, status: ALIVE)
         end
       end
     end

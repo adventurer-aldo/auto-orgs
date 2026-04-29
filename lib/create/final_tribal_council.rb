@@ -2,8 +2,8 @@ class Sunny
   BOT.command :ftc, description: 'Begins the Final Tribal Council.' do |event|
     break unless event.user.id.host?
 
-    finalists = Player.where(status: ALIVE, season_id: Setting.season)
-    jury_all = Player.where(status: 'Jury', season_id: Setting.season)
+    finalists = Player.where(status: ALIVE, season_id: Setting.season_id)
+    jury_all = Player.where(status: 'Jury', season_id: Setting.season_id)
 
     Setting.game_stage = 2
     council = Council.create(stage: 1, tribes: [finalists.first.tribe_id], channel_id: event.server.create_channel(
@@ -11,7 +11,7 @@ class Sunny
         topic: "The last time we'll read the votes during this season of Alvivor.",
         parent: Setting.ftc_category_id,
         permission_overwrites: [Sunny.deny_every_spectate, Sunny.true_spectate]
-    ).id, season_id: Setting.season)
+    ).id, season_id: Setting.season_id)
 
     finalists.each do |finalist|
       channel = event.server.create_channel("#{finalist.name}-speech",
@@ -33,7 +33,7 @@ class Sunny
       # channel.send_message(BOT.user(jury.user_id).mention.to_s)
 
       BOT.channel(jury.submissions).send_embed do |embed|
-        embed.title = "As a member of the Jury, **#{jury.name}** has the power to decide the winner of Alvivor Season 4: Fruits!"
+        embed.title = "As a member of the Jury, **#{jury.name}** has the power to decide the winner of #{season_title}!"
         embed.description = "When the time is right, use the `!vote` command to vote for who you think should win the title of Sole Survivor.\nYour decision matters greatly."
         embed.color = 'df9322'
       end

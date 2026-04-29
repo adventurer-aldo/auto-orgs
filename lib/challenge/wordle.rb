@@ -9,7 +9,7 @@ class Sunny
 
   
   BOT.message(in: Setting.tribes.map { |tribe_id| Tribe.find_by(id: tribe_id).cchannel_id }) do |event|
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
 
     return if player.nil?
 

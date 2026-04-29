@@ -27,6 +27,9 @@ class Setting < ActiveRecord::Base
     prejury_splitter_channel_id
     jury_splitter_channel_id
     host_chat_channel_id
+    spectator_draft_channel_id
+    spectator_elimination_channel_id
+    spectator_bootlist_channel_id
     archive_category_id
   ].freeze
 

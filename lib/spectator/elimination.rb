@@ -1,15 +1,15 @@
 class Sunny
 
   BOT.command :prepare_elimination do |event|
-    channel = BOT.channel(1393731026882269398)
+    channel = BOT.channel(Setting.spectator_elimination_channel_id)
 
     channel.send_embed do |embed|
-      embed.title = "Alvivor S3: Spirits & Souls — Elimination Game"
+      embed.title = "#{season_title} — Elimination Game"
       embed.description = "Before each challenge's results are posted, choose a castaway you think will **not** be eliminated during the episode's Tribal Council.\nIf your pick remains in the game... you're safe!\nIf your castaway leaves by means unrelated to the Tribal Council, you will be considered safe.\n\n**The spectator(s) that remain at the end, having good picks each episode... win the Elimination Game.**"
       embed.color = '#CB00FF'
     end
 
-    players = Player.where(season_id: Setting.season, status: ALIVE)
+    players = Player.where(season_id: Setting.season_id, status: ALIVE)
 
     view = Discordrb::Webhooks::View.new
     view.row { |row| row.string_select(custom_id: "EliminationPick", options: players.map { |player| {label: player.name, value: player.id} }) }
@@ -19,12 +19,12 @@ class Sunny
   BOT.string_select(custom_id: "EliminationPick") do |event|
     event.defer_update
 
-    break if Council.where(season_id: Setting.season, stage: Array(0..4)).exists?
-    channel = BOT.channel(1393731026882269398)
+    break if Council.where(season_id: Setting.season_id, stage: Array(0..4)).exists?
+    channel = BOT.channel(Setting.spectator_elimination_channel_id)
 
-    size = SpectatorGame::Elimination.all.size
+    size = SpectatorGame::Elimination.where(season_id: Setting.season_id).size
 
-    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.season, episode_id: 2)
+    eliminator = SpectatorGame::Elimination.find_or_create_by(user_id: event.user.id, season_id: Setting.season_id, episode_id: 2)
 
     player = Player.find_by(id: event.values.first.to_i)
 
@@ -36,7 +36,7 @@ class Sunny
     end
 
 
-    if SpectatorGame::Elimination.all.reload.size != size
+    if SpectatorGame::Elimination.where(season_id: Setting.season_id).reload.size != size
       channel.send_file(get_eliminator_image, filename: "Eliminator.png")
     end
   end

@@ -3,7 +3,7 @@ class Sunny
   BOT.command :puzzle do |event|
     next unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
 
     challenge = player.challenges.last
 
@@ -17,7 +17,7 @@ class Sunny
   BOT.command :end_puzzle do |event|
     next unless event.user.id.player?
 
-    player = Player.find_by(user_id: event.user.id, season_id: Setting.season)
+    player = Player.find_by(user_id: event.user.id, season_id: Setting.season_id)
 
     challenge = player.challenges.last
 
