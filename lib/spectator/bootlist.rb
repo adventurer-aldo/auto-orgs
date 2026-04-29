@@ -1,6 +1,6 @@
 class Sunny
   def self.bootlist_channel
-    BOT.channel(Setting.spectator_bootlist_channel_id)
+    channel_from_setting(:spectator_bootlist_channel_id)
   end
 
   def self.bootlist_options(players)
@@ -13,8 +13,13 @@ class Sunny
       return
     end
 
-    Setting.spectator_bootlist_is_ongoing = 1
     channel = bootlist_channel
+    unless channel
+      event.respond(spectator_channel_missing_message('Bootlist Game', :spectator_bootlist_channel_id))
+      return
+    end
+
+    Setting.spectator_bootlist_is_ongoing = 1
     players = Player.where(season_id: Setting.season_id, status: ALIVE).order(:id).to_a
 
     channel.send_embed do |embed|

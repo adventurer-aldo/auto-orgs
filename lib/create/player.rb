@@ -73,19 +73,37 @@ class Sunny
   BOT.button(custom_id: 'spectator_start_draft') do |event|
     break unless event.user.id.host?
 
+    channel = draft_channel
+    unless channel
+      respond_missing_spectator_channel(event, 'Draft Game', :spectator_draft_channel_id)
+      break
+    end
+
     event.defer_update
-    prepare_draft_game(draft_channel)
+    prepare_draft_game(channel)
   end
 
   BOT.button(custom_id: 'spectator_start_elimination') do |event|
     break unless event.user.id.host?
 
+    channel = elimination_channel
+    unless channel
+      respond_missing_spectator_channel(event, 'Elimination Game', :spectator_elimination_channel_id)
+      break
+    end
+
     event.defer_update
-    prepare_elimination_game
+    prepare_elimination_game(channel)
   end
 
   BOT.button(custom_id: 'spectator_start_bootlist') do |event|
     break unless event.user.id.host?
+
+    channel = bootlist_channel
+    unless channel
+      respond_missing_spectator_channel(event, 'Bootlist Game', :spectator_bootlist_channel_id)
+      break
+    end
 
     event.defer_update
     prepare_bootlist_game(event)

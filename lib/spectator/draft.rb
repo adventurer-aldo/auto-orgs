@@ -1,6 +1,6 @@
 class Sunny
   def self.draft_channel
-    BOT.channel(Setting.spectator_draft_channel_id)
+    channel_from_setting(:spectator_draft_channel_id)
   end
 
   def self.completed_draft?(draft)
@@ -35,8 +35,9 @@ class Sunny
       event.send_message(content: "**#{player.name}** is now your new **#{pick_label}**!", ephemeral: true)
 
       if was_completed != is_completed
-        draft_channel.send_message("A new Draft has been completed, by #{event.user.mention}!")
-        draft_channel.send_file(get_draft_image, filename: 'Draft.png')
+        channel = draft_channel
+        channel&.send_message("A new Draft has been completed, by #{event.user.mention}!")
+        channel&.send_file(get_draft_image, filename: 'Draft.png')
       end
     end
   end
@@ -72,7 +73,13 @@ class Sunny
   BOT.command :prepare_draft do |event|
     break unless event.user.id.host?
 
-    prepare_draft_game(draft_channel)
+    channel = draft_channel
+    unless channel
+      event.respond(spectator_channel_missing_message('Draft Game', :spectator_draft_channel_id))
+      break
+    end
+
+    prepare_draft_game(channel)
   end
 
   BOT.string_select(custom_id: 'DraftWinnerPick') do |event|

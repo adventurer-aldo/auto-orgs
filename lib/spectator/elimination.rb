@@ -4,7 +4,13 @@ class Sunny
     Player.where(season_id: Setting.season_id, status: ALIVE).where.not(id: picked_ids).order(:id)
   end
 
-  def self.prepare_elimination_game(channel = BOT.channel(Setting.spectator_elimination_channel_id))
+  def self.elimination_channel
+    channel_from_setting(:spectator_elimination_channel_id)
+  end
+
+  def self.prepare_elimination_game(channel = elimination_channel)
+    return unless channel
+
     Setting.spectator_elimination_is_ongoing = 1
 
     channel.send_embed do |embed|
@@ -23,7 +29,13 @@ class Sunny
   BOT.command :prepare_elimination do |event|
     break unless event.user.id.host?
 
-    prepare_elimination_game
+    channel = elimination_channel
+    unless channel
+      event.respond(spectator_channel_missing_message('Elimination Game', :spectator_elimination_channel_id))
+      break
+    end
+
+    prepare_elimination_game(channel)
   end
 
   BOT.string_select(custom_id: "EliminationPick") do |event|
@@ -33,7 +45,7 @@ class Sunny
       event.send_message(content: 'Elimination Game picks are closed while Tribal Council is ongoing.', ephemeral: true)
       break
     end
-    channel = BOT.channel(Setting.spectator_elimination_channel_id)
+    channel = elimination_channel
 
     size = SpectatorGame::Elimination.where(season_id: Setting.season_id).size
 
@@ -62,7 +74,7 @@ class Sunny
 
 
     if SpectatorGame::Elimination.where(season_id: Setting.season_id).reload.size != size
-      channel.send_file(get_eliminator_image, filename: "Eliminator.png")
+      channel&.send_file(get_eliminator_image, filename: "Eliminator.png")
     end
   end
 end

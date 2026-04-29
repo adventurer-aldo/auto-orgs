@@ -8,6 +8,32 @@ class Sunny
     active_councils.empty?
   end
 
+  def self.channel_from_setting(setting_name)
+    channel_id = Setting.public_send(setting_name)
+    return nil if channel_id.zero?
+
+    BOT.channel(channel_id)
+  rescue StandardError => e
+    raise unless e.class.name.match?(/Unknown.*Channel|No.*Permission|Not.*Found/) ||
+                 e.message.match?(/Unknown Channel|Missing Access|Missing Permissions/)
+
+    nil
+  end
+
+  def self.spectator_channel_missing_message(game_name, setting_name)
+    "I couldn't find the #{game_name} channel. Set `Setting.#{setting_name}` to a valid channel ID first."
+  end
+
+  def self.respond_missing_spectator_channel(event, game_name, setting_name)
+    message = spectator_channel_missing_message(game_name, setting_name)
+
+    if event.respond_to?(:send_message)
+      event.send_message(content: message, ephemeral: true)
+    else
+      event.respond(message)
+    end
+  end
+
   def self.bootlist_open?
     spectator_games_open? && !Council.where(season_id: Setting.season_id).exists?
   end
