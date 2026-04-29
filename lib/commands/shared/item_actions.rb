@@ -18,6 +18,12 @@ class Sunny
     end
   end
 
+  def self.acknowledge_selection(event, message)
+    event.respond(content: message, ephemeral: true)
+  rescue StandardError
+    event.channel.send_message(message)
+  end
+
   def self.owned_item_options(player)
     player.items.where(season_id: Setting.season_id).order(:name).first(25).map do |item|
       {
@@ -303,30 +309,46 @@ class Sunny
   BOT.string_select(custom_id: /\Agive_item:/) do |event|
     token = event.custom_id.split(':', 2).last
     payload = pending_item_gives[token]
-    break event.respond(content: 'This give flow is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
+    unless payload && payload[:user_id] == event.user.id
+      acknowledge_selection(event, 'This give flow is no longer available.')
+      break
+    end
 
     payload[:item_id] = event.values.first.to_i
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: payload[:item_id], player_id: player&.id, season_id: Setting.season_id)
-    break event.update_message(content: 'That item is no longer available.', components: nil) unless player && item
+    unless player && item
+      acknowledge_selection(event, 'That item is no longer available.')
+      break
+    end
 
     targets = give_targets_for(player)
-    break event.update_message(content: 'There are no eligible players to give this item to.', components: nil) if targets.empty?
+    if targets.empty?
+      acknowledge_selection(event, 'There are no eligible players to give this item to.')
+      break
+    end
 
-    event.update_message(content: 'Who do you want to give it to?', components: item_target_select_view(token, 'give', targets, 'Choose recipient'))
+    acknowledge_selection(event, "Selected **#{item.name}** to give.")
+    event.channel.send_message('Who do you want to give it to?', false, nil, nil, nil, nil, item_target_select_view(token, 'give', targets, 'Choose recipient'))
   end
 
   BOT.string_select(custom_id: /\Agive_target:/) do |event|
     token = event.custom_id.split(':', 2).last
     payload = pending_item_gives.delete(token)
-    break event.respond(content: 'This give flow is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
+    unless payload && payload[:user_id] == event.user.id
+      acknowledge_selection(event, 'This give flow is no longer available.')
+      break
+    end
 
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: payload[:item_id], player_id: player&.id, season_id: Setting.season_id)
     target = Player.find_by(id: event.values.first.to_i, season_id: Setting.season_id, status: ALIVE)
-    break event.update_message(content: 'Giving an item failed.', components: nil) unless player && item && target
+    unless player && item && target
+      acknowledge_selection(event, 'Giving an item failed.')
+      break
+    end
 
-    event.update_message(content: "Selected **#{target.name}**.", components: nil)
+    acknowledge_selection(event, "Selected **#{target.name}** as the recipient for **#{item.name}**.")
     confirm_give_flow(event, player, item, target)
   end
 
@@ -349,28 +371,41 @@ class Sunny
   BOT.string_select(custom_id: /\Aplay_item:/) do |event|
     token = event.custom_id.split(':', 2).last
     payload = pending_item_plays.delete(token)
-    break event.respond(content: 'This play flow is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
+    unless payload && payload[:user_id] == event.user.id
+      acknowledge_selection(event, 'This play flow is no longer available.')
+      break
+    end
 
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: event.values.first.to_i, player_id: player&.id, season_id: Setting.season_id)
-    break event.update_message(content: 'That item is no longer available.', components: nil) unless player && item
+    unless player && item
+      acknowledge_selection(event, 'That item is no longer available.')
+      break
+    end
 
-    event.update_message(content: "Selected **#{item.name}**.", components: nil)
+    acknowledge_selection(event, "Selected **#{item.name}** to play.")
     start_play_flow(event, player, item)
   end
 
   BOT.string_select(custom_id: /\Aplay_target:/) do |event|
     token = event.custom_id.split(':', 2).last
     payload = pending_item_plays.delete(token)
-    break event.respond(content: 'This play flow is no longer available.', ephemeral: true) unless payload && payload[:user_id] == event.user.id
+    unless payload && payload[:user_id] == event.user.id
+      acknowledge_selection(event, 'This play flow is no longer available.')
+      break
+    end
 
     player = Player.find_by(id: payload[:player_id], season_id: Setting.season_id)
     item = Item.find_by(id: payload[:item_id], player_id: player&.id, season_id: Setting.season_id)
     target = Player.find_by(id: event.values.first.to_i, season_id: Setting.season_id)
-    break event.update_message(content: 'Playing this item failed.', components: nil) unless player && item && target
+    unless player && item && target
+      acknowledge_selection(event, 'Playing this item failed.')
+      break
+    end
 
     targets = Array(payload[:targets]) + [target.id]
-    event.update_message(content: "Selected **#{target.name}**.", components: nil)
+    selected_for = payload[:stage] == :vote_target ? 'the stolen vote target' : "the target for **#{item.name}**"
+    acknowledge_selection(event, "Selected **#{target.name}** as #{selected_for}.")
 
     if payload[:function] == 'steal_vote' && payload[:stage] == :stolen_target
       request_play_target(event, player, item, payload[:function], :vote_target, targets: targets)

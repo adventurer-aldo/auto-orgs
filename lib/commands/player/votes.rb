@@ -28,6 +28,12 @@ class Sunny
     view
   end
 
+  def self.acknowledge_selection(event, message)
+    event.respond(content: message, ephemeral: true)
+  rescue StandardError
+    event.channel.send_message(message)
+  end
+
   def self.vote_command_player(event)
     if event.user.id.host?
       Player.where(submissions: event.channel.id, status: ALIVE + ['Jury']).first
@@ -146,11 +152,11 @@ class Sunny
     target = Player.find_by(id: event.values.first.to_i, season_id: Setting.season_id)
 
     unless player && council && vote_record && target
-      event.update_message(content: 'This vote can no longer be submitted.', components: nil)
+      acknowledge_selection(event, 'This vote can no longer be submitted.')
       break
     end
 
-    event.update_message(content: "Selected **#{target.name}**.", components: nil)
+    acknowledge_selection(event, "Selected **#{target.name}** as your vote target.")
     submit_vote_target(event, player, council, vote_record, payload[:number], target)
   end
 end
