@@ -44,11 +44,42 @@ class Sunny
     format(template, data.merge(player: player, item: item))
   end
 
+  def self.event_embed_title(event_row)
+    key = event_row.summary.to_s.split(':', 2).first.to_sym
+    item = Item.find_by(id: event_row.item_id)
+    item_type = item&.idol? ? 'Idol' : 'Advantage'
+
+    case key
+    when :item_found
+      "#{item_type} Found!"
+    when :item_received
+      "#{item_type} Received!"
+    when :item_given
+      "#{item_type} Given!"
+    when :item_played
+      "#{item_type} Played!"
+    when :item_stopped
+      "#{item_type} Play Cancelled!"
+    when :tribe_buff
+      'Buff Drawn!'
+    when :tribe_immunity
+      'Tribal Immunity Won!'
+    when :individual_immunity
+      'Individual Immunity Won!'
+    when :casting_vote
+      'Vote Cast!'
+    when :eliminated
+      'Torch Snuffed!'
+    else
+      'Something Happened!'
+    end
+  end
+
   def self.send_event_embed(event_row)
     return if Setting.events_channel_id.zero?
 
     BOT.channel(Setting.events_channel_id).send_embed do |embed|
-      embed.title = 'Season Event'
+      embed.title = event_embed_title(event_row)
       embed.description = event_summary_text(event_row)
       embed.color = '#CB00FF'
     end
