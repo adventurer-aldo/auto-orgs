@@ -16,6 +16,10 @@ class Sunny
     text.to_s.scan(/\d+/).first&.to_i || 0
   end
 
+  def self.legacy_snowflakes(text)
+    text.to_s.scan(/\d+/).map(&:to_i).select(&:positive?)
+  end
+
   def self.legacy_member(event, text)
     user_id = legacy_snowflake(text)
     return event.server.member(user_id) if user_id.positive?
@@ -24,6 +28,51 @@ class Sunny
     event.server.members.find do |member|
       [member.display_name, member.username, member.name].compact.any? { |name| name.downcase.include?(query) }
     end
+  end
+
+  def self.legacy_member_rows(event, text)
+    rows = []
+    used_ids = []
+    text.to_s.scan(/<@!?(\d+)>/).flatten.map(&:to_i).each do |user_id|
+      member = event.server.member(user_id)
+      rows << {
+        user_id: user_id,
+        name: member&.display_name,
+        member: member
+      }
+      used_ids << user_id
+    end
+
+    remaining_text = text.gsub(/<@!?\d+>/, ' ')
+    remaining_text.scan(/\b\d{15,25}\b/).map(&:to_i).each do |user_id|
+      next if used_ids.include?(user_id)
+
+      member = event.server.member(user_id)
+      rows << {
+        user_id: user_id,
+        name: member&.display_name,
+        member: member
+      }
+      used_ids << user_id
+    end
+
+    remaining = remaining_text.gsub(/\b\d{15,25}\b/, ' ').split(',').map(&:strip).reject(&:empty?)
+    remaining = [text.strip] if rows.empty? && remaining.empty? && !text.strip.match?(/\A\d+\z/)
+    remaining.each do |query|
+      next if legacy_snowflakes(query).any?
+
+      member = legacy_member(event, query)
+      next unless member && !used_ids.include?(member.id)
+
+      rows << {
+        user_id: member.id,
+        name: member.display_name,
+        member: member
+      }
+      used_ids << member.id
+    end
+
+    rows
   end
 
   def self.legacy_player(season_id, text)
@@ -229,24 +278,28 @@ class Sunny
 
     player_rows = []
     loop do
-      member_text = legacy_prompt(event, 'Give a user mention, user id, or display name for a Season 1 player.')
-      member = legacy_member(event, member_text)
-      unless member
-        event.respond("I couldn't find that server member.")
+      member_text = legacy_prompt(event, 'Give one or more user mentions, user ids, or display names for Season 1 players.')
+      member_rows = legacy_member_rows(event, member_text)
+      if member_rows.empty?
+        event.respond("I couldn't match any users from that.")
         next
       end
 
-      confessional_id = legacy_snowflake(legacy_prompt(event, "Confessional channel for **#{member.display_name}**? Mention it, paste the id, or leave blank."))
-      submissions_id = legacy_snowflake(legacy_prompt(event, "Submissions channel for **#{member.display_name}**? Mention it, paste the id, or leave blank."))
-      player_rows << {
-        user_id: member.id,
-        name: member.display_name,
-        confessional: confessional_id,
-        submissions: submissions_id,
-        status: 'Out',
-        tribe_role_id: nil,
-        rank: nil
-      }
+      member_rows.each do |member_row|
+        name = member_row[:name]
+        name = legacy_prompt(event, "Display name for departed user id **#{member_row[:user_id]}**?") if name.to_s.empty?
+        confessional_id = legacy_snowflake(legacy_prompt(event, "Confessional channel for **#{name}**? Mention it, paste the id, or leave blank."))
+        submissions_id = legacy_snowflake(legacy_prompt(event, "Submissions channel for **#{name}**? Mention it, paste the id, or leave blank."))
+        player_rows << {
+          user_id: member_row[:user_id],
+          name: name,
+          confessional: confessional_id,
+          submissions: submissions_id,
+          status: 'Out',
+          tribe_role_id: nil,
+          rank: nil
+        }
+      end
 
       break if legacy_yes?(legacy_prompt(event, 'Done adding players?'))
     end
