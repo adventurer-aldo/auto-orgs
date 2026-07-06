@@ -1,7 +1,7 @@
 class Sunny
   BOT.ready do
-    BOT.send_message(Setting.host_chat_channel_id, '# <a:torch:1400359863393062952> Hello! Our fruity world! <a:torch:1400359863393062952>')
-    BOT.game = 'Resting'
+    BOT.send_message(Setting.host_chat_channel_id, '# <a:torch:1400359863393062952> Sunny, the hosting bot, is ready to go! <a:torch:1400359863393062952>')
+    BOT.game = 'Getting ready...'
   end
 
   BOT.command :store do |event, *args|
@@ -19,7 +19,7 @@ class Sunny
 
   BOT.command :aaa do |event|
     test = BOT.channel(1498777093616566473)
-    conn = BOT.voice_connect(test)
+    conn = BOT.voice_connect(1498777093616566473)
     puts("Yeah. We go.")
     file = Shrine.storages[:store].open("tally_test.dca")
     conn.play_dca(file)
