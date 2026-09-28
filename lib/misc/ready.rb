@@ -18,8 +18,8 @@ class Sunny
   end
 
   BOT.command :aaa do |event|
-    test = BOT.channel(1498777093616566473)
-    conn = BOT.voice_connect(1498777093616566473)
+    test = BOT.channel(1434870641156423832)
+    conn = BOT.voice_connect(1434870641156423832)
     puts("Yeah. We go.")
     file = Shrine.storages[:store].open("tally_test.dca")
     conn.play_dca(file)

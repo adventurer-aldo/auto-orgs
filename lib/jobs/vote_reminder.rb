@@ -16,7 +16,8 @@ class Sunny
           "Just reminding you that you still haven't voted",
           "Votes are being tallied not too late from now!",
           "Hey, just reminding you..that you still haven't voted yet",
-          "Hmm... You know what's missing? Your vote"
+          "Hmm... You know what's missing? Your vote",
+          "I don't have your vote for the Tribal Council you're attending,"
         ].sample + " #{BOT.user(player.user_id).mention}")
       end
       destroy
